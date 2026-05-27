@@ -1,11 +1,21 @@
 name: Commit Attribution Guard
 
+# Enforces two rules:
+#   1. Every commit must have a real human author (name + email required).
+#   2. AI agent co-author trailers are rejected. Human co-authors are welcome.
+#
+# What counts as an AI agent co-author:
+#   - Any Co-authored-by line whose name or email matches patterns for
+#     Claude, Cursor, Copilot, ChatGPT, or generic *[bot]* identities.
+#
+# Human Co-authored-by trailers (real name + personal/work email) pass freely.
+
 on:
   pull_request:
   push:
 
 jobs:
-  enforce-single-author:
+  enforce-attribution:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout history
@@ -13,15 +23,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Enforce single author identity and no co-authors
+      - name: Check author identity and reject AI co-author trailers
         env:
           EVENT_NAME: ${{ github.event_name }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PUSH_BEFORE_SHA: ${{ github.event.before }}
           CURRENT_SHA: ${{ github.sha }}
-          ALLOWED_AUTHOR_NAME: Yen Kha
-          ALLOWED_AUTHOR_EMAIL: yen.kha@gammalex.com
         run: |
           set -euo pipefail
 
@@ -38,6 +46,7 @@ jobs:
 
           commit_list="$(git rev-list "$range" || true)"
           if [[ -z "$commit_list" ]]; then
+            echo "No commits to inspect."
             exit 0
           fi
 
@@ -48,18 +57,49 @@ jobs:
             commit_subject="$(git show -s --format='%s' "$commit_sha")"
             commit_body="$(git show -s --format='%B' "$commit_sha")"
 
-            if [[ "$author_name" != "$ALLOWED_AUTHOR_NAME" || "$author_email" != "$ALLOWED_AUTHOR_EMAIL" ]]; then
-              echo "::error::Commit $commit_sha ($commit_subject) has invalid author: $author_name <$author_email>. Allowed: $ALLOWED_AUTHOR_NAME <$ALLOWED_AUTHOR_EMAIL>."
+            # Rule 1: Author name and email must be non-empty.
+            if [[ -z "$author_name" || -z "$author_email" ]]; then
+              echo "::error::Commit $commit_sha ($commit_subject) is missing author name or email. All commits require a real human author identity."
               failures=1
             fi
 
-            if printf '%s\n' "$commit_body" | grep -Eiq '^Co-authored-by:'; then
-              echo "::error::Commit $commit_sha ($commit_subject) contains Co-authored-by trailer. Co-authors are not allowed."
-              failures=1
-            fi
+            # Rule 2: Reject Co-authored-by trailers that match AI agent patterns.
+            # Patterns (case-insensitive): Claude, Cursor, Copilot, ChatGPT, Gemini,
+            # generic [bot] suffix, and known AI noreply domains.
+            # Human co-authors with real names and personal/work emails pass freely.
+            ai_patterns=(
+              '[Cc]laude'
+              '[Cc]ursor'
+              '[Cc]opilot'
+              '[Cc]hat[Gg][Pp][Tt]'
+              '[Gg]emini'
+              '\[bot\]'
+              'noreply@anthropic\.com'
+              'noreply@cursor\.'
+              'noreply@github\.com'
+              '\.bot@'
+            )
+
+            while IFS= read -r line; do
+              if echo "$line" | grep -Eiq '^Co-authored-by:'; then
+                matched=0
+                for pattern in "${ai_patterns[@]}"; do
+                  if echo "$line" | grep -Eiq "$pattern"; then
+                    matched=1
+                    break
+                  fi
+                done
+                if [[ "$matched" -eq 1 ]]; then
+                  echo "::error::Commit $commit_sha ($commit_subject) contains an AI agent Co-authored-by trailer: '$line'. AI agents may not be listed as co-authors. Human co-authors are welcome."
+                  failures=1
+                fi
+              fi
+            done <<< "$commit_body"
           done
 
           if [[ "$failures" -ne 0 ]]; then
-            echo "::error::Commit attribution policy violation detected."
+            echo "::error::Attribution policy violation(s) detected. See errors above."
             exit 1
           fi
+
+          echo "Attribution check passed."
