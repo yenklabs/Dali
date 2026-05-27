@@ -20,7 +20,7 @@ Dali is open citation integrity and evidentiary infrastructure for legal AI syst
 | v4 | temporal replay |
 | v5 | cross-jurisdiction interoperability |
 
-Each version is scoped narrowly. Ontology expansion is deliberately resisted — a new category is added only when an existing one demonstrably collapses two distinct legal behaviors into the same bucket.
+Each version is scoped narrowly. Ontology expansion is deliberately resisted, a new category is added only when an existing one demonstrably collapses two distinct legal behaviors into the same bucket.
 
 ## What this is not
 

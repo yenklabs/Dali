@@ -36,13 +36,13 @@ Contributions are valued across seven tracks:
 
 | Track | What's needed | Where to start |
 |---|---|---|
-| **Corpus expansion** | Annotated real-world AI citation failure cases — especially UK/Commonwealth, Brazil, adversarial | `data/public/citation_failure_cases.json` |
+| **Corpus expansion** | Annotated real-world AI citation failure cases: especially UK/Commonwealth, Brazil, adversarial | `data/public/citation_failure_cases.json` |
 | **Synthetic prompts** | New Tier 2 probe prompts across legal domains | `synthetic/` + `dali_mcp/` contributor tools |
 | **Ontology review** | Legal practitioners reviewing treatment and proposition ontology definitions | [schemas/ontology.md](schemas/ontology.md) + open a discussion issue |
-| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | Roadmap — see [docs/roadmap.md](docs/roadmap.md). `corpus/parsers/` will land with eyecite integration. |
+| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | Roadmap: see [docs/roadmap.md](docs/roadmap.md). `corpus/parsers/` will land with eyecite integration. |
 | **Spec authorship** | Drafting and reviewing changes to schemas and the Evidence JSON contract | `specs/` |
 | **Benchmark replication** | Running Tier 2 against new models and sharing results | `runners/run_synthetic.py` |
-| **Academic partnerships** | Law schools and court data projects — structured dataset contributions, co-authored methodology | Open issue with label `partnership` |
+| **Academic partnerships** | Law schools and court data projects: structured dataset contributions, co-authored methodology | Open issue with label `partnership` |
 
 Code contributions are welcome but secondary to corpus quality, ontology
 correctness, and specification rigor.
@@ -51,7 +51,7 @@ correctness, and specification rigor.
 
 ## Corpus contributions
 
-### Tier 1 — Canonical case records
+### Tier 1: Canonical case records
 
 Court-documented AI citation failure incidents. These live in:
 
@@ -89,7 +89,7 @@ from scoring aggregates.
 Attorney names must be removed from public records. Run `corpus/anonymizer.py`
 if your record contains names from the original filing.
 
-### Tier 2 — Synthetic prompt probes
+### Tier 2: Synthetic prompt probes
 
 Model-facing prompts for live Tier 2 evaluation. These live in:
 
@@ -148,7 +148,7 @@ Open a PR adding the output JSON to `results/v0.2/{your-run-date}/`. Include the
 
 ## Specification contributions
 
-Schema and ontology changes go through a lightweight proposal — open an issue with label `spec-change` describing the motivation, the breaking impact (if any), and a migration note. Documentation and clarification changes do not need a proposal.
+Schema and ontology changes go through a lightweight proposal, open an issue with label `spec-change` describing the motivation, the breaking impact (if any), and a migration note. Documentation and clarification changes do not need a proposal.
 
 ---
 
@@ -158,7 +158,7 @@ Schema and ontology changes go through a lightweight proposal — open an issue 
 - [ ] New corpus records pass `validate_corpus_record`
 - [ ] New synthetic prompts pass `validate_prompt_jsonl`
 - [ ] Schema changes have an accompanying `spec-change` issue
-- [ ] No PII in corpus records — run `corpus/anonymizer.py` if needed
+- [ ] No PII in corpus records: run `corpus/anonymizer.py` if needed
 - [ ] Commit author matches your real identity
 
 ---
@@ -189,7 +189,7 @@ We are particularly interested in structured collaborations with:
 
 ## Code of conduct
 
-Be direct, be specific, be accurate. This project handles legal information —
+Be direct, be specific, be accurate. This project handles legal information ,
 precision matters more than enthusiasm.
 
 See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

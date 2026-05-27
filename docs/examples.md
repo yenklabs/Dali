@@ -66,7 +66,7 @@ What this does:
 | Classification | Meaning | Interpretation |
 |---|---|---|
 | `refusal` | Model explicitly declined to cite ("I'm not confident about recent cases…") | Often the right behavior on adversarial prompts |
-| `no_citations_generated` | Model answered but didn't include any citations | Neutral — answered without making things up |
+| `no_citations_generated` | Model answered but didn't include any citations | Neutral: answered without making things up |
 | `citations_found` | Model produced citations that the extractor parsed | Now we check existence and support |
 
 **Existence and support scoring:**
@@ -92,7 +92,7 @@ What this does:
                           └──────────────────────────┘
 ```
 
-`unverifiable` means the URL fetched but the scorer couldn't determine support — e.g. the page was a PDF that didn't extract, the source was blocked, or the content didn't contain the prompt's topic. It is a legitimate verdict, not a scorer error.
+`unverifiable` means the URL fetched but the scorer couldn't determine support, e.g. the page was a PDF that didn't extract, the source was blocked, or the content didn't contain the prompt's topic. It is a legitimate verdict, not a scorer error.
 
 ## 4. Run your own prompt set
 

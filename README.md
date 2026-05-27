@@ -52,7 +52,7 @@ Tier 1 is the benchmark standard. Tier 2 extends evaluation to model-facing prom
 
 **450 prompt evaluations across 3 OpenAI models produced 524 citations in aggregate, evaluated under a deterministic, policy-versioned verification pipeline.**
 
-> **Tier 1 corpus (canonical standard): 3 scoring-eligible cases** (Mata v. Avianca, US v. Cohen, Park v. Kim). Expanding this corpus is the highest-priority contribution track — see [CONTRIBUTING.md](CONTRIBUTING.md). The 524-citation figures above are Tier 2 synthetic probe results.
+> **Tier 1 corpus (canonical standard): 3 scoring-eligible cases** (Mata v. Avianca, US v. Cohen, Park v. Kim). Expanding this corpus is the highest-priority contribution track, see [CONTRIBUTING.md](CONTRIBUTING.md). The 524-citation figures above are Tier 2 synthetic probe results.
 
 ### The model that cited most willingly also fabricated most often
 

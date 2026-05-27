@@ -15,7 +15,7 @@ Ontology definitions are **public**. The scoring heuristics, classifier weights,
 and ranking logic that produce values for these enums are **private** to
 implementing systems. This is the governing principle of the project.
 
-Changes to this document go through a lightweight proposal — open an issue
+Changes to this document go through a lightweight proposal, open an issue
 with label `spec-change`. The minimalism rule applies: a new category is added
 only when an existing one demonstrably collapses two distinct legal behaviors
 into the same bucket.
@@ -72,7 +72,7 @@ How a citation was extracted from LLM output.
 
 ---
 
-## AuthorityTreatment (v2 — forthcoming)
+## AuthorityTreatment (v2: forthcoming)
 
 **Status:** Reserved. Not part of v1.
 
@@ -90,7 +90,7 @@ is proven against CourtListener annotations.
 
 ---
 
-## PropositionSupport (v3a — forthcoming)
+## PropositionSupport (v3a: forthcoming)
 
 **Status:** Reserved. Not part of v1.
 
@@ -112,7 +112,7 @@ reserved for v3b.
 | Code | Meaning |
 |------|---------|
 | `us-scotus` | US Supreme Court |
-| `us-fed` | US federal courts (circuit, district, bankruptcy — below SCOTUS) |
+| `us-fed` | US federal courts (circuit, district, bankruptcy: below SCOTUS) |
 | `us-state` | US state courts (generic when specific state is not resolved) |
 | `uk` | United Kingdom |
 | `br` | Brazil |
