@@ -1,4 +1,4 @@
-"""MCP tool implementation: validate_corpus_record."""
+"""MCP tool implementation: check_case."""
 
 from __future__ import annotations
 

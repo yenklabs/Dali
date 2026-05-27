@@ -1,5 +1,4 @@
-"""MCP tool implementations: validate_prompt_jsonl, generate_prompt_template,
-create_contribution_bundle."""
+"""MCP tool implementations: check_prompt, new_prompt, bundle_prompts."""
 
 from __future__ import annotations
 
@@ -240,7 +239,7 @@ def _bundle_prompts_impl(prompts_json: str) -> dict:
 
     pr_checklist = [
         "[ ] pytest tests/ passes",
-        "[ ] All prompts pass validate_prompt_jsonl (no issues above)",
+        "[ ] All prompts pass check_prompt (no issues above)",
         "[ ] Prompts added to the correct synthetic/ file",
         "[ ] No PII or unpublished matter in prompt text",
         "[ ] Commit author identity is set (name + email)",
