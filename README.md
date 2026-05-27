@@ -50,7 +50,7 @@ Tier 1 is the benchmark standard. Tier 2 extends evaluation to model-facing prom
 
 ## Latest results (v0.2 · 2026-05-26)
 
-**450 prompt evaluations** across 3 OpenAI models, producing **524 citations** in aggregate. Scored by Claude 3.5 Haiku (cross-vendor — no model grades itself).
+**450 prompt evaluations across 3 OpenAI models produced 524 citations in aggregate. Citation existence and recoverability were verified deterministically under a versioned policy.
 
 ### The model that cited most willingly also fabricated most often
 
