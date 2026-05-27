@@ -3,13 +3,25 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from dataclasses import dataclass
 from typing import Optional
 
-SCORER_MODEL = "claude-3-5-haiku-20241022"
 MAX_TOKENS = 256
 SOURCE_CHAR_LIMIT = 3000
+
+
+def _get_scorer_model() -> str:
+    model = os.environ.get("DALI_SCORER_MODEL", "").strip()
+    if not model:
+        raise EnvironmentError(
+            "DALI_SCORER_MODEL is not set. Set it to any model ID supported by "
+            "runners/models.py before running Tier 2 with support scoring. "
+            "Use a cross-vendor model (different provider than your subject models) "
+            "to avoid self-evaluation bias."
+        )
+    return model
 
 
 @dataclass
@@ -92,7 +104,7 @@ def score_support(
     try:
         from runners.models import call_model
 
-        raw = call_model(SCORER_MODEL, _build_prompt(claim, source_text))
+        raw = call_model(_get_scorer_model(), _build_prompt(claim, source_text))
         return _parse_response(raw)
     except Exception as exc:
         return SupportScore(0.0, "unverifiable", f"scoring unavailable: {exc.__class__.__name__}")

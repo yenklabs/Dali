@@ -178,7 +178,7 @@ The longer-term mitigation for 403 blocking is content-addressable archival (Way
 
 ## Step 4: Support Scoring
 
-**Model:** `claude-3-5-haiku-20241022` (Anthropic) — cross-vendor scorer for all OpenAI subject models; no self-evaluation bias for GPT-4o/GPT-4.1/GPT-4o-mini results
+**Model:** LLM-based verification scorer, configurable via `DALI_SCORER_MODEL`. Use a cross-vendor model (different provider than your subject models) to avoid self-evaluation bias. The scorer model used in each run is recorded in `methodology.json`.
 **Parameters:** `temperature=0.0`, `max_tokens=256`
 **Source input:** first 3,000 characters of the fetched source text
 
@@ -252,7 +252,7 @@ If a provider deprecates a model version, a new versioned results directory is c
 
 ## Scorer Bias Disclosure
 
-The support scorer for v0.2 is `claude-3-5-haiku-20241022` (Anthropic). All v0.2 subject models are OpenAI (GPT-4o-mini, GPT-4.1, GPT-4o), so there is no self-evaluation bias in this run. The scorer model is recorded in `methodology.json` per run. If an Anthropic model is used as a subject in a future run, the scorer must be switched to a different provider.
+The scorer model is recorded in `methodology.json` per run. For any published run, the scorer must be from a different provider than the subject models being evaluated. This cross-vendor requirement is the primary guard against self-evaluation bias. The v0.2 public run satisfies this requirement; the specific scorer identity is recorded in the run artifacts rather than in this document to keep the methodology provider-neutral.
 
 ---
 

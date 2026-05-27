@@ -58,7 +58,7 @@ VALID_SOURCE_TYPES = {
 }
 
 
-def _validate_corpus_record_impl(record_json: str) -> dict:
+def _check_case_impl(record_json: str) -> dict:
     issues: list[str] = []
 
     try:
@@ -68,7 +68,7 @@ def _validate_corpus_record_impl(record_json: str) -> dict:
             "valid": False,
             "scoring_eligible": False,
             "issues": [f"Invalid JSON: {e}"],
-            "summary": "Parse error — record is not valid JSON.",
+            "summary": "Parse error: record is not valid JSON.",
         }
 
     if not isinstance(record, dict):
