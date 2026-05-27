@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use Dali in your research or evaluation work, please cite it using this metadata."
+title: "Dali: AI Evidence Infrastructure for Citation Provenance and Workflow Defensibility"
+type: software
+authors:
+  - family-names: Kha
+    given-names: Yen
+    email: yen.kha@gammalex.com
+    alias: yenk
+repository-code: "https://github.com/yenk/Dali"
+url: "https://github.com/yenk/Dali"
+version: "0.2.0"
+date-released: "2026-05-26"
+license: MIT
+abstract: >
+  Dali is an open benchmark, schema, and evidence infrastructure for evaluating
+  whether AI-assisted legal citation workflows are attributable, reproducible,
+  and defensible. Unlike traditional citation benchmarks that only score citation
+  existence, Dali evaluates whether provenance, verification history, and workflow
+  attribution remain traceable under judicial, regulatory, or appellate scrutiny.
+  It provides a deterministic Tier 1 evaluator against a canonical case corpus of
+  court-documented AI citation failures, a 150-prompt synthetic Tier 2 probe corpus,
+  and policy-versioned CitationIntegrityResult artifacts with evidence hashes.
+keywords:
+  - legal AI
+  - citation integrity
+  - hallucination detection
+  - provenance
+  - workflow attribution
+  - benchmark
+  - legal citation
+  - evidence infrastructure
+  - AI safety
+  - legal technology
+preferred-citation:
+  type: software
+  title: "Dali: AI Evidence Infrastructure for Citation Provenance and Workflow Defensibility"
+  authors:
+    - family-names: Kha
+      given-names: Yen
+      email: yen.kha@gammalex.com
+  year: 2026
+  version: "0.2"
+  url: "https://github.com/yenk/Dali"
+  notes: "Policy version: see docs/policy-versioning.md"

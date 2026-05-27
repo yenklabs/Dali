@@ -2,9 +2,7 @@
 
 Dali evaluates whether AI-assisted legal citation workflows remain reconstructable, attributable, and defensible under judicial scrutiny.
 
-The public benchmark repo, `Dali`, defines the standard.
-
-Tier 2 is part of the public benchmark surface. Tiers 3-4 are reserved for future or separately released implementations.
+The public benchmark repo, `Dali`, defines the standard. Tier 1 is deterministic and runs locally. Tier 2 evaluates live model behavior against the shipped probe corpus.
 
 ---
 
@@ -66,7 +64,7 @@ The rubric is workflow-centric, not output-centric. Two records can have the sam
 
 ### Policy versioning
 
-Every `CitationIntegrityResult` records a composite `policy_version` string covering five sub-dimensions. Results from different policy versions cannot be silently aggregated. See [POLICY_VERSIONING.md](POLICY_VERSIONING.md) for the full versioning schema.
+Every `CitationIntegrityResult` records a composite `policy_version` string covering five sub-dimensions. Results from different policy versions cannot be silently aggregated. See [docs/policy-versioning.md](docs/policy-versioning.md) for the full versioning schema.
 
 ### Scoring eligibility
 
@@ -154,6 +152,27 @@ The `content_hash` in the result JSON is the SHA-256 of exactly what was scored.
 | No resolvable URL | 0.0 | `unresolvable` |
 
 `redirected` is used when `http_status` is 200–299 but `redirect_chain` is non-empty.
+
+### Interpretation of `existence_score = 0.0`
+
+A zero existence score does not mean the cited URL was fabricated. Aggregate result interpretation must distinguish three sub-cases by `http_status`:
+
+| HTTP status | Likely meaning | Counts as fabrication? |
+|---|---|---|
+| `404` | URL path does not exist | **Yes** — confirmed fabrication or wrong path |
+| `403` | Source server blocked verification | **No** — URL likely real but anti-scraper protection prevents verification (common on `supreme.justia.com`, `supremecourt.gov`, `stf.jus.br`) |
+| `0` / network error | Connection failed | Indeterminate — could be DNS, timeout, geo-block |
+
+When reporting an aggregate "fabrication rate" externally, distinguish:
+
+- **Confirmed fabrication** = share of citations returning HTTP 404
+- **Verification blocked** = share returning HTTP 403 (URL probably real)
+- **Verified existing** = share returning HTTP 2xx
+- **Network noise** = share with status 0 / timeout
+
+A claim like *"X% of citations were fabricated"* without this breakdown is overclaiming. The Dali result schema preserves `http_status` per citation so any aggregation can be re-derived from the raw artifact.
+
+The longer-term mitigation for 403 blocking is content-addressable archival (Wayback Machine, archive.is, or first-party snapshots stored under content hashes) — planned for a future release.
 
 ---
 
@@ -246,3 +265,14 @@ To reproduce any result:
 3. Compare the `content_hash` in the result with the SHA-256 of the fetched text used for scoring.
 
 Tier 1 results are fully deterministic from corpus annotations. Tier 2 results depend on live model responses and currently reachable source URLs, so they should be interpreted as versioned run artifacts rather than immutable ground truth.
+
+---
+
+## Limitations
+
+The current benchmark is a credible, well-scoped public standard. A few methodological constraints are worth stating up front:
+
+- **Corpus size.** Tier 1 results at the current corpus size should be treated as exploratory rather than population-level. Aggregate claims should stay tied to corpus size and the versioned methodology.
+- **Scorer overlap.** When the support scorer and the subject model are from the same model family, support scores should be interpreted with self-evaluation bias in mind. Future versions will use an independent scorer.
+- **Confidence reporting.** Aggregate summaries do not yet carry explicit confidence intervals. This is intentional at v0.2 corpus size — re-introducing them is part of the v0.3 / v1 roadmap as the corpus expands.
+- **URL reachability drift.** Tier 2 source-URL fetching is live. Source reachability can drift over time independently of the benchmark — versioned snapshots are the longer-term path.

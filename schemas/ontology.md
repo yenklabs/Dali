@@ -7,9 +7,10 @@ Ontology definitions are **public**. The scoring heuristics, classifier weights,
 and ranking logic that produce values for these enums are **private** to
 implementing systems. This is the governing principle of the project.
 
-Changes to this document require an RFC (see [RFC_PROCESS.md](../RFC_PROCESS.md)).
-The minimalism rule applies: a new category is added only when an existing one
-demonstrably collapses two distinct legal behaviors into the same bucket.
+Changes to this document go through a lightweight proposal — open an issue
+with label `spec-change`. The minimalism rule applies: a new category is added
+only when an existing one demonstrably collapses two distinct legal behaviors
+into the same bucket.
 
 ---
 

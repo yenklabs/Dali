@@ -1,77 +1,85 @@
 # Dali
 
-The evidence layer for AI citation workflows.
+**Dali is designed for probabilistic AI systems operating in high-consequence legal environments where reproducibility, provenance, and evidentiary integrity matter.**
 
-The evidence layer for AI citation workflows.
----
+Dali evaluates whether AI-generated citations and supporting workflows remain reconstructable, attributable, and defensible under scrutiny.
 
-## Table of Contents
+Where traditional citation checkers ask “does this citation exist?”, Dali asks “can this workflow be reconstructed and replayed if challenged?”
 
-- [What Dali measures](#what-dali-measures)
-- [Architecture](#architecture)
-- [Evaluation Tiers](#evaluation-tiers)
-- [Tier 1 Canonical Case Corpus](#tier-1--canonical-case-corpus)
-- [Quick start](#quick-start)
-- [Examples](docs/examples.md)
-- [Tier 2 Synthetic Probes](#tier-2--synthetic-probes)
-- [Policy versioning](#policy-versioning)
-- [Corpus quality gate](#corpus-quality-gate)
-- [Anonymization](#anonymization)
-- [Why Dali is not just another citation checker](#why-dali-is-not-just-another-citation-checker)
-- [What this is not](#what-this-is-not)
-- [What this enables](#what-this-enables)
-- [How to cite](#how-to-cite)
 
----
+## Core concepts
 
-## What Dali measures
+| Concept | What it means |
+|---|---|
+| **Citation integrity** | Whether the cited authority exists and resolves to a real source |
+| **Workflow reconstructability** | Whether the pathway that produced the citation can be traced |
+| **Reconstructable evidence** | Whether the result can be reproduced and re-verified under a versioned policy |
 
-Most citation evaluations focus on whether a generated citation exists or matches a source. Dali evaluates whether AI-assisted citation workflows remain reconstructable, attributable, and defensible under judicial scrutiny.
+## How it works
 
-> A citation that was fabricated but is easily traced and corrected is a different risk category than a citation where no one can reconstruct which tool produced it, who reviewed it, or why it made it into the filing.
-
-Dali measures both the output failure and the workflow gap.
-
----
-
-## Architecture
-
-The benchmark layers, artifact flow, and public/private boundary are documented in [docs/architecture.md](docs/architecture.md).
-
-```mermaid
-flowchart TB
-  T1["Canonical Case Corpus"] --> R["Deterministic Evaluation"]
-  T2["Tier 2: Synthetic Probes"] --> R
-  R --> H["CitationIntegrityResult"]
-  H --> P["evidence_hash + policy_version"]
+```text
+        Legal AI workflow
+                |
+                v
+         Citation generated
+                |
+                v
+   Can this workflow be reconstructed
+        and replayed if challenged?
+                |
+                v
+          Dali evaluates
+                |
+   +-----------+------------+-------------+
+   |            |            |            |          
+   v            v            v            v           
+Attribution  Provenance  Replayability  Defensibility
 ```
 
----
+Dali produces a versioned `CitationIntegrityResult` for every evaluated citation, including reproducible scoring metadata and evidence hashes so benchmark runs can be replayed consistently over time.
 
-## Evaluation Tiers
-
-Dali separates deterministic evaluation from live model probing.
+## Evaluation tiers
 
 | Tier | Corpus | Purpose |
 |---|---|---|
-| **Tier 1** | **Court-documented reference corpus** | Deterministic, policy-versioned ground truth |
-| **Tier 2** | **Synthetic prompt probes** | Live model evaluation against real incident patterns |
+| **Tier 1** | Court-documented citation failures (e.g. *Mata v. Avianca*) | Deterministic, policy-versioned ground truth |
+| **Tier 2** | Synthetic probe corpus across US, UK / Commonwealth, Brazil, adversarial traps, and cross-jurisdictional policy/academic | Live model evaluation |
 
-Tier 1 is the benchmark standard. Tier 2 extends it to novel model behavior.
+Tier 1 is the benchmark standard. Tier 2 extends evaluation to model-facing prompt behavior.
+
+## Latest results (v0.2 · 2026-05-26)
+
+**450 prompt evaluations** across 3 OpenAI models, producing **524 citations** in aggregate. Scored by Claude 3.5 Haiku (cross-vendor — no model grades itself).
+
+### The model that cited most willingly also fabricated most often
+
+```
+                       0%        25%        50%        75%       100%
+                       ├──────────┼──────────┼──────────┼──────────┤
+  GPT-4o-mini   49%    ████████████░░░░░░░░░░░░░  → 94 cites, 16% return HTTP 404
+  GPT-4.1       94%    ████████████████████████░  → 374 cites, 23% return HTTP 404
+  GPT-4o        26%    ██████░░░░░░░░░░░░░░░░░░░  → 56 cites, 20% return HTTP 404
+```
+
+GPT-4.1 was the most engaged model and the most fabrication-prone: of its 374 citations, **86 point to URLs that do not exist**. On adversarial citation-trap prompts specifically, GPT-4.1 took the bait 76% of the time, fabricating 48% of those URLs.
+
+### Why we test across jurisdictions
+
+US-only legal benchmarks underweight risk in places where AI legal tooling is being deployed but training-data coverage is thinner. Aggregated across all 524 citations:
+
+| Jurisdiction track | Verified (HTTP 200) | Confirmed fabricated (HTTP 404) |
+|---|---:|---:|
+| UK / Commonwealth (UKSC, BAILII) | **76%** | 5% |
+| Cross-jurisdictional research / policy | 57% | 27% |
+| US legal (cases, statutes, contracts) | 33% | 17% |
+| Adversarial citation traps | 29% | 47% |
+| Brazil (Portuguese, civil law) | **3%** | 9% |
+
+UK common-law citation structure transfers cleanly from training data. Brazilian Portuguese civil-law does not — and the gap is large enough that a US-only benchmark would have missed it entirely. A cross-jurisdictional benchmark is how you find these gaps before the AI is in front of a court.
+
+→ Bar charts, per-model leaderboard, full per-jurisdiction breakdown, methodology, and reproducible run instructions: **[results/v0.2/](results/v0.2/)**
 
 ---
-
-## Tier 1 — Canonical Case Corpus
-
-The Canonical Case Corpus is the benchmark standard: court-documented AI-assisted citation failures with deterministic scoring, versioned taxonomy, and public-corpus anonymization.
-
-See the concrete corpus preview, record fields, and evaluator command examples in [docs/examples.md](docs/examples.md).
-
-### Cases vs prompts
-
-Tier 1 uses canonical case records in `data/public/citation_failure_cases.json`. These are court-documented incidents such as Mata v. Avianca.
-
-Tier 2 uses synthetic prompt probes under `synthetic/`. These are model-facing prompts for live evaluation and are not the canonical case corpus itself.
 
 ## Quick start
 
@@ -86,7 +94,7 @@ python runners/run_integrity.py \
   --output results/demo/integrity.json
 ```
 
-This runs the deterministic Tier 1 evaluator locally without external services or hosted model access. For fuller examples, see [docs/examples.md](docs/examples.md).
+This runs the deterministic Tier 1 evaluator locally. No API keys or hosted services required.
 
 Expected output:
 
@@ -95,76 +103,52 @@ Loaded 4 canonical cases (3 scoring-eligible)
 Results written to results/demo/integrity.json
 ```
 
-The output JSON contains one `CitationIntegrityResult` per evaluated case, including reconstructability, defensibility risk, verification recoverability, and deterministic evidence hashes.
+Each result is a `CitationIntegrityResult` artifact with reconstructability, defensibility risk, verification recoverability, and a deterministic evidence hash.
 
----
-
-## Tier 2 — Synthetic Probes
-
-Tier 2 ships 25 prompts across 5 logical categories. The runner also accepts user-supplied JSONL prompt directories with the same schema. See [docs/examples.md](docs/examples.md) for the concrete commands.
-
----
-
-## Policy versioning
-
-Every `CitationIntegrityResult` records a composite `policy_version`. The runner refuses to aggregate results from different policy versions without `--allow-cross-version`. See [POLICY_VERSIONING.md](POLICY_VERSIONING.md) for the sub-version table and bump rules.
-
----
-
-## Corpus quality gate
-
-Records are scoring-eligible only when they carry the required source, incident, status, and ground-truth fields. Missing records still load for inspection, but they are excluded from scoring aggregates. See [docs/examples.md](docs/examples.md) for the validator and corpus inspection flow.
-
----
-
-## Anonymization
-
-Attorney names are removed from the public corpus artifact. The anonymizer and regeneration flow are documented in [docs/examples.md](docs/examples.md).
-
----
-
-## Why Dali is not just another citation checker
-
-Dali does not only evaluate whether a citation exists. It evaluates whether the surrounding workflow remains reconstructable, attributable, and defensible under judicial scrutiny: which retrieval path produced the citation, whether verification occurred, whether provenance remained intact, and whether the result can be replayed under the same policy version.
-
-Dali is not a thin LLM wrapper or probabilistic verifier; it uses deterministic, policy-controlled evaluation to assess whether the workflow remains attributable and reconstructable.
-
-Dali treats citation integrity as one evidentiary signal inside a larger provenance and reconstructability system. Policy-versioned evaluation and deterministic evidence hashes allow benchmark results to be replayed and compared longitudinally without silent scoring drift.
-
-> The benchmark standard is intentionally workflow-centric rather than prompt-centric.
-
----
-
-## What this is not
-
-This benchmark does not measure general factual accuracy, reasoning quality, or instruction-following. It focuses on citation lineage, provenance continuity, workflow attribution, and authority verification under evidentiary scrutiny.
-
----
+For Tier 2 setup, model registry, and benchmark commands see [docs/examples.md](docs/examples.md).
 
 ## What this enables
 
-The benchmark supports more than output-level citation evaluation. Using the Canonical Case Corpus and the shared `CitationIntegrityResult` contract, users can:
+Using the canonical corpus and the shared `CitationIntegrityResult` contract, you can:
 
 - evaluate AI-assisted citation workflows against real court-documented failures
 - measure provenance continuity and workflow reconstructability
 - test retrieval and RAG systems for authority integrity regressions
-- generate synthetic mutation probes derived from real incidents
 - compare citation integrity behavior across models or pipeline versions
 - replay evaluations under fixed policy versions for reproducibility
 - produce deterministic benchmark artifacts and evidence hashes
-- study longitudinal citation drift and verification recoverability
 
----
+## Near-term roadmap
+
+- eyecite integration as the canonical parser
+- canonical citation schema (CourtListener-backed)
+- Evidence JSON v1.0 RFC publication
+- expanded cross-jurisdiction corpus (UK/Commonwealth, Brazil)
+- multi-model comparison runs (GPT-4o-mini · GPT-4.1 · GPT-4o complete as of v0.2)
+
+Longer-range direction: [docs/roadmap.md](docs/roadmap.md).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the quick start, corpus field reference, and contribution tracks. Open issues are tagged `good first issue` and `help wanted`.
+
+For methodology, scoring rubric, and policy versioning see [METHODOLOGY.md](METHODOLOGY.md) and [docs/policy-versioning.md](docs/policy-versioning.md).
 
 ## How to cite
 
+See [CITATION.cff](CITATION.cff), or:
+
 ```bibtex
 @misc{dali-2026,
-  title  = {Dali: AI Evidence Infrastructure for Citation Provenance and Workflow Defensibility},
-  author = {Dali},
-  year   = {2026},
+  title   = {Dali: Open Citation Integrity and Evidentiary Infrastructure for Legal AI},
+  author  = {Kha, Yen},
+  year    = {2026},
   version = {0.2},
-  url    = {https://github.com/yenk/Dali},
-  note   = {Policy version: see POLICY_VERSIONING.md}
+  url     = {https://github.com/yenk/Dali}
 }
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+Dali is an open evidentiary infrastructure project for legal AI systems, maintained by GammaLex AI Inc.

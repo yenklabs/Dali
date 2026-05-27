@@ -1,13 +1,88 @@
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
-.env
-.env.*
-venv/
-.venv/
+*.pyo
+*.pyd
+*.so
+*.egg
 *.egg-info/
 dist/
 build/
+.eggs/
+*.whl
+MANIFEST
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+.env/
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+.envrc
+secrets.json
+secrets.yaml
+secrets.toml
+.secrets/
+
+# ── Credential files (GCP, AWS, etc.) ─────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+service_account*.json
+*service-account*.json
+credentials.json
+gcp-key*.json
+*-keyfile.json
+application_default_credentials.json
+
+# ── OS / editor ───────────────────────────────────────────────────────────────
 .DS_Store
+.DS_Store?
+._*
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Test / coverage artifacts ─────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ── Logs / local databases ────────────────────────────────────────────────────
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# ── Git authorship / tooling metadata ─────────────────────────────────────────
+# .mailmap maps committer identities — not for public repos
+.mailmap
+
+# ── Internal / private data ───────────────────────────────────────────────────
+# Un-anonymized corpus, attorney name lists, curation provenance
+data/internal/
+
+# Internal verification notes, testing run artifacts
+docs/benchmark/
+
+# Outreach drafts — negotiation strategy, not for public repo
+docs/outreach/
+
+# ── Results — run data ────────────────────────────────────────────────────────
+# Ignore per-run date directories (results/v0.2/2026-05-26/ etc.)
+# Keep static schema artifacts committed
 results/demo/
-results/v*/
+results/v*/**/
 !results/README.md
+!results/v0.2/README.md
+!results/v0.2/schema.json
+!results/v0.2/methodology.template.json

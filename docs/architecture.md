@@ -1,15 +1,13 @@
 # Architecture
 
-This page describes the public benchmark layers, artifact flow, and the boundary between the benchmark standard and optional extended evaluation.
+This page describes the public benchmark layers, artifact flow, and the boundary between the deterministic benchmark standard and live model evaluation.
 
 ## Layers
 
 | Layer | Name | Purpose |
 |---|---|---|
-| **1** | **Canonical Case Corpus** | Court-documented citation failures with deterministic scoring |
-| **2** | **Synthetic Probes** | Shipped prompt set plus user-supplied prompt directories for extended evaluation |
-| **3** | **Replay Tests** | Private operational capability unless separately released |
-| **4** | **Workflow Audits** | Private operational capability unless separately released |
+| **Tier 1** | **Canonical Case Corpus** | Court-documented citation failures with deterministic scoring |
+| **Tier 2** | **Synthetic Probes** | Shipped prompt set plus user-supplied prompt directories for live model evaluation |
 
 ## Public benchmark flow
 
@@ -23,18 +21,11 @@ This page describes the public benchmark layers, artifact flow, and the boundary
 
 - `results/demo/integrity.json` for local Tier 1 evaluation
 - `results/v0.2/{date}/integrity.json` for versioned Tier 1 runs
-- `results/v0.2/{date}/synthetic.json` for Tier 2 runs
+- `results/v0.2/{date}/<model_id>.json` for per-model Tier 2 runs
 - `results/v0.2/{date}/methodology.json` for run metadata
-
-## Boundary
-
-The public repo defines the benchmark standard, corpus contract, validation rules, and reproducible local evaluation behavior.
-
-Private implementation details may add archival, replay, persistence, and production verification layers, but those are intentionally outside the public benchmark contract.
 
 ## Related docs
 
 - [README.md](../README.md)
 - [docs/examples.md](examples.md)
-- [docs/benchmark/testing.md](benchmark/testing.md)
-- [docs/benchmark/public-review.md](benchmark/public-review.md)
+- [METHODOLOGY.md](../METHODOLOGY.md)

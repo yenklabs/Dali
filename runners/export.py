@@ -35,38 +35,73 @@ def per_prompt_rows(model_results: dict[str, list[dict]]) -> list[dict]:
             rows.append({
                 "model": r.get("model_id", model_file),
                 "prompt_id": r["prompt_id"],
+                "run_status": r.get("run_status"),
+                "citation_extraction_status": r.get("citation_extraction_status"),
                 "citation_count": r["citation_count"],
+                "citation_generation_rate": r.get("citation_generation_rate"),
+                "citation_parse_rate": r.get("citation_parse_rate"),
+                "malformed_citation_rate": r.get("malformed_citation_rate"),
                 "existence_rate": r.get("existence_rate"),
-                "mean_support_score": r.get("mean_support_score"),
+                "semantic_support_rate": r.get("semantic_support_rate"),
+                "unsupported_authority_rate": r.get("unsupported_authority_rate"),
+                "finish_reason": r.get("finish_reason"),
+                "latency_ms": r.get("latency_ms"),
+                "prompt_tokens": r.get("prompt_tokens"),
+                "completion_tokens": r.get("completion_tokens"),
+                "total_tokens": r.get("total_tokens"),
                 "error": r.get("error", ""),
             })
     return rows
 
 
 def print_table(rows: list[dict]) -> None:
-    print(f"\n{'Model':<35} {'Prompt':<30} {'Citations':>9} {'Exist%':>7} {'Support':>8}")
-    print("─" * 95)
+    print(
+        f"\n{'Model':<28} {'Prompt':<20} {'Status':<12} {'Extract':<20} "
+        f"{'Gen%':>6} {'Parse%':>7} {'Malformed%':>10} {'Exist%':>7} {'Support%':>9}"
+    )
+    print("─" * 130)
     for r in rows:
+        gen = f"{r['citation_generation_rate']:.0%}" if r["citation_generation_rate"] is not None else "—"
+        parse = f"{r['citation_parse_rate']:.0%}" if r["citation_parse_rate"] is not None else "—"
+        malformed = f"{r['malformed_citation_rate']:.0%}" if r["malformed_citation_rate"] is not None else "—"
         ex = f"{r['existence_rate']:.0%}" if r["existence_rate"] is not None else "—"
-        sup = f"{r['mean_support_score']:.2f}" if r["mean_support_score"] is not None else "—"
+        sup = f"{r['semantic_support_rate']:.0%}" if r["semantic_support_rate"] is not None else "—"
         err = f"  ERR: {r['error'][:30]}" if r["error"] else ""
-        print(f"{r['model']:<35} {r['prompt_id']:<30} {r['citation_count']:>9} {ex:>7} {sup:>8}{err}")
+        print(
+            f"{r['model']:<28} {r['prompt_id']:<20} {str(r.get('run_status') or '—'):<12} "
+            f"{str(r.get('citation_extraction_status') or '—'):<20} {gen:>6} {parse:>7} "
+            f"{malformed:>10} {ex:>7} {sup:>9}{err}"
+        )
 
 
 def print_summary(model_results: dict[str, list[dict]]) -> None:
     print(f"\n── Aggregate Summary ─────────────────────────────────────────")
-    print(f"{'Model':<35} {'Prompts':>7} {'Citations':>9} {'Exist%':>7} {'Support':>8}")
-    print("─" * 70)
+    print(
+        f"{'Model':<30} {'Rows':>6} {'Gen%':>6} {'Parse%':>7} "
+        f"{'Malformed%':>10} {'Exist%':>7} {'Support%':>9}"
+    )
+    print("─" * 85)
     for model_file, results in model_results.items():
         model_id = results[0].get("model_id", model_file) if results else model_file
-        total_cit = sum(r["citation_count"] for r in results)
+        gen_rates = [r["citation_generation_rate"] for r in results if r.get("citation_generation_rate") is not None]
+        parse_rates = [r["citation_parse_rate"] for r in results if r.get("citation_parse_rate") is not None]
+        malformed_rates = [r["malformed_citation_rate"] for r in results if r.get("malformed_citation_rate") is not None]
         ex_rates = [r["existence_rate"] for r in results if r.get("existence_rate") is not None]
-        sup_scores = [r["mean_support_score"] for r in results if r.get("mean_support_score") is not None]
+        sup_scores = [r["semantic_support_rate"] for r in results if r.get("semantic_support_rate") is not None]
+        gen_mean = sum(gen_rates) / len(gen_rates) if gen_rates else None
+        parse_mean = sum(parse_rates) / len(parse_rates) if parse_rates else None
+        malformed_mean = sum(malformed_rates) / len(malformed_rates) if malformed_rates else None
         ex_mean = sum(ex_rates) / len(ex_rates) if ex_rates else None
         sup_mean = sum(sup_scores) / len(sup_scores) if sup_scores else None
+        gen_str = f"{gen_mean:.0%}" if gen_mean is not None else "—"
+        parse_str = f"{parse_mean:.0%}" if parse_mean is not None else "—"
+        malformed_str = f"{malformed_mean:.0%}" if malformed_mean is not None else "—"
         ex_str = f"{ex_mean:.0%}" if ex_mean is not None else "—"
-        sup_str = f"{sup_mean:.2f}" if sup_mean is not None else "—"
-        print(f"{model_id:<35} {len(results):>7} {total_cit:>9} {ex_str:>7} {sup_str:>8}")
+        sup_str = f"{sup_mean:.0%}" if sup_mean is not None else "—"
+        print(
+            f"{model_id:<30} {len(results):>6} {gen_str:>6} {parse_str:>7} "
+            f"{malformed_str:>10} {ex_str:>7} {sup_str:>9}"
+        )
     print()
 
 

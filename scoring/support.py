@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from typing import Optional
 
-SCORER_MODEL = "claude-haiku-4-5-20251001"
+SCORER_MODEL = "claude-3-5-haiku-20241022"
 MAX_TOKENS = 256
 SOURCE_CHAR_LIMIT = 3000
 

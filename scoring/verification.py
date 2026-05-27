@@ -26,6 +26,12 @@ _CASE_RE = re.compile(
     r"[A-Z][A-Za-z0-9&.'-]*(?:\s+[A-Z][A-Za-z0-9&.'-]*)*,\s+"
     r"\d+\s+[A-Z][A-Za-z.\d]*\s+\d+\s+\(\d{4}\)"
 )
+_MALFORMED_URL_RE = re.compile(r"\b(?:htp|ttp|https//|http//):?[^\s\])>\"']+", re.IGNORECASE)
+_CASE_LIKE_RE = re.compile(
+    r"[A-Z][A-Za-z0-9&.'-]*(?:\s+[A-Z][A-Za-z0-9&.'-]*)*\s+v\.\s+"
+    r"[A-Z][A-Za-z0-9&.'-]*(?:\s+[A-Z][A-Za-z0-9&.'-]*)*[, ]+\s*"
+    r"\d+\s+[A-Z][A-Za-z.\d]*\s+\d+(?:\s+\(\d{4}\))?"
+)
 
 
 @dataclass
@@ -85,6 +91,58 @@ def _extract_candidates(llm_output: str) -> list[tuple[int, int, str, str]]:
             selected.append(candidate)
 
     return selected
+
+
+def inspect_citation_extraction(llm_output: str) -> dict:
+    """Return parser diagnostics for classification and debug output."""
+    raw_url_matches = [m.group(0) for m in _URL_RE.finditer(llm_output)]
+    raw_doi_matches = [m.group(0) for m in _DOI_RE.finditer(llm_output)]
+    raw_case_matches = [m.group(0).strip() for m in _CASE_RE.finditer(llm_output)]
+    raw_malformed_url_matches = [m.group(0) for m in _MALFORMED_URL_RE.finditer(llm_output)]
+
+    parsed = _extract_candidates(llm_output)
+    parsed_payload = [
+        {
+            "method": method,
+            "raw_text": text,
+            "span": [start, end],
+        }
+        for start, end, method, text in parsed
+    ]
+
+    malformed_case_candidates: list[str] = []
+    for match in _CASE_LIKE_RE.finditer(llm_output):
+        candidate = match.group(0).strip()
+        if _CASE_RE.fullmatch(candidate):
+            continue
+        malformed_case_candidates.append(candidate)
+
+    malformed_candidates = [
+        {"type": "malformed_url", "raw_text": text}
+        for text in raw_malformed_url_matches
+    ] + [
+        {"type": "malformed_case_citation", "raw_text": text}
+        for text in malformed_case_candidates
+    ]
+
+    total_raw = len(raw_url_matches) + len(raw_doi_matches) + len(raw_case_matches)
+    normalization_steps = [
+        f"raw_matches_total={total_raw}",
+        "overlap_resolution=prioritize_url_then_doi_then_case",
+        f"selected_candidates={len(parsed_payload)}",
+        f"malformed_candidates={len(malformed_candidates)}",
+    ]
+
+    return {
+        "raw_matches": {
+            "url_explicit": raw_url_matches,
+            "doi": raw_doi_matches,
+            "case_pattern": raw_case_matches,
+        },
+        "normalization_steps": normalization_steps,
+        "parsed_candidates": parsed_payload,
+        "malformed_candidates": malformed_candidates,
+    }
 
 
 def _fetch_url(url: str, timeout: float = 10.0) -> CitationSnapshot:
