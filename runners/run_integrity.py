@@ -453,9 +453,9 @@ def _print_summary(results: list[CitationIntegrityResult]) -> None:
     print("\n--- Integrity Run Summary ---")
     for r in results:
         risk = r.defensibility_risk.value if hasattr(r.defensibility_risk, "value") else r.defensibility_risk
-        exists = "yes" if r.citation_exists else "NO "
+        verification = "OK    " if r.citation_exists else "FAILED"
         print(
-            f"  {r.case_id:<45}  exists={exists}  "
+            f"  {r.case_id:<45}  verification={verification}  "
             f"risk={risk:<8}  recoverable={r.verification_recoverable}"
         )
     print()

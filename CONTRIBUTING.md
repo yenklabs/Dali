@@ -35,7 +35,7 @@ python runners/run_integrity.py \
 Expected output:
 ```text
 INFO run_integrity: loading corpus: data/public/citation_failure_cases.json
-INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 1 needs-verification
+INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 0 pre-canonical, 1 needs-verification
 INFO run_integrity: evaluating 3 record(s)
 INFO run_integrity:   evaluating: mata-v-avianca-2023
 INFO run_integrity:   evaluating: us-v-cohen-2023
@@ -44,9 +44,9 @@ INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
 
 --- Integrity Run Summary ---
 
-mata-v-avianca-2023                  exists=NO  risk=critical  recoverable=infeasible
-us-v-cohen-2023                      exists=NO  risk=critical  recoverable=infeasible
-mata-derivative-reporter-swap-001    exists=NO  risk=high      recoverable=manual
+mata-v-avianca-2023                  verification=FAILED  risk=critical  recoverable=infeasible
+us-v-cohen-2023                      verification=FAILED  risk=critical  recoverable=infeasible
+mata-derivative-reporter-swap-001    verification=FAILED  risk=high      recoverable=manual
 ```
 
 Tier 1 runs entirely offline. No API keys. No external services.
