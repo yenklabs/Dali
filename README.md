@@ -124,9 +124,21 @@ INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
 
 --- Integrity Run Summary ---
 
-mata-v-avianca-2023                  verification=FAILED  risk=critical  recoverable=infeasible
-us-v-cohen-2023                      verification=FAILED  risk=critical  recoverable=infeasible
-mata-derivative-reporter-swap-001    verification=FAILED  risk=high      recoverable=manual
+  case_id:        mata-v-avianca-2023
+  authority:      Mata v. Avianca, Inc.
+  citation:       Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)
+  source_url:     https://www.courtlistener.com/docket/63107798/mata-v-avianca-inc/
+  verification:   FAILED
+  recoverability: infeasible
+  risk:           critical
+
+  case_id:        us-v-cohen-2023
+  authority:      United States v. Cohen (post-conviction motion citation incident)
+  citation:       Three nonexistent federal decisions cited in a supervised-release termination mo...
+  source_url:     https://www.courtlistener.com/docket/8009608/united-states-v-cohen/
+  verification:   FAILED
+  recoverability: infeasible
+  risk:           critical
 ```
 
 Each result is a `CitationIntegrityResult` artifact with reconstructability, defensibility risk, verification recoverability, and a deterministic evidence hash.
