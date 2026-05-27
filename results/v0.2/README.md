@@ -1,9 +1,10 @@
 # Dali Benchmark Results — v0.2
 
 **Corpus:** 150 prompts across 8 categories and 5 jurisdictions  
-**Run scope:** **450 prompt evaluations** — 3 models × 150-prompt corpus  
+**Run scope:** 450 prompt evaluations across 3 OpenAI models  
 **Run date:** 2026-05-26  
-**Scorer:** `claude-3-5-haiku-20241022` (cross-vendor — scores all OpenAI subjects, no self-evaluation)  
+**Verification:** deterministic citation existence and HTTP recoverability checks  
+**Scorer:** cross-vendor support scorer (scores all OpenAI subjects, no self-evaluation)  
 **Reproducible:** clone repo → set API keys → `python runners/run_synthetic.py --models openai_fast openai_quality openai_production`
 
 ---
@@ -178,7 +179,7 @@ Reporting `existence_score=0.0` as "fabricated" without the 404 breakdown overcl
 
 ### Support scoring
 
-Each citation that resolves is scored by the judge model (`claude-3-5-haiku-20241022`):
+Each citation that resolves is scored by the judge model:
 
 - `supported` — cited source directly supports the claim
 - `partial` — cited source supports a weaker or qualified version
@@ -198,7 +199,7 @@ The count of cited URLs that return HTTP 404. This is the narrowest, most defens
 1. **Support scores are uniformly unverifiable** in this run due to fetch-pipeline depth (PDF landing pages, auth-gated sources). The existence pipeline works; the content-extraction layer needs deeper fetching for support scoring to be meaningful.
 2. **Brazil fetch failures may be infrastructure, not fabrication.** Several planalto.gov.br and stf.jus.br paths that returned 0% existence may be geo-blocked or robots.txt-restricted from the benchmark runner's IP. Manual browser verification recommended before citing "Brazil = 0%" as a fabrication finding.
 3. **N=150 prompts per model, one run each.** No temperature averaging. Results are indicative, not statistically powered for small differences.
-4. **Scorer is Claude 3.5 Haiku** — adequate for existence-vs-support classification but conservative on `unverifiable`. A deeper fetch + richer judge prompt is planned for v1.
+4. **Scorer is cross-vendor** — adequate for existence-vs-support classification but conservative on `unverifiable`. A deeper fetch + richer judge prompt is planned for v1.
 
 ---
 
@@ -209,7 +210,7 @@ The count of cited URLs that return HTTP 404. This is the narrowest, most defens
 ```
 python >= 3.11
 OPENAI_API_KEY      (for GPT models)
-ANTHROPIC_API_KEY   (for support scorer — Claude 3.5 Haiku)
+ANTHROPIC_API_KEY   (for support scorer)
 ```
 
 ### Run
