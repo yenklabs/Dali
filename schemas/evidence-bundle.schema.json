@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dali.yenk.dev/schemas/evidence-bundle-v1.json",
+  "title": "EvidenceBundle",
+  "description": "Top-level container for a citation integrity verification run. Defined by RFC-001 Evidence JSON v1.0.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "created_at",
+    "evidence_id",
+    "citations",
+    "replay_state",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "SemVer of the Evidence JSON contract. Must be '1.0.0' for v1 bundles."
+    },
+    "bundle_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence_id": {
+      "type": "string"
+    },
+    "audit_id": {
+      "type": ["string", "null"]
+    },
+    "citations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/CitationIntegrityResult" }
+    },
+    "replay_state": {
+      "$ref": "#/$defs/ReplayState"
+    },
+    "summary": {
+      "$ref": "#/$defs/BundleSummary"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "CitationIntegrityResult": {
+      "type": "object",
+      "required": ["citation_id", "raw_text", "resolution_method", "authority_type", "existence_score", "verdict"],
+      "properties": {
+        "citation_id": { "type": "string", "format": "uuid" },
+        "raw_text": { "type": "string" },
+        "source_ref": { "type": ["string", "null"], "format": "uri" },
+        "resolution_method": {
+          "type": "string",
+          "enum": ["url_explicit", "case_pattern", "statute_pattern", "doi", "unresolvable"]
+        },
+        "canonical_id": { "type": ["string", "null"] },
+        "authority_type": {
+          "type": "string",
+          "enum": ["federal_case", "state_case", "federal_statute", "state_statute", "international", "secondary", "unknown"]
+        },
+        "jurisdiction": { "type": ["string", "null"] },
+        "court": { "type": ["string", "null"] },
+        "decision_year": { "type": ["integer", "null"], "minimum": 1600, "maximum": 2100 },
+        "existence_score": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "verdict": {
+          "type": "string",
+          "enum": ["verified", "redirected", "dead", "unreachable", "unresolvable"]
+        },
+        "fetch_error": { "type": ["string", "null"] },
+        "content_hash": { "type": ["string", "null"] },
+        "storage_path": { "type": ["string", "null"] },
+        "captured_at": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "ReplayState": {
+      "type": "object",
+      "required": ["parser_version", "normalization_version", "policy_version"],
+      "properties": {
+        "parser_version": { "type": "string" },
+        "normalization_version": { "type": "string" },
+        "policy_version": { "type": "string" },
+        "model_id": { "type": ["string", "null"] },
+        "prompt_template_version": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "BundleSummary": {
+      "type": "object",
+      "required": ["total", "verified", "dead", "unresolvable", "mean_existence_score"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "verified": { "type": "integer", "minimum": 0 },
+        "dead": { "type": "integer", "minimum": 0 },
+        "unresolvable": { "type": "integer", "minimum": 0 },
+        "mean_existence_score": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

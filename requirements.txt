@@ -1,0 +1,14 @@
+# ── Tier 1 — Canonical Case Corpus evaluator ─────────────────────────────────
+# runners/run_integrity.py and all corpus/ modules use stdlib only.
+# No third-party deps required, including for --check-reachability
+# (uses urllib from stdlib).
+
+# ── Tier 2 — Synthetic probe runner ──────────────────────────────────────────
+# runners/run_synthetic.py requires API access for model calls:
+anthropic>=0.40.0
+openai>=1.50.0
+
+# ── Optional ──────────────────────────────────────────────────────────────────
+# Load a local .env file during benchmark runs (run_synthetic.py).
+# If not installed, the runner falls back to shell environment variables.
+# python-dotenv>=1.0.0

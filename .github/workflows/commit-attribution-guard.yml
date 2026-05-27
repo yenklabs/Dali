@@ -1,0 +1,72 @@
+name: Commit Attribution Guard
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  enforce-single-author:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce single author identity and no co-authors
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+          ALLOWED_AUTHOR_NAME: Yen Kha
+          ALLOWED_AUTHOR_EMAIL: yen.kha@gammalex.com
+          ALLOWED_AUTHOR_EMAIL_2: ykrunner@gmail.com
+        run: |
+          set -euo pipefail
+
+          zero_sha='0000000000000000000000000000000000000000'
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            range="${PR_BASE_SHA}..${PR_HEAD_SHA}"
+          elif [[ -n "${PUSH_BEFORE_SHA:-}" && "$PUSH_BEFORE_SHA" != "$zero_sha" ]]; then
+            range="${PUSH_BEFORE_SHA}..${CURRENT_SHA}"
+          else
+            range="${CURRENT_SHA}^!"
+          fi
+
+          echo "Inspecting commit range: $range"
+
+          commit_list="$(git rev-list "$range" || true)"
+          if [[ -z "$commit_list" ]]; then
+            exit 0
+          fi
+
+          failures=0
+          for commit_sha in $commit_list; do
+            author_name="$(git show -s --format='%an' "$commit_sha")"
+            author_email="$(git show -s --format='%ae' "$commit_sha")"
+            commit_subject="$(git show -s --format='%s' "$commit_sha")"
+            commit_body="$(git show -s --format='%B' "$commit_sha")"
+
+            # Skip GitHub-generated merge commits (authored by the GitHub web flow)
+            if [[ "$commit_subject" == Merge\ pull\ request\ * || "$commit_subject" == Merge\ branch\ * ]]; then
+              continue
+            fi
+
+            if [[ "$author_name" != "$ALLOWED_AUTHOR_NAME" || \
+                  ( "$author_email" != "$ALLOWED_AUTHOR_EMAIL" && "$author_email" != "$ALLOWED_AUTHOR_EMAIL_2" ) ]]; then
+              echo "::error::Commit $commit_sha ($commit_subject) has invalid author: $author_name <$author_email>. Allowed: $ALLOWED_AUTHOR_NAME <$ALLOWED_AUTHOR_EMAIL> or <$ALLOWED_AUTHOR_EMAIL_2>."
+              failures=1
+            fi
+
+            if printf '%s\n' "$commit_body" | grep -Eiq '^Co-authored-by:'; then
+              echo "::error::Commit $commit_sha ($commit_subject) contains Co-authored-by trailer. Co-authors are not allowed."
+              failures=1
+            fi
+          done
+
+          if [[ "$failures" -ne 0 ]]; then
+            echo "::error::Commit attribution policy violation detected."
+            exit 1
+          fi

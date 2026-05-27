@@ -1,0 +1,215 @@
+name: Benchmark Validation
+
+on:
+  pull_request:
+    paths:
+      - 'data/public/**'
+      - 'corpus/**'
+      - 'runners/**'
+      - 'schemas/**'
+      - 'results/**'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tier1-integrity:
+    name: Tier 1 — Corpus integrity + deterministic evaluator
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Tier 1 evaluator uses stdlib only — no third-party deps required.
+          # Install full requirements only if extras are needed.
+          pip install jsonschema>=4.0.0
+
+      - name: Validate corpus JSON
+        run: |
+          python3 -c "
+          import json, sys
+          with open('data/public/citation_failure_cases.json') as f:
+              data = json.load(f)
+          cases = data.get('records', data) if isinstance(data, dict) else data
+          assert len(cases) >= 1, 'Corpus must have at least 1 record'
+          print(f'Corpus OK: {len(cases)} records')
+          "
+
+      - name: Run Tier 1 deterministic evaluator
+        run: |
+          python runners/run_integrity.py \
+            --corpus data/public/citation_failure_cases.json \
+            --output results/ci/integrity.json
+          echo "Evaluator completed"
+
+      - name: Validate result schema
+        run: |
+          python3 -c "
+          import json, jsonschema
+
+          with open('schemas/integrity-result.schema.json') as f:
+              schema = json.load(f)
+          with open('results/ci/integrity.json') as f:
+              results = json.load(f)
+
+          records = results if isinstance(results, list) else results.get('results', [])
+          errors = []
+          for i, rec in enumerate(records):
+              try:
+                  jsonschema.validate(rec, schema)
+              except jsonschema.ValidationError as e:
+                  errors.append(f'Record {i}: {e.message}')
+          if errors:
+              for e in errors:
+                  print(f'SCHEMA ERROR: {e}')
+              raise SystemExit(1)
+          print(f'Schema validation passed: {len(records)} record(s) valid')
+          "
+
+      - name: Check scoring-eligible count
+        run: |
+          python3 -c "
+          import json
+          with open('results/ci/integrity.json') as f:
+              results = json.load(f)
+          records = results if isinstance(results, list) else results.get('results', [])
+          eligible = [r for r in records if r.get('scoring_eligible', True)]
+          print(f'Scoring-eligible results: {len(eligible)}/{len(records)}')
+          if len(records) == 0:
+              print('WARNING: no results produced')
+              raise SystemExit(1)
+          "
+
+      - name: Upload CI results artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tier1-integrity-results
+          path: results/ci/integrity.json
+          retention-days: 30
+
+  corpus-quality-gate:
+    name: Corpus quality gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run corpus validator
+        run: |
+          python3 -c "
+          import json, sys, pathlib
+
+          corpus_path = pathlib.Path('data/public/citation_failure_cases.json')
+          with open(corpus_path) as f:
+              data = json.load(f)
+
+          cases = data.get('records', data) if isinstance(data, dict) else data
+          needs_verification = [c for c in cases if c.get('needs_verification')]
+          scoring_eligible = [c for c in cases if not c.get('needs_verification') and not c.get('pre_canonical')]
+          pre_canonical = [c for c in cases if c.get('pre_canonical')]
+
+          print(f'Total records: {len(cases)}')
+          print(f'Scoring-eligible: {len(scoring_eligible)}')
+          print(f'Needs verification: {len(needs_verification)}')
+          print(f'Pre-canonical: {len(pre_canonical)}')
+
+          if needs_verification:
+              print()
+              print('Records needing verification (excluded from scoring):')
+              for c in needs_verification:
+                  print(f'  - {c.get(\"case_id\", \"?\")}')
+
+          # Hard gate: at least 1 scoring-eligible record
+          if len(scoring_eligible) == 0:
+              print('FAIL: corpus has no scoring-eligible records', file=sys.stderr)
+              raise SystemExit(1)
+
+          print()
+          print('Quality gate: PASS')
+          "
+
+  schema-validation:
+    name: Schema file validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install jsonschema
+        run: pip install jsonschema>=4.0.0
+
+      - name: Validate all JSON schemas are parseable
+        run: |
+          python3 -c "
+          import json, pathlib, sys
+
+          schema_files = list(pathlib.Path('schemas').glob('*.json')) + \
+                         list(pathlib.Path('results').glob('**/schema.json'))
+
+          errors = []
+          for f in schema_files:
+              try:
+                  with open(f) as fh:
+                      schema = json.load(fh)
+                  print(f'OK: {f}')
+              except Exception as e:
+                  errors.append(f'{f}: {e}')
+                  print(f'FAIL: {f}: {e}')
+
+          if errors:
+              raise SystemExit(1)
+          print(f'All {len(schema_files)} schema file(s) valid')
+          "
+
+      - name: Validate synthetic JSONL prompts
+        run: |
+          python3 -c "
+          import json, pathlib, sys
+
+          errors = []
+          total = 0
+          for jsonl_file in pathlib.Path('synthetic').rglob('*.jsonl'):
+              with open(jsonl_file) as f:
+                  for i, line in enumerate(f, 1):
+                      line = line.strip()
+                      if not line:
+                          continue
+                      try:
+                          rec = json.loads(line)
+                          total += 1
+                          if 'id' not in rec:
+                              errors.append(f'{jsonl_file}:{i} missing id')
+                          if 'prompt' not in rec:
+                              errors.append(f'{jsonl_file}:{i} missing prompt')
+                      except json.JSONDecodeError as e:
+                          errors.append(f'{jsonl_file}:{i} invalid JSON: {e}')
+
+          if errors:
+              for e in errors[:20]:
+                  print(f'ERROR: {e}')
+              raise SystemExit(1)
+          print(f'Synthetic corpus OK: {total} prompts valid')
+          "

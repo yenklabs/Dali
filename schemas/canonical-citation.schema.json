@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dali.yenk.dev/schemas/canonical-citation-v1.json",
+  "title": "CanonicalCitation",
+  "description": "Canonical form of a legal citation resolved against an authoritative source (e.g. CourtListener). Defined by RFC-001 Evidence JSON v1.0.",
+  "type": "object",
+  "required": ["raw_citation", "authority_type"],
+  "properties": {
+    "raw_citation": {
+      "type": "string",
+      "description": "Citation text as it appeared in the source document, including party names for case citations."
+    },
+    "canonical_id": {
+      "type": ["string", "null"],
+      "description": "Authoritative identifier from the resolution source (e.g. CourtListener opinion ID). Null if not resolved."
+    },
+    "authority_type": {
+      "type": "string",
+      "enum": ["federal_case", "state_case", "federal_statute", "state_statute", "international", "secondary", "unknown"]
+    },
+    "jurisdiction": {
+      "type": ["string", "null"],
+      "description": "Jurisdiction code. v1 values: us-fed, us-scotus, us-state, uk, br.",
+      "examples": ["us-fed", "us-scotus", "us-state", "uk", "br"]
+    },
+    "court": {
+      "type": ["string", "null"],
+      "description": "Human-readable court name (e.g. 'Supreme Court', '9th Circuit')."
+    },
+    "court_id": {
+      "type": ["string", "null"],
+      "description": "Resolution-source-specific court identifier (e.g. 'scotus', 'ca9'). Implementation detail; not required for conformance."
+    },
+    "decision_year": {
+      "type": ["integer", "null"],
+      "minimum": 1600,
+      "maximum": 2100
+    },
+    "resolution_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "Canonical URL of the opinion or statute at the resolution source."
+    },
+    "resolution_source": {
+      "type": ["string", "null"],
+      "description": "Name of the service used to resolve the canonical ID (e.g. 'courtlistener', 'cap', 'bailii')."
+    }
+  },
+  "additionalProperties": false
+}
