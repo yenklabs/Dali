@@ -79,7 +79,8 @@ docs/outreach/
 
 # ── Results — run data ────────────────────────────────────────────────────────
 # Ephemeral local smoke runs are ignored; versioned published runs are committed.
-results/demo/
+results/demo/*
+!results/demo/.gitkeep
 # To ignore a specific run: add results/v0.2/YYYY-MM-DD/ here explicitly.
 !results/README.md
 !results/v0.2/README.md

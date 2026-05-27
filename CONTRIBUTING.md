@@ -27,6 +27,8 @@ Results written to results/demo/integrity.json
 
 Tier 1 runs entirely offline. No API keys. No external services.
 
+**Prefer working in an editor?** If you use Claude Desktop, VS Code, or Cursor, the `dali_mcp/` tools let you validate corpus records and scaffold prompts without touching the terminal. See [dali_mcp/README.md](dali_mcp/README.md) for setup. The `check_case` and `check_prompt` tools cover the same validation logic as the CLI commands above.
+
 ---
 
 ## Contribution tracks
