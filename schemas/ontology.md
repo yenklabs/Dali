@@ -3,6 +3,14 @@
 This document is the normative reference for all ontology enum values used in
 Evidence JSON contracts and Dali-compatible systems.
 
+> **Scope note:** This document covers `AuthorityType`, `Verdict`,
+> `ResolutionMethod`, and `JurisdictionHierarchy`. The **citation failure-class
+> taxonomy** (`CitationFailureClass`, `MutationType`, `ActualStatus`) is defined
+> in [`corpus/taxonomy.py`](../corpus/taxonomy.py) (normative Python enum) and
+> documented in the [METHODOLOGY.md Failure class taxonomy](../METHODOLOGY.md#failure-class-taxonomy)
+> table. Changes to failure classes require a `taxonomy` sub-version bump per
+> [docs/policy-versioning.md](../docs/policy-versioning.md).
+
 Ontology definitions are **public**. The scoring heuristics, classifier weights,
 and ranking logic that produce values for these enums are **private** to
 implementing systems. This is the governing principle of the project.

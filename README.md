@@ -156,4 +156,7 @@ See [CITATION.cff](CITATION.cff), or:
 ## License
 
 MIT. See [LICENSE](LICENSE).
-Dali is an open evidentiary infrastructure project for legal AI systems, maintained by GammaLex AI Inc.
+
+Dali is an open evidentiary infrastructure project for legal AI systems.
+Operated by [GammaLex AI Inc.](https://gammalex.com) · Primary author: Yen Kha.
+Contributions are licensed under MIT.

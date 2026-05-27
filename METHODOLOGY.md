@@ -178,7 +178,7 @@ The longer-term mitigation for 403 blocking is content-addressable archival (Way
 
 ## Step 4: Support Scoring
 
-**Model:** hosted LLM-based verification scorer
+**Model:** `claude-3-5-haiku-20241022` (Anthropic) — cross-vendor scorer for all OpenAI subject models; no self-evaluation bias for GPT-4o/GPT-4.1/GPT-4o-mini results
 **Parameters:** `temperature=0.0`, `max_tokens=256`
 **Source input:** first 3,000 characters of the fetched source text
 
@@ -252,7 +252,7 @@ If a provider deprecates a model version, a new versioned results directory is c
 
 ## Scorer Bias Disclosure
 
-The support scorer is recorded in run metadata. Results from any model family used in benchmark scoring should be interpreted with self-evaluation bias in mind. Future versions will use an independent scorer.
+The support scorer for v0.2 is `claude-3-5-haiku-20241022` (Anthropic). All v0.2 subject models are OpenAI (GPT-4o-mini, GPT-4.1, GPT-4o), so there is no self-evaluation bias in this run. The scorer model is recorded in `methodology.json` per run. If an Anthropic model is used as a subject in a future run, the scorer must be switched to a different provider.
 
 ---
 
