@@ -146,7 +146,7 @@ See [CITATION.cff](CITATION.cff), or:
   year         = {2026},
   version      = {0.2.0},
   organization = {GammaLex AI Inc.},
-  url          = {https://github.com/yenk/Dali-Foundation},
+  url          = {https://github.com/yenk/Dali},
   note         = {Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny}
 }
 ```

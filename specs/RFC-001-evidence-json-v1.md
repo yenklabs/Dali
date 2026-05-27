@@ -63,7 +63,7 @@ Reserved for later RFCs:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/yenk/Dali-Foundation/main/schemas/evidence-bundle.schema.json",
+  "$schema": "https://raw.githubusercontent.com/yenk/Dali/main/schemas/evidence-bundle.schema.json",
   "schema_version": "1.0.0",
   "bundle_id": "<uuid>",
   "created_at": "<ISO 8601 timestamp>",
