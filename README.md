@@ -158,11 +158,14 @@ Using the canonical corpus and the shared `CitationIntegrityResult` contract, yo
 
 ## Near-term roadmap
 
-- eyecite integration as the canonical parser
-- canonical citation schema (CourtListener-backed)
+- eyecite integration as the canonical legal citation parser
+- CourtListener-backed canonical citation schema and resolution layer
 - Evidence JSON v1.0 RFC publication
-- expanded cross-jurisdiction corpus (UK/Commonwealth, Brazil)
-- multi-model comparison runs (GPT-4o-mini · GPT-4.1 · GPT-4o complete as of v0.2)
+- expanded cross-jurisdiction benchmark corpus (UK/Commonwealth, Brazil)
+- deterministic replay and reproducibility artifacts
+- multi-model comparison runs across OpenAI, Claude, Gemini, and open-weight models
+- expanded benchmark coverage for misattribution, proposition drift, and fabricated authority detection
+- contributor and academic partnership expansion around legal AI reproducibility research
 
 Longer-range direction: [docs/roadmap.md](docs/roadmap.md).
 
@@ -196,4 +199,3 @@ Dali is an open evidentiary infrastructure project for legal AI systems.
 
 Maintained by GammaLex AI Inc.
 Primary author: Yen Kha.
-
