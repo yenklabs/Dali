@@ -4,8 +4,15 @@
 **Run scope:** 450 prompt evaluations across 3 OpenAI models  
 **Run date:** 2026-05-26  
 **Verification:** deterministic citation existence and HTTP recoverability checks  
-**Scorer:** cross-vendor support scorer (scores all OpenAI subjects, no self-evaluation)  
-**Reproducible:** clone repo → set API keys → `python runners/run_synthetic.py --models openai_fast openai_quality openai_production`
+**Reproducible:** clone repo, set API keys, run `python runners/run_synthetic.py --models openai_fast openai_quality openai_production`
+
+---
+
+## Key finding
+
+**The gap between UK (76% verified) and Brazil (3% verified) is what a US-only benchmark cannot see.**
+
+Most legal-AI citation benchmarks evaluate US federal cases only. That underweights deployment risk in jurisdictions where citation structure, language distribution, and public authority coverage differ materially from dominant English-language training corpora. A cross-jurisdictional benchmark is how you find these gaps before the AI is in front of a court.
 
 ---
 
@@ -31,7 +38,7 @@
   GPT-4o        20%    ██████████░░░░░░░░░░
 ```
 
-**The model most willing to cite is the model most willing to fabricate.** GPT-4.1 produced 374 citations across 150 prompts; 86 of them point to URLs that do not exist.
+In this run, higher citation engagement correlated with higher fabrication rates under adversarial pressure. GPT-4.1 produced 374 citations across 150 prompts; 86 point to URLs that do not exist.
 
 ### Existence rate by jurisdiction (aggregated across all 3 models · 524 citations)
 
@@ -45,23 +52,20 @@
   Brazil (PT)         3%  █░░░░░░░░░░░░░░░░░░░░░░░░  ← weakest jurisdiction*
 ```
 
-\* Brazilian gov fetches may include geo-block / robots.txt errors, not only fabrication. See Limitations.
+\* Brazilian gov fetches may include geo-block / robots.txt errors, not only fabrication. See [Limitations](#limitations).
 
 ---
 
 ## Summary leaderboard
 
-> **Confirmed fabrication** = cited URL returns HTTP 404 (does not exist).  
-> `existence_score=0.0` also includes network-unreachable and other non-404 failures, do not conflate these. See [METHODOLOGY.md](../../METHODOLOGY.md) for the full HTTP status breakdown.
->
-> **Support scores** show `unverifiable` across all models: the scorer ran on every citation but could not extract supporting text from the fetched content (PDF landing pages, auth-gated sources, network-blocked govts). This is a fetch-pipeline limitation, not a scoring failure. See Limitations below.
+> **Confirmed fabrication** = cited URL returns HTTP 404. HTTP 403 and network errors are reported separately as unverifiable, not fabrication. See [Metrics](#metrics) for the full HTTP status breakdown.
 
 | Model | Alias | Prompts run | Cited on | Total cites | Verified (HTTP 200) | Confirmed fab (HTTP 404) | Adversarial cited% |
 |---|---|---:|---:|---:|---:|---:|---:|
 | GPT-4o-mini (2024-07-18) | `openai_fast` | 150 | 49% | 94 | 44% | **16%** | 8% |
 | GPT-4.1 | `openai_quality` | 150 | **94%** | 374 | 36% | **23%** | **76%** |
 | GPT-4o | `openai_production` | 150 | 26% | 56 | 39% | 20% | 4% |
-| **Total** |: | **450** |: | **524** |: |: |: |
+| **Total** | | **450** | | **524** | | | |
 
 ---
 
@@ -112,21 +116,21 @@ GPT-4o               ███████████████████�
                      █░░░░░░░░░░░░░░░░░░░░░░░░   4% cited, 0% confirmed fab in this slice
 ```
 
-Adversarial prompts are designed to elicit confident fabrication. GPT-4.1's behaviour here is the strongest single argument for treating engagement and fabrication as inversely linked, when pushed, the model that engages most also fabricates almost half its responses.
+Adversarial prompts are designed to elicit confident fabrication. GPT-4.1's behaviour is the strongest single argument for treating engagement and fabrication as coupled: under pressure, the model that engages most also fabricates almost half its cited URLs.
 
 ---
 
 ## Why we test across jurisdictions
 
-Most legal-AI citation benchmarks evaluate US federal cases only. That underweights the actual deployment risk: AI legal tooling is being adopted in jurisdictions where training-data coverage is thinner, citation conventions differ, and the consequences of fabrication are identical.
+Most legal-AI citation benchmarks evaluate US federal cases only. That underweights deployment risk in jurisdictions where citation structure, language distribution, and public authority coverage differ materially from dominant English-language training corpora.
 
 Three tracks address this directly:
 
 - **UK / Commonwealth (20 prompts).** Common-law structure that should transfer cleanly from US-heavy training data. If a model fabricates here, it's a hard signal. In v0.2 it didn't: UK/Commonwealth was the strongest jurisdiction at 76% verified, 5% confirmed fabricated.
-- **Brazil (20 prompts, Portuguese).** Civil-law system with Portuguese-language statutory citations. Tests multilingual + non-common-law citation behavior. In v0.2 this was the weakest jurisdiction at 3% verified. Caveat: some Brazilian gov failures may be fetch-pipeline issues (geo-block / robots.txt), not fabrication.
-- **Cross-jurisdictional research & policy (30 prompts).** EU AI Act, OECD, NIST, ICO, Singapore PDPC: citations that span borders and citation conventions. In v0.2 these resolved at 57% verified, 27% confirmed fabricated.
+- **Brazil (20 prompts, Portuguese).** Civil-law system with Portuguese-language statutory citations. Tests multilingual and non-common-law citation behavior. In v0.2 this was the weakest jurisdiction at 3% verified. Caveat: some Brazilian gov failures may be fetch-pipeline issues (geo-block / robots.txt), not fabrication.
+- **Cross-jurisdictional research and policy (30 prompts).** EU AI Act, OECD, NIST, ICO, Singapore PDPC: citations that span borders and citation conventions. In v0.2 these resolved at 57% verified, 27% confirmed fabricated.
 
-The gap between UK (76% verified) and Brazil (3% verified) is what a US-only benchmark cannot see. That gap is the case for cross-jurisdictional testing.
+The gap between UK (76% verified) and Brazil (3% verified) is what a US-only benchmark cannot see.
 
 ---
 
@@ -134,15 +138,15 @@ The gap between UK (76% verified) and Brazil (3% verified) is what a US-only ben
 
 > All numbers are aggregates across all 3 models (524 citations total) unless a single model is named.
 
-**UK / Commonwealth was the strongest jurisdiction: 76% verified, 5% confirmed fabricated.** BAILII (`bailii.org`) and UK Supreme Court (`supremecourt.uk`) URL patterns resolved consistently. Common-law citation structure appears well-represented in OpenAI training data.
+**UK / Commonwealth was the strongest jurisdiction: 76% verified, 5% confirmed fabricated.** BAILII (`bailii.org`) and UK Supreme Court (`supremecourt.uk`) URL patterns resolved consistently. Common-law citation structure appears well-represented in training data.
 
-**Brazil was the weakest jurisdiction: 3% verified across 66 citations.** Brazilian government sources (`planalto.gov.br`, `stf.jus.br`, `stj.jus.br`) almost never resolved. GPT-4.1 cited on 100% of Brazil prompts but only 19% of those URLs verified. Caveat: some failures may be fetch-pipeline (geo-block, robots.txt) rather than fabrication, verify individual URLs in a browser before claiming a specific citation is invented.
+**Brazil was the weakest jurisdiction: 3% verified across 66 citations.** Brazilian government sources (`planalto.gov.br`, `stf.jus.br`, `stj.jus.br`) almost never resolved. GPT-4.1 cited on 100% of Brazil prompts but only 19% of those URLs verified. Note: some failures may be fetch-pipeline (geo-block, robots.txt) rather than fabrication.
 
-**GPT-4.1 on adversarial traps: 76% engaged, 48% confirmed fabricated.** The model most likely to take the bait on citation-trap prompts, prompts specifically designed to elicit confident fabrication. Nearly half the URLs it produced in response to these traps return HTTP 404.
+**GPT-4.1 on adversarial traps: 76% engaged, 48% confirmed fabricated.** The highest-engagement model also produced the highest confirmed fabrication rate in this run. Nearly half the URLs it produced in response to citation-trap prompts return HTTP 404.
 
-**GPT-4o on adversarial traps: 4% engaged.** The most conservative model under citation pressure. High refusal is safer at deployment; GPT-4o cited on only 4% of adversarial prompts vs GPT-4.1's 76%.
+**GPT-4o on adversarial traps: 4% engaged.** The most conservative model under citation pressure. High refusal is safer at deployment.
 
-**Policy / regulatory citations had the highest fabrication rate by category: 43%.** EU AI Act, ICO guidance, Colorado SB-205 and similar policy texts have unstable URL patterns and frequent path drift, 28 of 65 cited policy URLs resolved (43% fabricated). This is the strongest argument for canonical-ID schemes rather than URL-based citation.
+**Policy / regulatory citations had the highest fabrication rate by category: 43%.** EU AI Act, ICO guidance, Colorado SB-205 and similar policy texts have unstable URL patterns and frequent path drift. This is the strongest argument for canonical-ID schemes rather than URL-based citation.
 
 ---
 
@@ -158,9 +162,9 @@ The gap between UK (76% verified) and Brazil (3% verified) is what a US-only ben
 | Academic claims | 45 | 62% | 63 | **67%** | 11% |
 | US contract law | 45 | 47% | 51 | 39% | 22% |
 | UK / Commonwealth | 60 | 63% | 41 | **76%** | 5% |
-| **Total** | **450** |: | **524** |: |: |
+| **Total** | **450** | | **524** | | |
 
-*Prompt × model runs = number of prompts in the category × 3 models. "Cited on" = % of those runs where the model produced at least one citation. "Total cites" = sum of all citations across the 3 models on this category. Bolded values mark the highest and lowest in each metric column.*
+*Prompt × model runs = prompts in category × 3 models. "Cited on" = % of runs where the model produced at least one citation. Bolded values mark the highest and lowest in each metric column.*
 
 ---
 
@@ -168,52 +172,32 @@ The gap between UK (76% verified) and Brazil (3% verified) is what a US-only ben
 
 ### Existence rate
 
-The fraction of citations that resolve to a live document. Broken down by HTTP status:
+Citations are verified deterministically by HTTP status:
 
-- **HTTP 200**: verified real. Cited URL resolves.
-- **HTTP 403**: blocked by server (anti-scraping, geo-block). Likely real but unverifiable.
-- **HTTP 404**: confirmed fabrication. The URL does not exist.
-- **Other / network**: indeterminate. Could be real or fabricated.
+| Status | Interpretation |
+|---|---|
+| HTTP 200 | Verified: the cited URL resolves |
+| HTTP 403 | Blocked: likely real but unverifiable from this pipeline |
+| HTTP 404 | Confirmed fabrication: the URL does not exist |
+| Other / network | Indeterminate: could be real or fabricated |
 
-Reporting `existence_score=0.0` as "fabricated" without the 404 breakdown overclaims. See [METHODOLOGY.md](../../METHODOLOGY.md) for the policy.
+**Confirmed fabrication** means HTTP 404 only. Do not conflate `existence_score=0.0` (which includes 403s and network errors) with fabrication. See [METHODOLOGY.md](../../METHODOLOGY.md) for the full policy.
 
-### Support scoring
+### Support evaluation
 
-Each citation that resolves is scored by the judge model:
-
-- `supported`: cited source directly supports the claim
-- `partial`: cited source supports a weaker or qualified version
-- `unsupported`: cited source does not support the claim
-- `unverifiable`: judge ran but could not extract relevant text (PDF landing page, auth gate, etc.)
-
-In this run all citations scored `unverifiable`. This is a fetch-pipeline limitation: many resolved URLs return PDF landing pages or auth-gated HTML from which the judge cannot extract text. It does not mean citations are correct, it means the pipeline could not determine support either way.
-
-### Confirmed fabrication (HTTP 404)
-
-The count of cited URLs that return HTTP 404. This is the narrowest, most defensible definition of fabrication: the model invented a URL that resolves to nothing. The broader `existence_score=0.0` bucket includes 403s and network errors and should not be called fabrication.
+Support evaluation is currently conservative due to fetch-pipeline limitations: PDF landing pages, auth-gated sources, and restricted government endpoints. v0.2 findings should be interpreted primarily as citation existence and recoverability results rather than semantic-support verification.
 
 ---
 
 ## Limitations
 
-1. **Support scores are uniformly unverifiable** in this run due to fetch-pipeline depth (PDF landing pages, auth-gated sources). The existence pipeline works; the content-extraction layer needs deeper fetching for support scoring to be meaningful.
-2. **Brazil fetch failures may be infrastructure, not fabrication.** Several planalto.gov.br and stf.jus.br paths that returned 0% existence may be geo-blocked or robots.txt-restricted from the benchmark runner's IP. Manual browser verification recommended before citing "Brazil = 0%" as a fabrication finding.
+1. **Support scores are uniformly unverifiable** in this run due to fetch-pipeline depth. The existence pipeline works; content-extraction depth is the current constraint.
+2. **Brazil fetch failures may be infrastructure, not fabrication.** Several planalto.gov.br and stf.jus.br paths may be geo-blocked or robots.txt-restricted from the benchmark runner's IP. Manual browser verification recommended before interpreting "Brazil = 0%" as a fabrication finding.
 3. **N=150 prompts per model, one run each.** No temperature averaging. Results are indicative, not statistically powered for small differences.
-4. **Scorer is cross-vendor**, adequate for existence-vs-support classification but conservative on `unverifiable`. A deeper fetch + richer judge prompt is planned for v1.
 
 ---
 
 ## How to reproduce
-
-### Requirements
-
-```
-python >= 3.11
-OPENAI_API_KEY      (for GPT models)
-ANTHROPIC_API_KEY   (for support scorer)
-```
-
-### Run
 
 ```bash
 git clone https://github.com/yenk/Dali.git
@@ -230,26 +214,38 @@ python runners/run_synthetic.py \
   --models openai_quality \
   --output results/v0.2/$(date +%Y-%m-%d)/
 
-# Adversarial only (smoke run, ~25 prompts)
+# Adversarial only (~25 prompts)
 python runners/run_synthetic.py \
   --models openai_fast \
   --prompt-filter adversarial \
   --output results/v0.2/smoke-$(date +%Y-%m-%d)/
 ```
 
-Model aliases are defined in `runners/model_registry.py`. To add a new model, add an entry there.
+Requires `OPENAI_API_KEY` for GPT models and `ANTHROPIC_API_KEY` for support scorer. Model aliases are defined in `runners/model_registry.py`. Per-run output includes `<alias>.json` (per-prompt results) and `methodology.json` (git SHA, pipeline versions, scorer identity).
 
-Results are written per-model to `results/v0.2/<date>/`:
-- `<alias>.json`: 150 per-prompt result records (schema: `results/v0.2/schema.json`)
-- `methodology.json`: run metadata: git SHA, scorer model, provider reliability, pipeline versions
-
-### Schema
-
-Per-prompt result records conform to `results/v0.2/schema.json` (JSON Schema Draft 2020-12).
+Full methodology: [METHODOLOGY.md](../../METHODOLOGY.md). Per-result schema: `results/v0.2/schema.json`.
 
 ---
 
-## Run provenance
+## Appendix: Corpus composition
+
+See `synthetic/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corpus composition.
+
+| File | Category | Count |
+|---|---|---|
+| `synthetic/legal/case_citations.jsonl` | US case law | 25 |
+| `synthetic/legal/statutory_interpretation.jsonl` | US statutes | 15 |
+| `synthetic/legal/contract_law.jsonl` | Contract law | 15 |
+| `synthetic/legal/uk_commonwealth.jsonl` | UK / Commonwealth | 20 |
+| `synthetic/legal/brazil.jsonl` | Brazil | 20 |
+| `synthetic/research/policy_citations.jsonl` | Policy / regulatory | 15 |
+| `synthetic/research/academic_claims.jsonl` | Academic / empirical | 15 |
+| `synthetic/adversarial/hallucination_prone.jsonl` | Adversarial | 25 |
+| **Total** | | **150** |
+
+---
+
+## Appendix: Run provenance
 
 The `results/v0.2/2026-05-26/` directory contains artifacts from two sequential runs on the same day:
 
@@ -258,31 +254,11 @@ The `results/v0.2/2026-05-26/` directory contains artifacts from two sequential 
 | `openai_fast.json` + `methodology.openai_fast.json` | GPT-4o-mini | `68dd9442` | 2026-05-26T22:01 |
 | `openai_quality.json` + `openai_production.json` + `methodology.json` | GPT-4.1, GPT-4o | `8169a5bb` | 2026-05-26T22:38 |
 
-Both runs used identical `policy_version=v1.0.0` and `parser_version=v1.1.0`. The commits between `68dd9442` and `8169a5bb` were documentation-only and did not change scoring semantics. All three models' results are scored under the same policy and are aggregated in this document.
-
-The non-standard `methodology.openai_fast.json` filename (rather than the default `methodology.json`) was retained to avoid overwriting the second run's methodology file when both are stored in the same directory. In a future run, use separate date-stamped subdirectories per model group to avoid this ambiguity.
-
----
-
-## Corpus breakdown
-
-| File | Category | Count | Notes |
-|---|---|---|---|
-| `synthetic/legal/case_citations.jsonl` | US case law | 25 | Landmark cases + recent decisions |
-| `synthetic/legal/statutory_interpretation.jsonl` | US statutes | 15 | CFAA, ADA, ACA, ERISA, FHA, CDA §230 |
-| `synthetic/legal/contract_law.jsonl` | Contract law | 15 | Restatement, UCC, CISG, leading cases |
-| `synthetic/legal/uk_commonwealth.jsonl` | UK / Commonwealth | 20 | UK, AU, CA, NZ: 12/3/3/2 split |
-| `synthetic/legal/brazil.jsonl` | Brazil | 20 | STF, LGPD, CDC, Civil Code: Portuguese |
-| `synthetic/research/policy_citations.jsonl` | Policy / regulatory | 15 | EU AI Act, EO 14110, GDPR Art. 22, Colorado AI Act |
-| `synthetic/research/academic_claims.jsonl` | Academic / empirical | 15 | Landmark papers + adversarial fabrication probes |
-| `synthetic/adversarial/hallucination_prone.jsonl` | Adversarial | 25 | Designed to elicit confident fabrication |
-| **Total** | | **150** | |
+Both runs used identical `policy_version=v1.0.0` and `parser_version=v1.1.0`. The commits between the two SHAs were documentation-only and did not change scoring semantics. All three models' results are aggregated in this document under the same policy.
 
 ---
 
 ## Citation
-
-If you use these results in research:
 
 ```bibtex
 @misc{dali-2026,
