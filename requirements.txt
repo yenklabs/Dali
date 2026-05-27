@@ -8,6 +8,11 @@
 anthropic>=0.40.0
 openai>=1.50.0
 
+# ── MCP server (dali_mcp contributor tools) ───────────────────────────────────
+# Required only if using the editor integration (Claude Desktop, Cursor, VS Code).
+# Not needed for Tier 1 or Tier 2 benchmark runs.
+mcp>=1.0.0
+
 # ── Optional ──────────────────────────────────────────────────────────────────
 # Load a local .env file during benchmark runs (run_synthetic.py).
 # If not installed, the runner falls back to shell environment variables.
