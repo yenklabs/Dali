@@ -193,8 +193,8 @@ Schema and ontology changes go through a lightweight proposal, open an issue wit
 ## Pull request checklist
 
 - [ ] Tests pass: `pytest tests/`
-- [ ] New corpus records pass `validate_corpus_record`
-- [ ] New synthetic prompts pass `validate_prompt_jsonl`
+- [ ] New corpus records pass `check_case`
+- [ ] New synthetic prompts pass `check_prompt`
 - [ ] Schema changes have an accompanying `spec-change` issue
 - [ ] No PII in corpus records: run `corpus/anonymizer.py` if needed
 - [ ] Commit author matches your real identity
@@ -208,6 +208,19 @@ Schema and ontology changes go through a lightweight proposal, open an issue wit
 - Corpus entries with unannotated or unverified citations
 - Synthetic prompts covering non-public or unpublished matters
 - Dependencies on proprietary data sources that cannot be redistributed
+
+### Tier 1 corpus sourcing standard
+
+Scoring-eligible Tier 1 records require canonical retrieval evidence: a verifiable `source_url`, a `retrieval_date`, and a publicly accessible court document or regulatory filing as the anchor.
+
+The following are not acceptable as scoring-eligible Tier 1 sources:
+
+- Unverified anecdotes or social-media reports
+- Media summaries without an underlying judicial or regulatory document
+- "People said a model hallucinated" accounts without a retrievable authority
+- Incidents that cannot be independently re-verified by a third party
+
+This constraint is not a limitation. It is what makes the corpus defensible. A benchmark built on unverifiable sources cannot itself serve as evidentiary infrastructure.
 
 ---
 
