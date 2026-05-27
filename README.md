@@ -140,12 +140,14 @@ For methodology, scoring rubric, and policy versioning see [METHODOLOGY.md](METH
 See [CITATION.cff](CITATION.cff), or:
 
 ```bibtex
-@misc{dali-2026,
-  title   = {Dali: Open Citation Integrity and Evidentiary Infrastructure for Legal AI},
-  author  = {Kha, Yen},
-  year    = {2026},
-  version = {0.2},
-  url     = {https://github.com/yenk/Dali}
+@software{dali-2026,
+  title        = {Dali: Evidentiary Infrastructure for Legal AI},
+  author       = {Kha, Yen},
+  year         = {2026},
+  version      = {0.2.0},
+  organization = {GammaLex AI Inc.},
+  url          = {https://github.com/yenk/Dali-Foundation},
+  note         = {Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny}
 }
 ```
 
