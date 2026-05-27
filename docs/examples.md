@@ -10,7 +10,8 @@ Use the canonical case corpus to verify the workflow-centric benchmark locally w
 git clone https://github.com/yenk/Dali
 cd Dali
 python -m venv .venv
-source .venv/bin/activate
+# Bash / Zsh: source .venv/bin/activate
+# Fish:       source .venv/bin/activate.fish
 pip install -r requirements.txt
 python runners/run_integrity.py \
   --corpus data/public/citation_failure_cases.json \

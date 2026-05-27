@@ -10,7 +10,20 @@ and what kinds of contributions are most valuable to the project.
 ```bash
 git clone https://github.com/yenk/Dali.git
 cd Dali
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+```
+
+Activate the environment:
+
+```bash
+# Bash / Zsh
+source .venv/bin/activate
+
+# Fish
+source .venv/bin/activate.fish
+```
+
+```bash
 pip install -r requirements.txt
 
 # Run the Tier 1 deterministic evaluator (no API keys needed)
@@ -20,9 +33,20 @@ python runners/run_integrity.py \
 ```
 
 Expected output:
-```
-Loaded 4 canonical cases (3 scoring-eligible)
-Results written to results/demo/integrity.json
+```text
+INFO run_integrity: loading corpus: data/public/citation_failure_cases.json
+INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 1 needs-verification
+INFO run_integrity: evaluating 3 record(s)
+INFO run_integrity:   evaluating: mata-v-avianca-2023
+INFO run_integrity:   evaluating: us-v-cohen-2023
+INFO run_integrity:   evaluating: mata-derivative-reporter-swap-001
+INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
+
+--- Integrity Run Summary ---
+
+mata-v-avianca-2023                  exists=NO  risk=critical  recoverable=infeasible
+us-v-cohen-2023                      exists=NO  risk=critical  recoverable=infeasible
+mata-derivative-reporter-swap-001    exists=NO  risk=high      recoverable=manual
 ```
 
 Tier 1 runs entirely offline. No API keys. No external services.
