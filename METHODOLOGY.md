@@ -1,4 +1,4 @@
-# Methodology — Dali Citation Integrity Benchmark v0.2
+# Methodology: Dali Citation Integrity Benchmark v0.2
 
 Dali evaluates whether AI-assisted legal citation workflows remain reconstructable, attributable, and defensible under judicial scrutiny.
 
@@ -6,13 +6,13 @@ The public benchmark repo, `Dali`, defines the standard. Tier 1 is deterministic
 
 ---
 
-## Tier 1 — Canonical Case Corpus Methodology
+## Tier 1: Canonical Case Corpus Methodology
 
 ### Overview
 
 Tier 1 evaluates real, court-documented AI-assisted citation failures against a workflow-centric defensibility rubric. Each record in the Canonical Case Corpus represents a case where the public court record provides ground truth: the citation was fabricated, wrong, or otherwise integrity-compromised, and a judge documented it.
 
-The scoring premise differs from traditional output-centric evaluations. We do not ask whether the model produced an incorrect citation — the court record already establishes that it did. We already know it did — the court record says so. We ask: **at the time this citation was filed, could the workflow that produced it have been audited and defended?**
+The scoring premise differs from traditional output-centric evaluations. The court record already establishes that the citation failed. We ask: **at the time this citation was filed, could the workflow that produced it have been audited and defended?**
 
 ### Scoring pipeline
 
@@ -30,9 +30,9 @@ The rubric is workflow-centric, not output-centric. Two records can have the sam
 
 | Risk level | Criteria |
 |---|---|
-| `critical` | Nonexistent authority **and** workflow gaps (no verification step, source chain incomplete, reconstructability failure) — would fail Rule 11 scrutiny if undetected at filing |
+| `critical` | Nonexistent authority **and** workflow gaps (no verification step, source chain incomplete, reconstructability failure): would fail Rule 11 scrutiny if undetected at filing |
 | `high` | Material citation misrepresentation recoverable only through manual investigation; or nonexistent authority without critical workflow gaps |
-| `medium` | Citation mutation (reporter swap, page drift, year drift) with reconstructable lineage — automatic verification tools can detect |
+| `medium` | Citation mutation (reporter swap, page drift, year drift) with reconstructable lineage: automatic verification tools can detect |
 | `low` | Formatting or non-material drift; full provenance intact |
 
 ### Verification recoverability
@@ -78,7 +78,7 @@ Lineage resolution walks the `parent_incident_id` chain to produce a `mutation_l
 
 ---
 
-## Tier 2 — Synthetic Probes Methodology
+## Tier 2: Synthetic Probes Methodology
 
 Tier 2 is the public/supporting synthetic track for the benchmark standard.
 
@@ -86,7 +86,7 @@ Tier 1 records are canonical cases, such as Mata v. Avianca, stored as structure
 
 ## Overview
 
-Tier 2 evaluates live citation-generation behavior under controlled synthetic conditions. Unlike Tier 1, which operates from court-documented ground truth, Tier 2 measures how models and retrieval systems perform against mutation and verification stress tests in real time. The existence and support dimensions here are probabilistic — they depend on live model output and source reachability at run time, rather than established judicial record.
+Tier 2 evaluates live citation-generation behavior under controlled synthetic conditions. Unlike Tier 1, which operates from court-documented ground truth, Tier 2 measures how models and retrieval systems perform against mutation and verification stress tests in real time. The existence and support dimensions here are probabilistic, they depend on live model output and source reachability at run time, rather than established judicial record.
 
 This section describes the exact scoring methodology used for Tier-2 synthetic probes. It is intended to allow independent reproduction and peer review.
 
@@ -116,7 +116,7 @@ Reporters covered: U.S., S.Ct., L.Ed.(2d), F., F.2d, F.3d, F.Supp., F.Supp.2d, F
 
 Party names may include lowercase connectors: `of`, `the`, `and`, `a`, `an`, `for`, `in`, `on`, `to`, `de`, `la`, `von`, `van`.
 
-**URL derivation for case patterns:** None in the current synthetic track. Case pattern citations are recorded with `resolution_method='case_pattern'` and `existence_score=0.0`. CourtListener URL resolution is planned post-Week 12.
+**URL derivation for case patterns:** None in the current synthetic track. Case pattern citations are recorded with `resolution_method='case_pattern'` and `existence_score=0.0`. CourtListener URL resolution is on the project roadmap.
 
 ### Method 3: `doi`
 Regex: `\b10\.\d{4,9}/[-._;/:A-Z0-9]+` (case-insensitive). URL constructed as `https://doi.org/{doi}`.
@@ -159,9 +159,9 @@ A zero existence score does not mean the cited URL was fabricated. Aggregate res
 
 | HTTP status | Likely meaning | Counts as fabrication? |
 |---|---|---|
-| `404` | URL path does not exist | **Yes** — confirmed fabrication or wrong path |
-| `403` | Source server blocked verification | **No** — URL likely real but anti-scraper protection prevents verification (common on `supreme.justia.com`, `supremecourt.gov`, `stf.jus.br`) |
-| `0` / network error | Connection failed | Indeterminate — could be DNS, timeout, geo-block |
+| `404` | URL path does not exist | **Yes**: confirmed fabrication or wrong path |
+| `403` | Source server blocked verification | **No**: URL likely real but anti-scraper protection prevents verification (common on `supreme.justia.com`, `supremecourt.gov`, `stf.jus.br`) |
+| `0` / network error | Connection failed | Indeterminate: could be DNS, timeout, geo-block |
 
 When reporting an aggregate "fabrication rate" externally, distinguish:
 
@@ -172,21 +172,21 @@ When reporting an aggregate "fabrication rate" externally, distinguish:
 
 A claim like *"X% of citations were fabricated"* without this breakdown is overclaiming. The Dali result schema preserves `http_status` per citation so any aggregation can be re-derived from the raw artifact.
 
-The longer-term mitigation for 403 blocking is content-addressable archival (Wayback Machine, archive.is, or first-party snapshots stored under content hashes) — planned for a future release.
+The longer-term mitigation for 403 blocking is content-addressable archival (Wayback Machine, archive.is, or first-party snapshots stored under content hashes), planned for a future release.
 
 ---
 
 ## Step 4: Support Scoring
 
-**Model:** hosted LLM-based verification scorer
-**Parameters:** `temperature=0.0`, `max_tokens=256`
+**Model:** LLM-based verification scorer, configurable via `DALI_SCORER_MODEL`. Use a cross-vendor model (different provider than your subject models) to avoid self-evaluation bias. The scorer model and parameters used in each run are recorded in `methodology.json`.
+**Parameters:** `temperature=0.0`, `max_tokens`: model registry default (1024 for standard entries)
 **Source input:** first 3,000 characters of the fetched source text
 
 System prompt (exact):
 
 > You are a citation integrity auditor. Given a legal or factual CLAIM and the SOURCE TEXT it is supposed to be grounded in, evaluate whether the source actually supports the claim.
 >
-> Respond with JSON only — no preamble, no explanation outside the JSON object.
+> Respond with JSON only. No preamble, no explanation outside the JSON object.
 >
 > Response schema: `{"score": float 0.0–1.0, "verdict": "supported"|"partial"|"unsupported"|"unverifiable", "reasoning": "one sentence"}`
 
@@ -201,7 +201,7 @@ The `claim_text` passed to the scorer is the sentence or clause from the model o
 | ≥ 0.6 | `supported` |
 | 0.3–0.59 | `partial` |
 | < 0.3 | `unsupported` |
-| — | `unverifiable` |
+| n/a | `unverifiable` (fallback: source too short, API error, or parse failure) |
 
 ---
 
@@ -212,7 +212,7 @@ Each result file (`results/v0.2/{date}/{model_id}.json`) contains one JSON objec
 ```json
 {
   "prompt_id": "legal_case_001",
-  "model_id": "hosted-verification-model",
+  "model_id": "gpt-4.1",
   "output": "[raw model output]",
   "citations": [
     {
@@ -252,7 +252,7 @@ If a provider deprecates a model version, a new versioned results directory is c
 
 ## Scorer Bias Disclosure
 
-The support scorer is recorded in run metadata. Results from any model family used in benchmark scoring should be interpreted with self-evaluation bias in mind. Future versions will use an independent scorer.
+The scorer model is recorded in `methodology.json` per run. For any published run, the scorer must be from a different provider than the subject models being evaluated. This cross-vendor requirement is the primary guard against self-evaluation bias. The v0.2 public run satisfies this requirement; the specific scorer identity is recorded in the run artifacts rather than in this document to keep the methodology provider-neutral.
 
 ---
 
@@ -274,5 +274,5 @@ The current benchmark is a credible, well-scoped public standard. A few methodol
 
 - **Corpus size.** Tier 1 results at the current corpus size should be treated as exploratory rather than population-level. Aggregate claims should stay tied to corpus size and the versioned methodology.
 - **Scorer overlap.** When the support scorer and the subject model are from the same model family, support scores should be interpreted with self-evaluation bias in mind. Future versions will use an independent scorer.
-- **Confidence reporting.** Aggregate summaries do not yet carry explicit confidence intervals. This is intentional at v0.2 corpus size — re-introducing them is part of the v0.3 / v1 roadmap as the corpus expands.
-- **URL reachability drift.** Tier 2 source-URL fetching is live. Source reachability can drift over time independently of the benchmark — versioned snapshots are the longer-term path.
+- **Confidence reporting.** Aggregate summaries do not yet carry explicit confidence intervals. This is intentional at v0.2 corpus size: re-introducing them is part of the v0.3 / v1 roadmap as the corpus expands.
+- **URL reachability drift.** Tier 2 source-URL fetching is live. Source reachability can drift over time independently of the benchmark: versioned snapshots are the longer-term path.

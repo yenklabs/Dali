@@ -129,7 +129,7 @@
       "jurisdiction": "synthetic",
       "court": null,
       "source_type": "other",
-      "source_url": "https://github.com/yenk/dali-citation-benchmark/blob/main/synthetic/derived/mata_reporter_swap.md",
+      "source_url": "https://github.com/yenk/Dali/blob/main/synthetic/legal/case_citations.jsonl",
       "source_document_hash": null,
       "retrieval_date": "2026-05-25",
       "alleged_generated_citation": "Varghese v. China Southern Airlines Co., 925 F.2d 1339 (11th Cir. 2019)",

@@ -1,0 +1,16 @@
+# Dali CODEOWNERS
+# These owners are automatically requested for review on pull requests.
+
+# Default: all files
+* @yenk
+
+# Spec and schema changes require maintainer review
+specs/          @yenk
+schemas/        @yenk
+
+# Corpus data — maintainer review required for all additions
+data/           @yenk
+corpus/         @yenk
+
+# CI workflows — maintainer review required
+.github/workflows/ @yenk

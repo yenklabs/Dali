@@ -10,7 +10,8 @@ Use the canonical case corpus to verify the workflow-centric benchmark locally w
 git clone https://github.com/yenk/Dali
 cd Dali
 python -m venv .venv
-source .venv/bin/activate
+# Bash / Zsh: source .venv/bin/activate
+# Fish:       source .venv/bin/activate.fish
 pip install -r requirements.txt
 python runners/run_integrity.py \
   --corpus data/public/citation_failure_cases.json \
@@ -66,7 +67,7 @@ What this does:
 | Classification | Meaning | Interpretation |
 |---|---|---|
 | `refusal` | Model explicitly declined to cite ("I'm not confident about recent cases…") | Often the right behavior on adversarial prompts |
-| `no_citations_generated` | Model answered but didn't include any citations | Neutral — answered without making things up |
+| `no_citations_generated` | Model answered but didn't include any citations | Neutral: answered without making things up |
 | `citations_found` | Model produced citations that the extractor parsed | Now we check existence and support |
 
 **Existence and support scoring:**
@@ -92,7 +93,7 @@ What this does:
                           └──────────────────────────┘
 ```
 
-`unverifiable` means the URL fetched but the scorer couldn't determine support — e.g. the page was a PDF that didn't extract, the source was blocked, or the content didn't contain the prompt's topic. It is a legitimate verdict, not a scorer error.
+`unverifiable` means the URL fetched but the scorer couldn't determine support, e.g. the page was a PDF that didn't extract, the source was blocked, or the content didn't contain the prompt's topic. It is a legitimate verdict, not a scorer error.
 
 ## 4. Run your own prompt set
 

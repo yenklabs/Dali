@@ -10,6 +10,28 @@ Dali is open citation integrity and evidentiary infrastructure for legal AI syst
 - expanded cross-jurisdiction corpus (UK/Commonwealth, Brazil)
 - first public multi-model benchmark runs
 
+## Future Tier 1 corpus expansion
+
+Additional scoring-eligible Tier 1 records are limited to court-documented or otherwise canonically retrievable legal AI citation failures with:
+
+- authoritative source URLs
+- retrieval timestamps
+- reproducible verification paths
+- stable citation metadata
+- documented judicial or regulatory context
+
+Potential future additions include:
+
+- additional sanctions orders
+- judicial findings involving fabricated authorities
+- citation-related disciplinary proceedings
+- court-documented retrieval failures
+- verified legal filing incidents involving non-existent authorities
+
+Unverified anecdotes, social-media reports, or non-reproducible claims do not become scoring-eligible benchmark records. This constraint is not a limitation. It is what makes the Tier 1 corpus defensible.
+
+The highest-value corpus contributions are court documents, sanctions orders, and judicial findings that are already in the public record and can be independently retrieved. Expanding the corpus with weaker sourcing would undermine the evidentiary thesis the benchmark is built on.
+
 ## Long-range direction
 
 | Version | Focus |
@@ -20,7 +42,7 @@ Dali is open citation integrity and evidentiary infrastructure for legal AI syst
 | v4 | temporal replay |
 | v5 | cross-jurisdiction interoperability |
 
-Each version is scoped narrowly. Ontology expansion is deliberately resisted — a new category is added only when an existing one demonstrably collapses two distinct legal behaviors into the same bucket.
+Each version is scoped narrowly. Ontology expansion is deliberately resisted, a new category is added only when an existing one demonstrably collapses two distinct legal behaviors into the same bucket.
 
 ## What this is not
 

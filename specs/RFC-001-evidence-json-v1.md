@@ -1,14 +1,16 @@
 # RFC-001: Evidence JSON v1.0
 
-**Status:** ACCEPTED
+**Status:** DRAFT, public review open
 **Created:** 2026-05-26
 **Author:** Yen Kha
+
+> This is the first public draft of the Evidence JSON contract. Breaking changes are still possible before the v1.0 freeze. Comments and conformance feedback are welcome via GitHub issues with label `spec-change`.
 
 ---
 
 ## Abstract
 
-This RFC defines Evidence JSON v1.0 — the versioned contract format for
+This RFC defines Evidence JSON v1.0, the versioned contract format for
 representing citation integrity verification results produced by AI-assisted
 legal workflows.
 
@@ -28,11 +30,11 @@ no way to replay a verification result at a future date.
 
 Evidence JSON solves this by defining:
 
-1. **What a citation integrity result looks like** — a shared schema
+1. **What a citation integrity result looks like**, a shared schema
    that any tool can emit or consume.
-2. **What replay state must be preserved** — the version dimensions
+2. **What replay state must be preserved**, the version dimensions
    required to reconstruct a verification result years after the fact.
-3. **What the ontology means** — normative definitions for authority
+3. **What the ontology means**, normative definitions for authority
    types, verdict values, and support classifications.
 
 ---
@@ -41,16 +43,16 @@ Evidence JSON solves this by defining:
 
 This RFC defines:
 
-- `EvidenceBundle` — the top-level container for a verification run
-- `CitationIntegrityResult` — one result per cited source
+- `EvidenceBundle`: the top-level container for a verification run
+- `CitationIntegrityResult`: one result per cited source
 - Authority type taxonomy (v1)
 - Verdict taxonomy (v1)
 - Replay state dimensions (v1)
 
 Reserved for later RFCs:
 
-- `SemanticSupportResult` — proposition-level support scoring (v3a)
-- `ReplayArtifact` — deterministic replay package (v3a)
+- `SemanticSupportResult`: proposition-level support scoring (v3a)
+- `ReplayArtifact`: deterministic replay package (v3a)
 - Treatment classification schema (v2)
 
 ---
@@ -61,7 +63,7 @@ Reserved for later RFCs:
 
 ```json
 {
-  "$schema": "https://dali.yenk.dev/schemas/evidence-bundle-v1.json",
+  "$schema": "https://raw.githubusercontent.com/yenk/Dali/main/schemas/evidence-bundle.schema.json",
   "schema_version": "1.0.0",
   "bundle_id": "<uuid>",
   "created_at": "<ISO 8601 timestamp>",
@@ -224,8 +226,14 @@ Unknown fields must be ignored by conformant consumers.
 
 ## 7. Reference implementation
 
-The reference evaluator in `scoring/` produces conformant `EvidenceBundle`
-output. It is correct but not optimized. It serves as the baseline against
-which production implementations are benchmarked.
+The reference evaluator in `runners/run_integrity.py` emits per-citation
+`CitationIntegrityResult` records (see [schemas/integrity-result.schema.json](../schemas/integrity-result.schema.json)).
+Wrapping these into a full `EvidenceBundle` with `replay_state` and `summary`
+fields is part of the v1.0 freeze work, currently tracked under the v1
+roadmap item in [docs/roadmap.md](../docs/roadmap.md). Until then, conformant
+producers should construct the bundle envelope from the documented schema
+in §3.1.
 
-Machine-readable schemas: [`schemas/evidence-bundle.schema.json`](../schemas/evidence-bundle.schema.json)
+Machine-readable schemas:
+- [`schemas/evidence-bundle.schema.json`](../schemas/evidence-bundle.schema.json): bundle envelope
+- [`schemas/integrity-result.schema.json`](../schemas/integrity-result.schema.json): per-citation record

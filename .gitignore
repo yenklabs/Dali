@@ -78,10 +78,10 @@ docs/benchmark/
 docs/outreach/
 
 # ── Results — run data ────────────────────────────────────────────────────────
-# Ignore per-run date directories (results/v0.2/2026-05-26/ etc.)
-# Keep static schema artifacts committed
-results/demo/
-results/v*/**/
+# Ephemeral local smoke runs are ignored; versioned published runs are committed.
+results/demo/*
+!results/demo/.gitkeep
+# To ignore a specific run: add results/v0.2/YYYY-MM-DD/ here explicitly.
 !results/README.md
 !results/v0.2/README.md
 !results/v0.2/schema.json

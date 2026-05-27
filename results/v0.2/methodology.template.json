@@ -51,6 +51,6 @@
     "parser_version": "v1.0.0",
     "normalization_version": "v1.0.0",
     "policy_version": "v1.0.0",
-    "note": "Replay state dimensions defined in Evidence JSON v1.0 RFC (specs/evidence-json-v1.md)."
+    "note": "Replay state dimensions defined in Evidence JSON v1.0 RFC (specs/RFC-001-evidence-json-v1.md)."
   }
 }

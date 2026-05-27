@@ -1,7 +1,12 @@
 """Closed taxonomies — CitationFailureClass, MutationType, ActualStatus.
 
 These enums are the canonical vocabulary for the Canonical Case Corpus.
-Adding a new value bumps POLICY_VERSION (see policy.py).
+Adding a new value bumps the taxonomy sub-version (see corpus/policy.py
+and docs/policy-versioning.md).
+
+Normative prose for these failure classes: METHODOLOGY.md §Failure class taxonomy.
+AuthorityType, Verdict, and ResolutionMethod (Evidence JSON contract) are in
+schemas/ontology.md.
 """
 
 from __future__ import annotations

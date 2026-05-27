@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Dali Citation Integrity Benchmark runner.
 
-Usage (fish shell):
+Usage:
 
     # Smoke test — 5 prompts, validate API access before a full run:
     python runners/run_synthetic.py \
@@ -12,12 +12,12 @@ Usage (fish shell):
     python runners/run_synthetic.py \
         --models openai_fast \
         --prompts synthetic/ \
-        --output results/v0.2/(date +%Y-%m-%d)/
+        --output results/v0.2/$(date +%Y-%m-%d)/
 
     # Multi-model comparison run:
     python runners/run_synthetic.py \
         --models openai_fast anthropic_fast \
-        --output results/v0.2/(date +%Y-%m-%d)/
+        --output results/v0.2/$(date +%Y-%m-%d)/
 
     # With fallback if a provider is unavailable:
     python runners/run_synthetic.py \

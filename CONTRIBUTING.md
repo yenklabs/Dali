@@ -10,7 +10,20 @@ and what kinds of contributions are most valuable to the project.
 ```bash
 git clone https://github.com/yenk/Dali.git
 cd Dali
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+```
+
+Activate the environment:
+
+```bash
+# Bash / Zsh
+source .venv/bin/activate
+
+# Fish
+source .venv/bin/activate.fish
+```
+
+```bash
 pip install -r requirements.txt
 
 # Run the Tier 1 deterministic evaluator (no API keys needed)
@@ -20,12 +33,37 @@ python runners/run_integrity.py \
 ```
 
 Expected output:
-```
-Loaded 4 canonical cases (3 scoring-eligible)
-Results written to results/demo/integrity.json
+```text
+INFO run_integrity: loading corpus: data/public/citation_failure_cases.json
+INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 0 pre-canonical, 1 needs-verification
+INFO run_integrity: evaluating 3 record(s)
+INFO run_integrity:   evaluating: mata-v-avianca-2023
+INFO run_integrity:   evaluating: us-v-cohen-2023
+INFO run_integrity:   evaluating: mata-derivative-reporter-swap-001
+INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
+
+--- Integrity Run Summary ---
+
+  case_id:        mata-v-avianca-2023
+  authority:      Mata v. Avianca, Inc.
+  citation:       Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)
+  source_url:     https://www.courtlistener.com/docket/63107798/mata-v-avianca-inc/
+  verification:   FAILED
+  recoverability: infeasible
+  risk:           critical
+
+  case_id:        us-v-cohen-2023
+  authority:      United States v. Cohen (post-conviction motion citation incident)
+  citation:       Three nonexistent federal decisions cited in a supervised-release termination mo...
+  source_url:     https://www.courtlistener.com/docket/8009608/united-states-v-cohen/
+  verification:   FAILED
+  recoverability: infeasible
+  risk:           critical
 ```
 
 Tier 1 runs entirely offline. No API keys. No external services.
+
+**Prefer working in an editor?** If you use Claude Desktop, VS Code, or Cursor, the `dali_mcp/` tools let you validate corpus records and scaffold prompts without touching the terminal. See [dali_mcp/README.md](dali_mcp/README.md) for setup. The `check_case` and `check_prompt` tools cover the same validation logic as the CLI commands above.
 
 ---
 
@@ -36,13 +74,13 @@ Contributions are valued across seven tracks:
 
 | Track | What's needed | Where to start |
 |---|---|---|
-| **Corpus expansion** | Annotated real-world AI citation failure cases — especially UK/Commonwealth, Brazil, adversarial | `data/public/citation_failure_cases.json` |
+| **Corpus expansion** | Annotated real-world AI citation failure cases: especially UK/Commonwealth, Brazil, adversarial | `data/public/citation_failure_cases.json` |
 | **Synthetic prompts** | New Tier 2 probe prompts across legal domains | `synthetic/` + `dali_mcp/` contributor tools |
 | **Ontology review** | Legal practitioners reviewing treatment and proposition ontology definitions | [schemas/ontology.md](schemas/ontology.md) + open a discussion issue |
-| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | `corpus/parsers/` |
+| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | Roadmap: see [docs/roadmap.md](docs/roadmap.md). `corpus/parsers/` will land with eyecite integration. |
 | **Spec authorship** | Drafting and reviewing changes to schemas and the Evidence JSON contract | `specs/` |
 | **Benchmark replication** | Running Tier 2 against new models and sharing results | `runners/run_synthetic.py` |
-| **Academic partnerships** | Law schools and court data projects — structured dataset contributions, co-authored methodology | Open issue with label `partnership` |
+| **Academic partnerships** | Law schools and court data projects: structured dataset contributions, co-authored methodology | Open issue with label `partnership` |
 
 Code contributions are welcome but secondary to corpus quality, ontology
 correctness, and specification rigor.
@@ -51,7 +89,7 @@ correctness, and specification rigor.
 
 ## Corpus contributions
 
-### Tier 1 — Canonical case records
+### Tier 1: Canonical case records
 
 Court-documented AI citation failure incidents. These live in:
 
@@ -81,7 +119,7 @@ Validate your record before submitting:
 python -m corpus.validator data/public/citation_failure_cases.json
 ```
 
-Optional: the `dali_mcp/` contributor interface exposes the same validation as an MCP tool (`validate_corpus_record`) for editor-integrated workflows.
+Optional: the `dali_mcp/` contributor interface exposes the same validation as an MCP tool (`check_case`) for editor-integrated workflows.
 
 Records with `needs_verification: true` load for inspection but are excluded
 from scoring aggregates.
@@ -89,7 +127,7 @@ from scoring aggregates.
 Attorney names must be removed from public records. Run `corpus/anonymizer.py`
 if your record contains names from the original filing.
 
-### Tier 2 — Synthetic prompt probes
+### Tier 2: Synthetic prompt probes
 
 Model-facing prompts for live Tier 2 evaluation. These live in:
 
@@ -111,7 +149,7 @@ synthetic/
 Each record requires `id` (lowercase alphanumeric + underscore), `category`,
 `subcategory`, `prompt` (≥ 30 chars), and `difficulty`.
 
-**Easiest path:** use the `generate_prompt_template` and `create_contribution_bundle`
+**Easiest path:** use the `new_prompt` and `bundle_prompts`
 MCP tools to scaffold, validate, and package prompts. See
 [dali_mcp/README.md](dali_mcp/README.md) for setup.
 
@@ -148,17 +186,17 @@ Open a PR adding the output JSON to `results/v0.2/{your-run-date}/`. Include the
 
 ## Specification contributions
 
-Schema and ontology changes go through a lightweight proposal — open an issue with label `spec-change` describing the motivation, the breaking impact (if any), and a migration note. Documentation and clarification changes do not need a proposal.
+Schema and ontology changes go through a lightweight proposal, open an issue with label `spec-change` describing the motivation, the breaking impact (if any), and a migration note. Documentation and clarification changes do not need a proposal.
 
 ---
 
 ## Pull request checklist
 
 - [ ] Tests pass: `pytest tests/`
-- [ ] New corpus records pass `validate_corpus_record`
-- [ ] New synthetic prompts pass `validate_prompt_jsonl`
+- [ ] New corpus records pass `check_case`
+- [ ] New synthetic prompts pass `check_prompt`
 - [ ] Schema changes have an accompanying `spec-change` issue
-- [ ] No PII in corpus records — run `corpus/anonymizer.py` if needed
+- [ ] No PII in corpus records: run `corpus/anonymizer.py` if needed
 - [ ] Commit author matches your real identity
 
 ---
@@ -170,6 +208,19 @@ Schema and ontology changes go through a lightweight proposal — open an issue 
 - Corpus entries with unannotated or unverified citations
 - Synthetic prompts covering non-public or unpublished matters
 - Dependencies on proprietary data sources that cannot be redistributed
+
+### Tier 1 corpus sourcing standard
+
+Scoring-eligible Tier 1 records require canonical retrieval evidence: a verifiable `source_url`, a `retrieval_date`, and a publicly accessible court document or regulatory filing as the anchor.
+
+The following are not acceptable as scoring-eligible Tier 1 sources:
+
+- Unverified anecdotes or social-media reports
+- Media summaries without an underlying judicial or regulatory document
+- "People said a model hallucinated" accounts without a retrievable authority
+- Incidents that cannot be independently re-verified by a third party
+
+This constraint is not a limitation. It is what makes the corpus defensible. A benchmark built on unverifiable sources cannot itself serve as evidentiary infrastructure.
 
 ---
 
@@ -189,7 +240,7 @@ We are particularly interested in structured collaborations with:
 
 ## Code of conduct
 
-Be direct, be specific, be accurate. This project handles legal information —
+Be direct, be specific, be accurate. This project handles legal information ,
 precision matters more than enthusiasm.
 
 See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

@@ -1,0 +1,47 @@
+{
+  "benchmark_version": "v0.2",
+  "parser_version": "v1.1.0",
+  "policy_version": "v1.0.0",
+  "run_at": "2026-05-26T22:01:09.477255+00:00",
+  "git_sha": "68dd9442b38c71785ce8ac2d4ba96553ec6b68d0",
+  "models": [
+    {
+      "alias": "openai_fast",
+      "model_id": "gpt-4o-mini-2024-07-18",
+      "provider": "openai",
+      "display_name": "GPT-4o mini",
+      "benchmark_role": "cheap_scale_baseline",
+      "pinned": true,
+      "recommended_for_public_benchmark": true
+    }
+  ],
+  "fallback_model": null,
+  "scorer": {
+    "model_id": "claude-3-5-haiku-20241022",
+    "max_tokens": 256,
+    "temperature": 0.0,
+    "source_char_limit": 3000
+  },
+  "prompt_count": 150,
+  "pipeline": {
+    "extraction": "public citation extraction",
+    "source_fetch": "public URL fetch",
+    "verifier": "scoring.verification.verify_citations",
+    "inspector": "scoring.verification.inspect_citation_extraction",
+    "scorer": "scoring.support.score_support"
+  },
+  "provider_reliability": {
+    "openai": {
+      "total_prompts": 150,
+      "completed": 150,
+      "provider_unavailable": 0,
+      "rate_limited": 0,
+      "api_error": 0,
+      "verification_failed": 0,
+      "pipeline_error": 0,
+      "availability_rate": 1.0,
+      "billing_failure": false
+    }
+  },
+  "benchmark_integrity_note": "Rows with scorable=False (provider_unavailable, rate_limited, api_error, verification_failed, pipeline_error, fallback_used) are excluded from citation metrics. They contribute only to provider_reliability reporting."
+}

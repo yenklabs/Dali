@@ -52,6 +52,8 @@ Tier 1 is the benchmark standard. Tier 2 extends evaluation to model-facing prom
 
 **450 prompt evaluations across 3 OpenAI models produced 524 citations in aggregate, evaluated under a deterministic, policy-versioned verification pipeline.**
 
+> **Tier 1 corpus (canonical standard): 3 scoring-eligible cases** (Mata v. Avianca, US v. Cohen, Park v. Kim). Expanding this corpus is the highest-priority contribution track, see [CONTRIBUTING.md](CONTRIBUTING.md). The 524-citation figures above are Tier 2 synthetic probe results.
+
 ### The model that cited most willingly also fabricated most often
 
 ```
@@ -88,7 +90,19 @@ UK common-law citation structure transfers cleanly from training data. Brazilian
 git clone https://github.com/yenk/Dali
 cd Dali
 python -m venv .venv
+```
+
+Activate the environment:
+
+```bash
+# Bash / Zsh
 source .venv/bin/activate
+
+# Fish
+source .venv/bin/activate.fish
+```
+
+```bash
 pip install -r requirements.txt
 python runners/run_integrity.py \
   --corpus data/public/citation_failure_cases.json \
@@ -100,8 +114,31 @@ This runs the deterministic Tier 1 evaluator locally. No API keys or hosted serv
 Expected output:
 
 ```text
-Loaded 4 canonical cases (3 scoring-eligible)
-Results written to results/demo/integrity.json
+INFO run_integrity: loading corpus: data/public/citation_failure_cases.json
+INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 0 pre-canonical, 1 needs-verification
+INFO run_integrity: evaluating 3 record(s)
+INFO run_integrity:   evaluating: mata-v-avianca-2023
+INFO run_integrity:   evaluating: us-v-cohen-2023
+INFO run_integrity:   evaluating: mata-derivative-reporter-swap-001
+INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
+
+--- Integrity Run Summary ---
+
+  case_id:        mata-v-avianca-2023
+  authority:      Mata v. Avianca, Inc.
+  citation:       Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)
+  source_url:     https://www.courtlistener.com/docket/63107798/mata-v-avianca-inc/
+  verification:   FAILED
+  recoverability: infeasible
+  risk:           critical
+
+  case_id:        us-v-cohen-2023
+  authority:      United States v. Cohen (post-conviction motion citation incident)
+  citation:       Three nonexistent federal decisions cited in a supervised-release termination mo...
+  source_url:     https://www.courtlistener.com/docket/8009608/united-states-v-cohen/
+  verification:   FAILED
+  recoverability: infeasible
+  risk:           critical
 ```
 
 Each result is a `CitationIntegrityResult` artifact with reconstructability, defensibility risk, verification recoverability, and a deterministic evidence hash.
@@ -146,7 +183,7 @@ See [CITATION.cff](CITATION.cff), or:
   year         = {2026},
   version      = {0.2.0},
   organization = {GammaLex AI Inc.},
-  url          = {https://github.com/yenk/Dali-Foundation},
+  url          = {https://github.com/yenk/Dali},
   note         = {Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny}
 }
 ```
@@ -154,4 +191,7 @@ See [CITATION.cff](CITATION.cff), or:
 ## License
 
 MIT. See [LICENSE](LICENSE).
-Dali is an open evidentiary infrastructure project for legal AI systems, maintained by GammaLex AI Inc.
+
+Dali is an open evidentiary infrastructure project for legal AI systems.
+Operated by [GammaLex AI Inc.](https://gammalex.com) · Primary author: Yen Kha.
+Contributions are licensed under MIT.

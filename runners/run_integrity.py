@@ -445,20 +445,36 @@ def main(argv=None) -> int:
         json.dump(output, f, indent=2, default=str)
 
     logger.info("wrote %d result(s) to %s", len(results), output_path)
-    _print_summary(results)
+    _print_summary(results, eligible)
     return 0
 
 
-def _print_summary(results: list[CitationIntegrityResult]) -> None:
-    print("\n--- Integrity Run Summary ---")
-    for r in results:
-        risk = r.defensibility_risk.value if hasattr(r.defensibility_risk, "value") else r.defensibility_risk
-        exists = "yes" if r.citation_exists else "NO "
-        print(
-            f"  {r.case_id:<45}  exists={exists}  "
-            f"risk={risk:<8}  recoverable={r.verification_recoverable}"
+def _print_summary(results: list[CitationIntegrityResult], records: list) -> None:
+    record_by_id = {r.case_id: r for r in records}
+    print("\n--- Integrity Run Summary ---\n")
+    for result in results:
+        rec = record_by_id.get(result.case_id)
+        risk = (
+            result.defensibility_risk.value
+            if hasattr(result.defensibility_risk, "value")
+            else str(result.defensibility_risk)
         )
-    print()
+        verification = "OK" if result.citation_exists else "FAILED"
+        authority = rec.incident_name if rec else result.case_id
+        citation_raw = (rec.alleged_generated_citation or "") if rec else ""
+        citation = (citation_raw[:80] + "...") if len(citation_raw) > 80 else citation_raw
+        source_url = (rec.source_url or "") if rec else ""
+
+        print(f"  case_id:        {result.case_id}")
+        print(f"  authority:      {authority}")
+        if citation:
+            print(f"  citation:       {citation}")
+        if source_url:
+            print(f"  source_url:     {source_url}")
+        print(f"  verification:   {verification}")
+        print(f"  recoverability: {result.verification_recoverable}")
+        print(f"  risk:           {risk}")
+        print()
 
 
 if __name__ == "__main__":
