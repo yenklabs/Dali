@@ -39,7 +39,7 @@ Contributions are valued across seven tracks:
 | **Corpus expansion** | Annotated real-world AI citation failure cases — especially UK/Commonwealth, Brazil, adversarial | `data/public/citation_failure_cases.json` |
 | **Synthetic prompts** | New Tier 2 probe prompts across legal domains | `synthetic/` + `dali_mcp/` contributor tools |
 | **Ontology review** | Legal practitioners reviewing treatment and proposition ontology definitions | [schemas/ontology.md](schemas/ontology.md) + open a discussion issue |
-| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | `corpus/parsers/` |
+| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | Roadmap — see [docs/roadmap.md](docs/roadmap.md). `corpus/parsers/` will land with eyecite integration. |
 | **Spec authorship** | Drafting and reviewing changes to schemas and the Evidence JSON contract | `specs/` |
 | **Benchmark replication** | Running Tier 2 against new models and sharing results | `runners/run_synthetic.py` |
 | **Academic partnerships** | Law schools and court data projects — structured dataset contributions, co-authored methodology | Open issue with label `partnership` |
