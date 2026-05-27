@@ -1,19 +1,21 @@
-# Dali MCP — Contributor Tools
+# Dali MCP Contributor Tools
 
 Dali exposes four MCP tools so you can validate, scaffold, and bundle
 corpus records and synthetic prompts directly from Claude or any
-MCP-capable editor — without running terminal commands.
+MCP-capable editor, without running terminal commands.
 
 ## Tools
 
-| Tool | What it does |
+| Tool | Purpose |
 |---|---|
-| `validate_corpus_record` | Validates a CitationFailureCase JSON object — checks required fields, taxonomy values, lineage rules, and scoring eligibility |
-| `validate_prompt_jsonl` | Validates a single synthetic prompt JSONL entry — checks required fields, category/subcategory/difficulty taxonomy, and prompt length |
-| `generate_prompt_template` | Scaffolds a new prompt template for a given category, subcategory, and difficulty — ready to fill in and paste |
-| `create_contribution_bundle` | Validates a batch of prompts and returns a PR-ready checklist |
+| `check_case` | Validate a canonical citation-failure case |
+| `check_prompt` | Validate a synthetic benchmark prompt |
+| `new_prompt` | Generate a prompt scaffold |
+| `bundle_prompts` | Create a PR-ready contribution bundle |
 
-These tools wrap the same validation logic used by the CLI (`corpus/validator.py`, `runners/`) so there are no discrepancies between editor and terminal validation.
+These tools wrap the same validation logic used by the CLI
+(`corpus/validator.py`, `runners/`) so there are no discrepancies
+between editor and terminal validation.
 
 ---
 
@@ -25,7 +27,9 @@ These tools wrap the same validation logic used by the CLI (`corpus/validator.py
 pip install mcp
 ```
 
-The `mcp` package is listed under `# MCP server` in `requirements.txt`. The rest of Dali (Tier 1 evaluator) runs on stdlib only — `mcp` is only required if you want the editor integration.
+The `mcp` package is listed under the MCP server section in
+`requirements.txt`. The rest of Dali (Tier 1 evaluator) runs on
+stdlib only. `mcp` is only required for the editor integration.
 
 ### Claude Desktop
 
@@ -43,9 +47,9 @@ Add to your Claude Desktop `claude_desktop_config.json`:
 }
 ```
 
-Replace `/path/to/your/Dali/clone` with the absolute path to your local repo.
-
-Restart Claude Desktop. The four tools will appear in Claude's tool list.
+Replace `/path/to/your/Dali/clone` with the absolute path to your
+local repo. Restart Claude Desktop. The four tools will appear in
+the tool list.
 
 ### VS Code (with MCP extension)
 
@@ -86,37 +90,38 @@ Add to your Cursor MCP settings:
 
 ### Validate a corpus record
 
-Ask Claude:
-> "Use validate_corpus_record to check this record: `{ "case_id": "my-case-2024", "year": 2024, ... }`"
+Ask your editor assistant:
+> "Use check_case to validate this record: { "case_id": "my-case-2024", "year": 2024, ... }"
 
-The tool returns a report with `valid`, `scoring_eligible`, `issues`, and a one-line `summary`.
+The tool returns `valid`, `scoring_eligible`, `issues`, and a one-line `summary`.
 
 ### Scaffold a new adversarial prompt
 
-Ask Claude:
-> "Use generate_prompt_template for category=adversarial, subcategory=hallucination_prone, difficulty=adversarial, notes=Tests fabrication under recent AI regulation prompts"
+Ask your editor assistant:
+> "Use new_prompt for category=adversarial, subcategory=hallucination_prone, difficulty=adversarial, notes=Tests fabrication under recent AI regulation prompts"
 
-The tool returns a ready-to-fill JSONL entry and tells you which file to add it to.
+The tool returns a ready-to-fill entry and tells you which file to add it to.
 
 ### Bundle prompts for a PR
 
-Ask Claude:
-> "Use create_contribution_bundle on this list of prompts: [...]"
+Ask your editor assistant:
+> "Use bundle_prompts on this list: [...]"
 
-Returns pass/fail by prompt ID and a PR checklist.
+Returns pass/fail by prompt ID and a pre-PR checklist.
 
 ---
 
 ## CLI equivalent
 
-All tools have direct CLI equivalents if you prefer the terminal:
+All tools have direct CLI equivalents for terminal users:
 
 ```bash
 # Validate corpus
 python -m corpus.validator data/public/citation_failure_cases.json
 
-# Validate synthetic prompts (schema validation via CI)
-python -m pytest tests/ -q
+# Validate synthetic prompts (via CI schema check)
+pytest tests/ -q
 ```
 
-The MCP server is an editor-friendly wrapper — not a separate code path.
+The MCP server is an editor-friendly wrapper around the same logic,
+not a separate code path.

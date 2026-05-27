@@ -45,7 +45,7 @@ REQUIRED_PROMPT_FIELDS = ("id", "category", "subcategory", "prompt", "difficulty
 MIN_PROMPT_LENGTH = 30
 
 
-def _validate_prompt_jsonl_impl(prompt_json: str) -> dict:
+def _check_prompt_impl(prompt_json: str) -> dict:
     issues: list[str] = []
 
     try:
@@ -54,7 +54,7 @@ def _validate_prompt_jsonl_impl(prompt_json: str) -> dict:
         return {
             "valid": False,
             "issues": [f"Invalid JSON: {e}"],
-            "summary": "Parse error — entry is not valid JSON.",
+            "summary": "Parse error: entry is not valid JSON.",
         }
 
     if not isinstance(record, dict):
@@ -134,7 +134,7 @@ def _validate_prompt_jsonl_impl(prompt_json: str) -> dict:
     }
 
 
-def _generate_prompt_template_impl(
+def _new_prompt_impl(
     category: str,
     subcategory: str,
     difficulty: str,
@@ -169,7 +169,7 @@ def _generate_prompt_template_impl(
         "id": prompt_id,
         "category": category,
         "subcategory": subcategory,
-        "prompt": "<REPLACE: write your prompt here — minimum 30 characters>",
+        "prompt": "<REPLACE: write your prompt here (minimum 30 characters)>",
         "difficulty": difficulty,
         "notes": notes or "<REPLACE: describe what failure mode this prompt is testing>",
     }
@@ -184,7 +184,7 @@ def _generate_prompt_template_impl(
     return header + json.dumps(template)
 
 
-def _create_contribution_bundle_impl(prompts_json: str) -> dict:
+def _bundle_prompts_impl(prompts_json: str) -> dict:
     try:
         records = json.loads(prompts_json)
     except json.JSONDecodeError as e:
@@ -214,7 +214,7 @@ def _create_contribution_bundle_impl(prompts_json: str) -> dict:
     issues_by_id: dict[str, list[str]] = {}
 
     for record in records:
-        result = _validate_prompt_jsonl_impl(json.dumps(record))
+        result = _check_prompt_impl(json.dumps(record))
         record_id = record.get("id", f"<unknown-{len(issues_by_id)}>")
         if result["valid"]:
             valid_count += 1
@@ -233,7 +233,7 @@ def _create_contribution_bundle_impl(prompts_json: str) -> dict:
     if duplicates:
         for dup in duplicates:
             issues_by_id.setdefault(dup, []).append(
-                f"Duplicate id '{dup}' — each prompt must have a unique id."
+                f"Duplicate id '{dup}': each prompt must have a unique id."
             )
             invalid_count += 1
             valid_count = max(0, valid_count - 1)

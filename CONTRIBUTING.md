@@ -81,7 +81,7 @@ Validate your record before submitting:
 python -m corpus.validator data/public/citation_failure_cases.json
 ```
 
-Optional: the `dali_mcp/` contributor interface exposes the same validation as an MCP tool (`validate_corpus_record`) for editor-integrated workflows.
+Optional: the `dali_mcp/` contributor interface exposes the same validation as an MCP tool (`check_case`) for editor-integrated workflows.
 
 Records with `needs_verification: true` load for inspection but are excluded
 from scoring aggregates.
@@ -111,7 +111,7 @@ synthetic/
 Each record requires `id` (lowercase alphanumeric + underscore), `category`,
 `subcategory`, `prompt` (≥ 30 chars), and `difficulty`.
 
-**Easiest path:** use the `generate_prompt_template` and `create_contribution_bundle`
+**Easiest path:** use the `new_prompt` and `bundle_prompts`
 MCP tools to scaffold, validate, and package prompts. See
 [dali_mcp/README.md](dali_mcp/README.md) for setup.
 

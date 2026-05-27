@@ -2,7 +2,7 @@
 
 Exposes four tools via the Model Context Protocol so contributors can
 validate, scaffold, and bundle corpus records and synthetic prompts
-directly from Claude or any MCP-capable editor — without running
+directly from Claude or any MCP-capable editor, without running
 terminal commands.
 
 Usage:
