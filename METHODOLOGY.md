@@ -12,7 +12,7 @@ The public benchmark repo, `Dali`, defines the standard. Tier 1 is deterministic
 
 Tier 1 evaluates real, court-documented AI-assisted citation failures against a workflow-centric defensibility rubric. Each record in the Canonical Case Corpus represents a case where the public court record provides ground truth: the citation was fabricated, wrong, or otherwise integrity-compromised, and a judge documented it.
 
-The scoring premise differs from traditional output-centric evaluations. We do not ask whether the model produced an incorrect citation, the court record already establishes that it did. We already know it did, the court record says so. We ask: **at the time this citation was filed, could the workflow that produced it have been audited and defended?**
+The scoring premise differs from traditional output-centric evaluations. The court record already establishes that the citation failed. We ask: **at the time this citation was filed, could the workflow that produced it have been audited and defended?**
 
 ### Scoring pipeline
 
@@ -116,7 +116,7 @@ Reporters covered: U.S., S.Ct., L.Ed.(2d), F., F.2d, F.3d, F.Supp., F.Supp.2d, F
 
 Party names may include lowercase connectors: `of`, `the`, `and`, `a`, `an`, `for`, `in`, `on`, `to`, `de`, `la`, `von`, `van`.
 
-**URL derivation for case patterns:** None in the current synthetic track. Case pattern citations are recorded with `resolution_method='case_pattern'` and `existence_score=0.0`. CourtListener URL resolution is planned post-Week 12.
+**URL derivation for case patterns:** None in the current synthetic track. Case pattern citations are recorded with `resolution_method='case_pattern'` and `existence_score=0.0`. CourtListener URL resolution is on the project roadmap.
 
 ### Method 3: `doi`
 Regex: `\b10\.\d{4,9}/[-._;/:A-Z0-9]+` (case-insensitive). URL constructed as `https://doi.org/{doi}`.
@@ -178,15 +178,15 @@ The longer-term mitigation for 403 blocking is content-addressable archival (Way
 
 ## Step 4: Support Scoring
 
-**Model:** LLM-based verification scorer, configurable via `DALI_SCORER_MODEL`. Use a cross-vendor model (different provider than your subject models) to avoid self-evaluation bias. The scorer model used in each run is recorded in `methodology.json`.
-**Parameters:** `temperature=0.0`, `max_tokens=256`
+**Model:** LLM-based verification scorer, configurable via `DALI_SCORER_MODEL`. Use a cross-vendor model (different provider than your subject models) to avoid self-evaluation bias. The scorer model and parameters used in each run are recorded in `methodology.json`.
+**Parameters:** `temperature=0.0`, `max_tokens`: model registry default (1024 for standard entries)
 **Source input:** first 3,000 characters of the fetched source text
 
 System prompt (exact):
 
 > You are a citation integrity auditor. Given a legal or factual CLAIM and the SOURCE TEXT it is supposed to be grounded in, evaluate whether the source actually supports the claim.
 >
-> Respond with JSON only, no preamble, no explanation outside the JSON object.
+> Respond with JSON only. No preamble, no explanation outside the JSON object.
 >
 > Response schema: `{"score": float 0.0–1.0, "verdict": "supported"|"partial"|"unsupported"|"unverifiable", "reasoning": "one sentence"}`
 
@@ -201,7 +201,7 @@ The `claim_text` passed to the scorer is the sentence or clause from the model o
 | ≥ 0.6 | `supported` |
 | 0.3–0.59 | `partial` |
 | < 0.3 | `unsupported` |
-|: | `unverifiable` |
+| n/a | `unverifiable` (fallback: source too short, API error, or parse failure) |
 
 ---
 
@@ -212,7 +212,7 @@ Each result file (`results/v0.2/{date}/{model_id}.json`) contains one JSON objec
 ```json
 {
   "prompt_id": "legal_case_001",
-  "model_id": "hosted-verification-model",
+  "model_id": "gpt-4.1",
   "output": "[raw model output]",
   "citations": [
     {

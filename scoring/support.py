@@ -84,7 +84,7 @@ def _build_prompt(claim: str, source_text: str) -> str:
     return (
         "You are a citation integrity auditor. Given a legal or factual CLAIM and the "
         "SOURCE TEXT it is supposed to be grounded in, evaluate whether the source actually supports the claim.\n\n"
-        "Respond with JSON only — no preamble, no explanation outside the JSON object.\n\n"
+        "Respond with JSON only. No preamble, no explanation outside the JSON object.\n\n"
         'Response schema: {"score": float 0.0–1.0, "verdict": "supported"|"partial"|"unsupported"|"unverifiable", "reasoning": "one sentence"}\n\n'
         f"CLAIM:\n{claim}\n\nSOURCE TEXT:\n{source_excerpt}"
     )
