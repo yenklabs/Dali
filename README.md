@@ -1,10 +1,11 @@
 # Dali
 
-**Dali is designed for probabilistic AI systems operating in high-consequence legal environments where reproducibility, provenance, and evidentiary integrity matter.**
+**Dali is open evidentiary infrastructure for evaluating whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny.**
 
-Dali evaluates whether AI-generated citations and supporting workflows remain reconstructable, attributable, and defensible under scrutiny.
+Dali is designed for probabilistic AI systems operating in high-consequence legal environments where provenance and reconstructability matter.
 
-Where traditional citation checkers ask “does this citation exist?”, Dali asks “can this workflow be reconstructed and replayed if challenged?”
+A citation checker asks whether a citation exists.
+Dali asks whether the citation, retrieval pathway, verification state, and policy context can still be reconstructed months or years later during litigation, audit, or appellate review.
 
 
 ## Core concepts
