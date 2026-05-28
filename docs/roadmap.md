@@ -7,9 +7,9 @@ Dali is open citation integrity and evidentiary infrastructure for legal AI syst
 - eyecite integration as the canonical legal citation parser
 - CourtListener-backed canonical citation schema and resolution layer
 - Evidence JSON v1.0 RFC publication
-- expanded cross-jurisdiction benchmark corpus (UK/Commonwealth, Brazil)
+- expanded cross-jurisdiction benchmark corpus (UK / Commonwealth, Brazil)
 - deterministic replay and reproducibility artifacts
-- first public multi-model benchmark runs across OpenAI, Claude, Gemini, and open-weight models
+- first public multi-model benchmark runs across OpenAI, Gemini, and open-weight models
 - expanded benchmark coverage for misattribution, proposition drift, and fabricated authority detection
 - contributor and academic partnership expansion around legal AI reproducibility research
 
