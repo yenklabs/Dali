@@ -1,6 +1,6 @@
 # Dali
 
-> **An open benchmark for citation integrity, evidence reconstructability, and replay determinism in legal AI systems.**
+> **Open benchmark and corpus for evaluating whether AI-generated legal citations remain attributable, verifiable, and reconstructable across jurisdictions.**
 
 [![CI](https://github.com/yenk/Dali/actions/workflows/test-suite.yml/badge.svg)](https://github.com/yenk/Dali/actions/workflows/test-suite.yml)
 [![Replay verification](https://github.com/yenk/Dali/actions/workflows/replay-verification.yml/badge.svg)](https://github.com/yenk/Dali/actions/workflows/replay-verification.yml)
