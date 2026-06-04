@@ -18,7 +18,7 @@ Every Dali run produces a deterministic, policy-versioned, hash-sealed `Citation
 
 ## Why does it matter?
 
-The legal industry lacks shared benchmarks, public corpora, or reproducible evidence standards for studying AI-generated citation failures. Court-documented incidents have continued to issue since *Mata v. Avianca* (2023). Dali consolidates the missing public infrastructure into one MIT-licensed, deterministically replayable artifact.
+The legal industry lacks shared benchmarks, public corpora, or reproducible evidence standards for studying AI-generated citation failures. Court-documented incidents have continued to issue since [*Mata v. Avianca*](CASE-STUDIES.md#1-mata-v-avianca-inc-sdny-2023) (2023), including [*United States v. Cohen*](CASE-STUDIES.md#2-united-states-v-cohen-sdny-2023) and [*Park v. Kim*](CASE-STUDIES.md#3-park-v-kim-2d-cir-2024), which anchor the Tier 1 canonical corpus in [benchmarks/tier1/corpus/citation_failure_cases.json](benchmarks/tier1/corpus/citation_failure_cases.json). Dali consolidates that missing public infrastructure into one MIT-licensed, deterministically replayable artifact, with reproducibility defined through [cryptographic lineage](docs/cryptographic-lineage.md) and the public [methodology](METHODOLOGY.md).
 
 ## What did we find?
 
