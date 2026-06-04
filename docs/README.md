@@ -6,6 +6,7 @@ contribution, or product diligence.
 | Need | Read |
 |---|---|
 | Understand the benchmark quickly | [README.md](../README.md) |
+| Run a local quick start | [quickstart.md](quickstart.md) |
 | Review v0.2 benchmark evidence | [data/results/v0.2](../data/results/v0.2/) |
 | Inspect methodology and scoring | [METHODOLOGY.md](METHODOLOGY.md) |
 | Review benchmark expansion strategy | [benchmark-expansion-strategy.md](benchmark-expansion-strategy.md) |

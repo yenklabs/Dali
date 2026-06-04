@@ -33,4 +33,4 @@ python -m dali.runners.run_integrity \
   --output data/results/demo/integrity.json
 ```
 
-See [CONTRIBUTING.md](../../CONTRIBUTING.md) for the full field reference and sourcing standard.
+See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for the full field reference and sourcing standard.
