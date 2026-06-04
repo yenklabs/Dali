@@ -21,7 +21,7 @@ If you've ever wanted to add a court-documented AI-citation failure to a researc
 
 ---
 
-## Install (5 minutes, one-time)
+## Setup (5 minutes, one-time)
 
 ### 1. Clone the repo and install dependencies
 
