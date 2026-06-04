@@ -9,6 +9,12 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- README hero visual upgraded: evidence pathway (attribution → reconstruction) plus
+  verification-durability chart; title **Dali v0.2 Reproducibility & Attribution Benchmark**.
+- Benchmark naming aligned across METHODOLOGY, policy-versioning, corpus, and
+  `run_synthetic.py` runner strings.
+
 ---
 
 ## [0.2.1] - 2026-05-27

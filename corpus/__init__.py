@@ -2,7 +2,7 @@
 
 This package defines the data model, validators, and helpers for the
 court-documented citation integrity failure corpus that anchors the
-Dali Citation Integrity Benchmark.
+Dali Reproducibility & Attribution Benchmark.
 
 Public entry points:
     schema     — CitationFailureCase, WorkflowContext, CitationIntegrityResult
