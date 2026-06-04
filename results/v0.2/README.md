@@ -53,7 +53,7 @@ Most legal-AI citation benchmarks evaluate US federal cases only. That underweig
 
 In this run, higher citation engagement correlated with higher fabrication rates under adversarial pressure. GPT-4.1 produced 374 citations across 150 prompts; 86 point to URLs that do not exist.
 
-### Existence rate by jurisdiction / coverage track (aggregated across all 3 models · 524 citations)
+### Existence rate by jurisdiction (aggregated across all 3 models · 524 citations)
 
 ```
                           0%        25%        50%        75%       100%

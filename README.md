@@ -22,9 +22,9 @@ The evidence infrastructure is the mission.
 
 **Start here:** [Latest benchmark results](results/v0.2/) · [Run Tier 1 locally](#quick-start) · [Methodology](METHODOLOGY.md) · [Contribute corpus](CONTRIBUTING.md) · [Reviewer guide](docs/reviewer-guide.md)
 
-![Dali v0.2 Evidence Reconstructability Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
+![Dali v0.2 Reproducibility & Attribution Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
 
-*Hero chart: verification durability by coverage track plus the evidence pathway from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
+*Hero chart: evidence pathway (attribution → verification → reconstruction) plus verification durability by jurisdiction from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
 
 ## Table of contents
 

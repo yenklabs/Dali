@@ -24,16 +24,16 @@ FOOTER = "Source: results/v0.2/README.md - 2026-05-26 public benchmark run"
 METRICS = [
     ("450", "prompt evaluations"),
     ("524", "citations evaluated"),
-    ("5", "coverage tracks"),
+    ("5", "jurisdiction tracks"),
     ("8", "prompt categories"),
 ]
 
 JURISDICTION_ROWS = [
     ("UK / Commonwealth", 76, "#4ade80"),
-    ("Policy / regulatory", 57, "#38bdf8"),
+    ("Research / policy", 57, "#38bdf8"),
     ("US legal", 33, "#facc15"),
     ("Adversarial traps", 29, "#fb923c"),
-    ("Brazil / Civil Law", 3, "#f87171"),
+    ("Brazil (Portuguese)", 3, "#f87171"),
 ]
 
 
@@ -51,14 +51,7 @@ def _font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFon
     return ImageFont.load_default()
 
 
-def _rounded(
-    draw: ImageDraw.ImageDraw,
-    xy: tuple[int, int, int, int],
-    radius: int,
-    fill: str,
-    outline: str | None = None,
-    width: int = 1,
-) -> None:
+def _rounded(draw: ImageDraw.ImageDraw, xy: tuple[int, int, int, int], radius: int, fill: str, outline: str | None = None, width: int = 1) -> None:
     draw.rounded_rectangle(xy, radius=radius, fill=fill, outline=outline, width=width)
 
 
@@ -87,7 +80,7 @@ def main() -> None:
     row_gap = 68
     bar_height = 38
 
-    draw.text((90, 230), "Verified citation URLs by coverage track", font=section_font, fill="#f8fafc")
+    draw.text((90, 230), "Verified citation URLs by jurisdiction", font=section_font, fill="#f8fafc")
 
     for pct in [0, 25, 50, 75, 100]:
         x = chart_left + int(chart_width * pct / 100)

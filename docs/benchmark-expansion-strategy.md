@@ -13,15 +13,15 @@ The v0.2 benchmark currently uses five public-facing tracks:
 | Current track | What it tests | Clarity assessment |
 |---|---|---|
 | UK / Commonwealth | Common-law transfer outside the US | Clear |
-| Policy / Regulatory | Regulatory and policy citations across institutions | Clear |
+| Research / Policy | Regulatory and policy citations across institutions | Clear but should be renamed Policy / Regulatory in future docs |
 | US Legal | US case, statutory, and contract citation behavior | Clear |
 | Adversarial Traps | Citation pressure and hallucination-prone prompts | Clear |
-| Brazil / Civil Law (Portuguese) | Portuguese-language civil-law citation behavior | Valuable, and now explicitly positioned |
+| Brazil (Portuguese) | Portuguese-language civil-law citation behavior | Valuable but under-explained |
 
 The structure communicates common law, policy, and adversarial coverage well.
-Civil-law coverage is present through Brazil. The important public-facing point
-is that Brazil is not included as an arbitrary country sample; it is a
-civil-law, Portuguese-language, non-English retrieval durability probe.
+Civil-law coverage is present, but the label `Brazil (Portuguese)` can look
+arbitrary unless the benchmark explains that Brazil is serving as a civil-law,
+Portuguese-language, non-English retrieval durability probe.
 
 ## Brazil naming recommendation
 
@@ -104,10 +104,10 @@ make results inspectable and reproducible.
 
 Focus: clearer coverage model plus EU expansion.
 
-- Use **Brazil / Civil Law (Portuguese)** consistently in public-facing docs.
+- Rename public-facing Brazil labels to **Brazil / Civil Law (Portuguese)**.
 - Add a compact **EU / Regulatory** Tier 2 prompt track.
-- Use **Policy / Regulatory** instead of `Research / Policy` where the track is
-  describing legal-policy source durability.
+- Rename future-facing `Research / Policy` language to **Policy / Regulatory**
+  where appropriate.
 - Add explicit track purpose notes to benchmark docs so readers understand
   which evidentiary durability dimension each track stresses.
 - Keep prompt count secondary to source quality and reproducibility.
@@ -117,8 +117,8 @@ Focus: clearer coverage model plus EU expansion.
 Focus: move beyond jurisdiction into evidence-pathway analysis.
 
 - Add retrieval pathway fields to result artifacts where possible.
-- Distinguish generated citation, retrieved source, verified state, evidence
-  artifact, and reconstruction test more explicitly in outputs and docs.
+- Distinguish generated citation, retrieved source, verified state, and evidence
+  artifact more explicitly in outputs and docs.
 - Improve attribution scoring: can the result explain which source, retrieval
   step, or citation pathway supports the finding?
 - Expand failure taxonomy around provenance gaps, source mismatch, proposition
@@ -129,8 +129,7 @@ Focus: move beyond jurisdiction into evidence-pathway analysis.
 
 Focus: durability metrics.
 
-- Introduce temporal drift checks for sources that change, move, block, or
-  decay.
+- Introduce temporal drift checks for sources that change, move, block, or decay.
 - Add source decay reporting: what previously resolved no longer resolves?
 - Add reconstructability scoring: can the citation pathway be replayed from the
   recorded artifact?
