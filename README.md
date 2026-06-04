@@ -2,15 +2,17 @@
 
 **Dali is open evidentiary infrastructure for legal AI.**
 
-Most evaluations measure whether a model was correct when an answer was
-generated. Dali evaluates whether the evidence supporting that answer remains
-reproducible, attributable, verifiable, and reconstructable over time.
+Most evaluations focus on outputs.
+
+Dali focuses on evidence.
+
+It evaluates whether the evidence behind an AI-generated output remains
+attributable, verifiable, and reconstructable over time.
 
 A citation checker asks whether a citation exists.
 
-Dali asks whether the citation, retrieval pathway, verification state,
-supporting sources, and policy context can still be independently reconstructed
-later.
+Dali asks whether the evidence behind that citation can still be independently
+reconstructed later.
 
 The benchmark is the entry point.
 
@@ -24,36 +26,21 @@ The evidence infrastructure is the mission.
 
 *Hero chart: verification durability by coverage track plus the evidence pathway from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
 
-## Core concepts
+## Table of contents
 
-| Concept | What it means |
-|---|---|
-| **Citation integrity** | Whether the cited authority exists and resolves to a real source |
-| **Workflow reconstructability** | Whether the pathway that produced the citation can be traced |
-| **Replayable evidence** | Whether the evaluation can be reproduced and re-verified under a fixed policy version |
-
-## How it works
-
-```text
-        Legal AI workflow
-                |
-                v
-         Citation generated
-                |
-                v
-   Can this workflow be reconstructed
-        and replayed if challenged?
-                |
-                v
-          Dali evaluates
-                |
-   +-----------+------------+-------------+
-   |            |            |            |          
-   v            v            v            v           
-Attribution  Provenance  Replayability  Verifiability
-```
-
-Dali produces a deterministic, versioned `CitationIntegrityResult` for every evaluated citation, including reproducible scoring metadata and evidence hashes so benchmark runs can be replayed consistently over time.
+- [Why Dali exists](#why-dali-exists)
+- [How it works](#how-it-works)
+- [Core concepts](#core-concepts)
+- [Evaluation tiers](#evaluation-tiers)
+- [Latest results (v0.2)](#latest-results-v02--2026-05-26)
+- [Quick start](#quick-start)
+- [What this enables](#what-this-enables)
+- [Research opportunities](#research-opportunities)
+- [Near-term roadmap](#near-term-roadmap)
+- [Contributing](#contributing)
+- [Related resources](#related-resources)
+- [How to cite](#how-to-cite)
+- [License](#license)
 
 ## Why Dali exists
 
@@ -64,30 +51,59 @@ The legal industry lacks shared benchmarks, public corpora, and reproducible
 evidence standards for studying these failures. Dali exists to help fill that
 gap.
 
-## What you'll find here
+## How it works
 
-- citation failure corpus
-- evaluation workflows
-- evidence artifacts
-- benchmark results
-- methodology documentation
-- contribution tooling
+```text
+        Legal AI workflow
+                |
+                v
+         Citation generated
+                |
+                v
+    Evidence created or cited
+                |
+                v
+ Can the evidence still be verified,
+ attributed, and reconstructed later?
+                |
+                v
+          Dali evaluates
+                |
+   +-----------+------------+-------------+
+   |            |            |            |          
+   v            v            v            v           
+Attribution  Provenance  Verifiability  Reconstructability
+```
+
+Dali produces a deterministic, versioned `CitationIntegrityResult` for every evaluated citation, including reproducible scoring metadata and evidence hashes so benchmark runs can be replayed consistently over time.
+
+## Core concepts
+
+| Concept | What it means |
+|---|---|
+| **Citation integrity** | Whether the cited authority exists and resolves to a real source |
+| **Attribution** | Whether evidence can be traced back to its originating source |
+| **Workflow reconstructability** | Whether the pathway that produced a citation can be independently reconstructed |
+| **Replayable evidence** | Whether an evaluation can be reproduced and re-verified under a fixed policy version |
+| **Evidence durability** | Whether evidence remains verifiable and attributable over time |
 
 ## Evaluation tiers
 
 | Tier | Corpus | Purpose |
 |---|---|---|
 | **Tier 1** | Court-documented citation failures (e.g. *Mata v. Avianca*) | Deterministic, policy-versioned ground truth |
-| **Tier 2** | Synthetic probe corpus across US, UK / Commonwealth, Brazil / Civil Law (Portuguese), adversarial traps, and cross-jurisdictional policy / regulatory workflows | Live model evaluation |
+| **Tier 2** | Synthetic probe corpus across US, UK / Commonwealth, Brazil / Civil Law (Portuguese), adversarial traps, and policy / regulatory workflows | Live model and workflow evaluation |
 
-Tier 1 establishes the canonical benchmark corpus. Tier 2 extends evaluation into model-facing prompt behavior and cross-jurisdiction citation robustness.
+Tier 1 establishes the canonical benchmark corpus.
+
+Tier 2 extends evaluation into AI-generated citation behavior, retrieval robustness, and evidence reconstructability across jurisdictions and failure conditions.
 
 ## Latest results (v0.2 · 2026-05-26)
 
 **450 prompt evaluations across 3 OpenAI models produced 524 citations in aggregate, evaluated under a deterministic, policy-versioned verification pipeline.**
 
 > **Tier 1 corpus (canonical standard): 3 scoring-eligible cases**  
-> (*Mata v. Avianca*, *US v. Cohen*, *Park v. Kim*)
+> *Mata v. Avianca*, *United States v. Cohen*, and *Park v. Kim*
 >
 > Expanding this corpus is the highest-priority contribution track. See [CONTRIBUTING.md](CONTRIBUTING.md).
 >
@@ -107,7 +123,10 @@ GPT-4.1 was the most engaged model and the most fabrication-prone: of its 374 ci
 
 ### Why we test across jurisdictions
 
-US-only legal benchmarks underweight risk where legal citation structure, language distribution, and public-authority coverage differ materially from dominant English-language training corpora.
+Legal citation systems do not operate exclusively in US common-law environments.
+
+Different legal systems introduce different citation structures, languages,
+publication systems, retrieval pathways, and verification challenges.
 
 Aggregated across all 524 generated citations:
 
@@ -122,6 +141,8 @@ Aggregated across all 524 generated citations:
 UK common-law citation structures transferred relatively well from dominant English-language training distributions.
 
 Brazil / Civil Law (Portuguese) showed the weakest transferability across all evaluated tracks, with only 3% resolving successfully under deterministic verification. The track exists because it stresses civil-law structure, Portuguese-language sources, and non-English retrieval durability.
+
+Future benchmark expansion may include EU regulatory and civil-law coverage.
 
 A cross-jurisdiction benchmark is how you identify these failures before the system is operating in front of courts, regulators, or legal review bodies.
 
@@ -195,24 +216,45 @@ For Tier 2 setup, model registry, and benchmark commands see [docs/examples.md](
 Using the canonical corpus and the shared `CitationIntegrityResult` contract, you can:
 
 - evaluate AI-assisted citation workflows against real court-documented failures
-- measure provenance continuity and workflow reconstructability
+- measure provenance continuity and evidence reconstructability
 - test retrieval and RAG systems for authority integrity regressions
 - compare citation integrity behavior across models or pipeline versions
 - replay evaluations under fixed policy versions for reproducibility
+- study evidence durability over time
 - produce deterministic benchmark artifacts and evidence hashes
+
+## Research opportunities
+
+Areas of active interest include:
+
+- citation attribution
+- evidence reconstructability
+- retrieval durability
+- source drift
+- policy version drift
+- temporal durability
+- cross-jurisdiction verification
+- evidence replayability
+
+Researchers, legal professionals, and organizations interested in collaboration are encouraged to contribute proposals, corpus records, and methodology improvements.
 
 ## Near-term roadmap
 
 - eyecite integration as the canonical legal citation parser
 - CourtListener-backed canonical citation schema and resolution layer
 - Evidence JSON v1.0 RFC publication
-- expanded cross-jurisdiction benchmark corpus (UK / Commonwealth, Brazil / Civil Law, EU / Regulatory)
+- expanded EU regulatory and civil-law coverage
+- additional jurisdiction tracks
+- evidence durability research
+- temporal reconstructability testing
 - deterministic replay and reproducibility artifacts
 - multi-model comparison runs across OpenAI, Gemini, and open-weight models
 - expanded benchmark coverage for:
+  - fabricated citations
   - misattribution
   - proposition drift
-  - fabricated authority detection
+  - source drift
+  - retrieval failures
 - contributor and academic partnership expansion around legal AI reproducibility research
 
 Longer-range direction: [docs/roadmap.md](docs/roadmap.md).
