@@ -85,6 +85,6 @@ See [docs/for-researchers.md](docs/for-researchers.md) for the full submission p
 
 ## Versioning
 
-The leaderboard is versioned with the benchmark. `v0.2` results are pinned to policy version `v0.2.*` and cannot be combined with v0.3+ runs without an explicit `--allow-cross-version` flag. See [docs/policy-versioning.md](docs/policy-versioning.md).
+The leaderboard is versioned with the benchmark. `v0.2` results are pinned to policy version `v0.2.*` and cannot be combined with v0.3+ runs without an explicit `--allow-cross-version` flag. See [docs/policy-versioning.md](policy-versioning.md).
 
 Last updated: 2026-06-04.

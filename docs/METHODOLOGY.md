@@ -64,7 +64,7 @@ The rubric is workflow-centric, not output-centric. Two records can have the sam
 
 ### Policy versioning
 
-Every `CitationIntegrityResult` records a composite `policy_version` string covering five sub-dimensions. Results from different policy versions cannot be silently aggregated. See [docs/policy-versioning.md](docs/policy-versioning.md) for the full versioning schema.
+Every `CitationIntegrityResult` records a composite `policy_version` string covering five sub-dimensions. Results from different policy versions cannot be silently aggregated. See [docs/policy-versioning.md](policy-versioning.md) for the full versioning schema.
 
 ### Scoring eligibility
 
