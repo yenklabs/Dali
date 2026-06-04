@@ -4,7 +4,7 @@ You are the most valuable contributor to Dali. The benchmark's evidentiary thesi
 
 This doc is the 30-minute on-ramp. **No Python required. No terminal required.**
 
-If you have an AI editor (Claude Desktop, Cursor, VS Code with the MCP extension), the entire workflow — validate a record, run the deterministic evaluator, confirm replay determinism, get a PR-ready JSON — happens by *talking* to your AI. See [dali_mcp/README.md](../dali_mcp/README.md) for the 5-minute setup. The rest of this doc shows you what to ask.
+If you have an AI editor (Claude Desktop, Cursor, VS Code with the MCP extension), the entire workflow — validate a record, run the deterministic evaluator, confirm replay determinism, get a PR-ready JSON — happens by *talking* to your AI. See [tools/mcp/README.md](../tools/mcp/README.md) for the 5-minute setup. The rest of this doc shows you what to ask.
 
 ---
 
@@ -80,18 +80,18 @@ That is sufficient for the maintainer to begin canonicalization. You do not need
 
 ### Step 4 — Optional: submit the record yourself (10 min, no terminal)
 
-The fastest no-terminal path uses the MCP tools. After the [5-minute setup](../dali_mcp/README.md), paste this into your AI editor:
+The fastest no-terminal path uses the MCP tools. After the [5-minute setup](../tools/mcp/README.md), paste this into your AI editor:
 
 > I have a court-documented AI citation failure I want to add to Dali. The case is [paste case name and court document URL]. Walk me through filling out the corpus record, then:
 >
 > 1. `lint` it to catch missing or invalid fields.
 > 2. `score` it to confirm a clean Tier 1 verdict with cryptographic hashes.
 > 3. `replay` it to confirm the result is deterministic.
-> 4. Give me the final JSON ready to paste into `benchmarks/tier1/corpus/citation_failure_cases.json`.
+> 4. Give me the final JSON ready to paste into `data/benchmark/tier1/corpus/citation_failure_cases.json`.
 
 Your AI will walk through each field, validate as it goes, and produce a PR-ready record. If your record contains attorney names from the original filing, mention that — the AI knows to flag them for the anonymizer.
 
-**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m dali_cli lint`, and open a PR. The CLI uses the same verbs as the MCP tools — `lint`, `score`, `replay` — so the muscle memory is identical across both paths.
+**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`data/benchmark/tier1/corpus/citation_failure_cases.json`](../data/benchmark/tier1/corpus/citation_failure_cases.json), validate with `python -m tools.cli lint`, and open a PR. The CLI uses the same verbs as the MCP tools — `lint`, `score`, `replay` — so the muscle memory is identical across both paths.
 
 ---
 
@@ -99,10 +99,10 @@ Your AI will walk through each field, validate as it goes, and produce a PR-read
 
 | Task | What it looks like | Time |
 |---|---|---|
-| **Ontology review** | Read [`schemas/ontology.md`](../schemas/ontology.md) and comment on whether the failure-class taxonomy captures the legal-doctrinal distinctions that matter | 1 hr |
+| **Ontology review** | Read [`dali/schemas/ontology.md`](../dali/schemas/ontology.md) and comment on whether the failure-class taxonomy captures the legal-doctrinal distinctions that matter | 1 hr |
 | **Jurisdiction adapter design** | If you practice in a non-U.S. jurisdiction, sketch what a "Tier 1 record" looks like in your system (UK, Canada, Australia, EU member states, Brazil, India, etc.) | 2 hr |
 | **Reviewer guide critique** | Read [`docs/reviewer-guide.md`](reviewer-guide.md) and identify where a non-technical reviewer would get stuck | 30 min |
-| **Methodology review** | Read [`METHODOLOGY.md`](../METHODOLOGY.md) and comment on whether the scoring rubric aligns with the standard of care a court would apply under Rule 11 | 2 hr |
+| **Methodology review** | Read [`METHODOLOGY.md`](METHODOLOGY.md) and comment on whether the scoring rubric aligns with the standard of care a court would apply under Rule 11 | 2 hr |
 | **Academic partnership** | If you are affiliated with a law school or legal research institute, open an issue with label `research-partner` | varies |
 
 For ontology, methodology, or reviewer-guide work, open an issue with label `legal-review` so the maintainer can flag it for review before merging adjacent changes.

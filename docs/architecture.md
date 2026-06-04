@@ -11,11 +11,11 @@ artifacts.
 
 | Layer | Name | Purpose | Main files |
 |---|---|---|---|
-| **Tier 1** | Canonical Case Corpus | Court-documented citation failures with deterministic scoring | `benchmarks/tier1/`, `runners/run_integrity.py` |
-| **Tier 2** | Synthetic Probes | Controlled prompt probes for live model evaluation | `benchmarks/tier2/`, `runners/run_synthetic.py` |
-| **Schemas** | Result contracts | Stable JSON contracts for reusable artifacts | `schemas/`, `specs/` |
-| **Results** | Published benchmark runs | Reviewable outputs and run metadata | `results/v0.2/` |
-| **Contributor tools** | MCP + validators | Corpus and prompt validation workflows | `dali_mcp/`, `corpus/validator.py` |
+| **Tier 1** | Canonical Case Corpus | Court-documented citation failures with deterministic scoring | `data/benchmark/tier1/`, `dali/runners/run_integrity.py` |
+| **Tier 2** | Synthetic Probes | Controlled prompt probes for live model evaluation | `data/benchmark/tier2/`, `dali/runners/run_synthetic.py` |
+| **Schemas** | Result contracts | Stable JSON contracts for reusable artifacts | `dali/schemas/`, `docs/specs/` |
+| **Results** | Published benchmark runs | Reviewable outputs and run metadata | `data/results/v0.2/` |
+| **Contributor tools** | MCP + validators | Corpus and prompt validation workflows | `tools/mcp/`, `dali/corpus/validator.py` |
 
 ## Artifact flow
 
@@ -74,16 +74,16 @@ Tier 2 results are benchmark evidence, not universal claims about a model.
 
 | Artifact | Purpose |
 |---|---|
-| `results/demo/integrity.json` | Local Tier 1 smoke output, gitignored |
-| `results/v0.2/{date}/integrity.json` | Versioned Tier 1 run output |
-| `results/v0.2/{date}/<model_id>.json` | Per-model Tier 2 output |
-| `results/v0.2/{date}/methodology.json` | Run provenance and configuration |
-| `results/v0.2/schema.json` | Schema for per-prompt Tier 2 records |
-| `schemas/integrity-result.schema.json` | Schema for `CitationIntegrityResult` |
+| `data/results/demo/integrity.json` | Local Tier 1 smoke output, gitignored |
+| `data/results/v0.2/{date}/integrity.json` | Versioned Tier 1 run output |
+| `data/results/v0.2/{date}/<model_id>.json` | Per-model Tier 2 output |
+| `data/results/v0.2/{date}/methodology.json` | Run provenance and configuration |
+| `data/results/v0.2/schema.json` | Schema for per-prompt Tier 2 records |
+| `dali/schemas/integrity-result.schema.json` | Schema for `CitationIntegrityResult` |
 
 ## Related docs
 
 - [README.md](../README.md)
-- [docs/examples.md](examples.md)
-- [METHODOLOGY.md](../METHODOLOGY.md)
-- [results/v0.2](../results/v0.2/)
+- [docs/examples/README.md](examples/README.md)
+- [METHODOLOGY.md](METHODOLOGY.md)
+- [data/results/v0.2](../data/results/v0.2/)

@@ -2,7 +2,7 @@
 
 import pytest
 
-from corpus.policy import (
+from dali.corpus.policy import (
     POLICY_VERSION,
     PolicyVersion,
     assert_same_version_or_raise,

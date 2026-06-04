@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yenk/Dali/dali/schemas/integrity-result.schema.json",
+  "title": "Dali CitationIntegrityResult (Tier 1)",
+  "description": "Schema for a single CitationIntegrityResult record produced by dali/runners/run_integrity.py against the canonical case corpus. One record per scored corpus case. Distinct from the Tier 2 result-record schema in data/results/v0.2/schema.json (which is one record per prompt × model pair).",
+  "type": "object",
+  "required": [
+    "case_id",
+    "citation_exists",
+    "policy_version",
+    "evidence_hash",
+    "run_timestamp",
+    "corpus_record_hash",
+    "replay_hash"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "description": "Canonical case identifier (matches id in the corpus record)."
+    },
+    "citation_exists": {
+      "type": "boolean",
+      "description": "Whether the cited authority actually exists."
+    },
+    "authority_reachable": {
+      "type": "boolean",
+      "description": "Whether the cited authority resolves to a reachable source."
+    },
+    "semantic_alignment": {
+      "type": "string",
+      "description": "Alignment between the citation and the proposition it supports."
+    },
+    "quote_fidelity": {
+      "type": "string",
+      "description": "Fidelity of any quoted material to the cited source."
+    },
+    "temporal_validity": {
+      "type": "string",
+      "description": "Whether the cited authority was valid at the time of the citing workflow."
+    },
+    "jurisdiction_match": {
+      "type": "string",
+      "description": "Whether the cited authority is from a jurisdiction relevant to the proposition."
+    },
+    "provenance_complete": {
+      "type": "boolean",
+      "description": "Whether the workflow that produced the citation has complete provenance."
+    },
+    "failure_classes_detected": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of citation integrity failure classes triggered by this case."
+    },
+    "defensibility_risk": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "critical"],
+      "description": "Severity of the evidentiary defensibility risk created by the failure."
+    },
+    "workflow_reconstructable": {
+      "description": "Whether the citation pathway can be reconstructed after the fact. Tri-state: true / false / 'unknown'.",
+      "oneOf": [
+        {"type": "boolean"},
+        {"type": "string", "enum": ["unknown"]}
+      ]
+    },
+    "verification_recoverable": {
+      "type": "string",
+      "description": "Whether the workflow could realistically recover from the failure (e.g. manual, automated, infeasible)."
+    },
+    "mutation_lineage": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"type": "string"},
+          {"type": "object"}
+        ]
+      },
+      "description": "Mutation chain applied during derivative case construction (empty for unmodified canonical cases). Items are parent case_id strings or structured mutation records."
+    },
+    "policy_version": {
+      "type": "string",
+      "description": "Composite policy version string covering taxonomy, rubric, scoring, normalization, and schema sub-versions.",
+      "pattern": "^taxonomy=.+;rubric=.+;scoring=.+;normalization=.+;schema=.+$"
+    },
+    "evidence_hash": {
+      "type": "string",
+      "description": "SHA-256 over (case_id, policy_version, run_timestamp). Per-run tamper-evident seal; differs across runs by design (timestamp is part of the seal). For the replay invariant see replay_hash.",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "corpus_record_hash": {
+      "type": "string",
+      "description": "SHA-256 over the canonical JSON of the input corpus record alone. Independent of policy version; changes only when the record content itself changes. Detects silent mutation of the input corpus.",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "replay_hash": {
+      "type": "string",
+      "description": "SHA-256 over (canonical corpus record, policy_version, source_document_hash). Replay invariant: identical inputs under identical policy always yield the same hash. Two runs of the runner against the same corpus and policy MUST produce byte-identical replay_hash values per case. Enforced by --verify-replay.",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "run_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp of the evaluation run."
+    }
+  },
+  "additionalProperties": true
+}

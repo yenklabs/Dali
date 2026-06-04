@@ -1,4 +1,4 @@
-"""End-to-end tests for the dali_cli short-verb dispatcher.
+"""End-to-end tests for the tools.cli short-verb dispatcher.
 
 Each verb is tested against the same canonical corpus the CLI demo uses.
 The CLI is a thin wrapper over existing logic, so these tests primarily
@@ -16,9 +16,9 @@ from pathlib import Path
 
 import pytest
 
-from dali_cli import main as cli_main
+from tools.cli import main as cli_main
 
-CORPUS_PATH = Path("benchmarks/tier1/corpus/citation_failure_cases.json")
+CORPUS_PATH = Path("data/benchmark/tier1/corpus/citation_failure_cases.json")
 
 
 # ---------------------------------------------------------------------------

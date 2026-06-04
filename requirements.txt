@@ -1,20 +1,20 @@
 # ── Tier 1 — Canonical Case Corpus evaluator ─────────────────────────────────
-# runners/run_integrity.py and all corpus/ modules use stdlib only.
+# dali/runners/run_integrity.py and all dali/corpus/ modules use stdlib only.
 # No third-party deps required, including for --check-reachability
 # (uses urllib from stdlib).
 
 # ── Tier 2 — Synthetic probe runner ──────────────────────────────────────────
-# runners/run_synthetic.py requires API access for model calls:
+# dali/runners/run_synthetic.py requires API access for model calls:
 anthropic>=0.40.0
 openai>=1.50.0
 
-# ── MCP server (dali_mcp contributor tools) ───────────────────────────────────
+# ── MCP server (tools.mcp contributor tools) ───────────────────────────────────
 # Required only if using the editor integration (Claude Desktop, Cursor, VS Code).
 # Not needed for Tier 1 or Tier 2 benchmark runs.
 mcp>=1.0.0
 
 # ── Optional ──────────────────────────────────────────────────────────────────
-# Regenerate README hero chart (scripts/generate_benchmark_snapshot.py):
+# Regenerate README hero chart (tools/scripts/generate_benchmark_snapshot.py):
 # matplotlib>=3.8.0
 
 # Load a local .env file during benchmark runs (run_synthetic.py).

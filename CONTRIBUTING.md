@@ -68,24 +68,24 @@ source .venv/bin/activate.fish
 pip install -r requirements.txt
 
 # Run the Tier 1 deterministic evaluator (no API keys needed)
-python -m dali_cli score
+python -m tools.cli score
 
 # Or with explicit args / additional flags:
-python -m dali_cli score benchmarks/tier1/corpus/citation_failure_cases.json \
-  --output results/demo/integrity.json
+python -m tools.cli score data/benchmark/tier1/corpus/citation_failure_cases.json \
+  --output data/results/demo/integrity.json
 ```
 
-The `python -m dali_cli` shim mirrors the six MCP verbs (`lint`, `score`, `replay`, `probe`, `draft`, `pack`) and wraps the underlying runners. `python runners/run_integrity.py` continues to work as the canonical entry point.
+The `python -m tools.cli` shim mirrors the six MCP verbs (`lint`, `score`, `replay`, `probe`, `draft`, `pack`) and wraps the underlying runners. `python -m dali.runners.run_integrity` continues to work as the canonical entry point.
 
 Expected output:
 ```text
-INFO run_integrity: loading corpus: benchmarks/tier1/corpus/citation_failure_cases.json
+INFO run_integrity: loading corpus: data/benchmark/tier1/corpus/citation_failure_cases.json
 INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 0 pre-canonical, 1 needs-verification
 INFO run_integrity: evaluating 3 record(s)
 INFO run_integrity:   evaluating: mata-v-avianca-2023
 INFO run_integrity:   evaluating: us-v-cohen-2023
 INFO run_integrity:   evaluating: mata-derivative-reporter-swap-001
-INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
+INFO run_integrity: wrote 3 result(s) to data/results/demo/integrity.json
 
 --- Integrity Run Summary ---
 
@@ -108,7 +108,7 @@ INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
 
 Tier 1 runs entirely offline. No API keys. No external services.
 
-**Prefer working in an editor?** If you use Claude Desktop, VS Code, or Cursor, the `dali_mcp/` tools let you do the entire contribution workflow — validate, evaluate, verify replay determinism, scaffold prompts, bundle a PR — without touching the terminal. Six short verbs: `lint`, `score`, `replay`, `probe`, `draft`, `pack`. See [dali_mcp/README.md](dali_mcp/README.md) for the 5-minute setup.
+**Prefer working in an editor?** If you use Claude Desktop, VS Code, or Cursor, the `tools/mcp/` tools let you do the entire contribution workflow — validate, evaluate, verify replay determinism, scaffold prompts, bundle a PR — without touching the terminal. Six short verbs: `lint`, `score`, `replay`, `probe`, `draft`, `pack`. See [tools/mcp/README.md](tools/mcp/README.md) for the 5-minute setup.
 
 ---
 
@@ -117,9 +117,9 @@ Tier 1 runs entirely offline. No API keys. No external services.
 If you are new to the project, this is the fastest useful path:
 
 1. Run the Tier 1 evaluator above.
-2. Read [results/v0.2](results/v0.2/) to understand the public benchmark output.
-3. Open one existing Tier 1 record in `benchmarks/tier1/corpus/citation_failure_cases.json`.
-4. Validate the corpus with `python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json`.
+2. Read [data/results/v0.2](data/results/v0.2/) to understand the public benchmark output.
+3. Open one existing Tier 1 record in `data/benchmark/tier1/corpus/citation_failure_cases.json`.
+4. Validate the corpus with `python -m dali.corpus.validator data/benchmark/tier1/corpus/citation_failure_cases.json`.
 5. Choose a contribution track below.
 
 Good first contributions usually improve corpus evidence, prompt coverage,
@@ -137,12 +137,12 @@ Contributions are valued across seven tracks:
 
 | Track | What's needed | Where to start |
 |---|---|---|
-| **Corpus expansion** | Annotated real-world AI citation failure cases: especially UK/Commonwealth, Brazil, adversarial | `benchmarks/tier1/corpus/citation_failure_cases.json` |
-| **Synthetic prompts** | New Tier 2 probe prompts across legal domains | `benchmarks/tier2/` + `dali_mcp/` contributor tools |
-| **Ontology review** | Legal practitioners reviewing treatment and proposition ontology definitions | [schemas/ontology.md](schemas/ontology.md) + open a discussion issue |
-| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | Roadmap: see [docs/roadmap.md](docs/roadmap.md). `corpus/parsers/` will land with eyecite integration. |
-| **Spec authorship** | Drafting and reviewing changes to schemas and the Evidence JSON contract | `specs/` |
-| **Benchmark replication** | Running Tier 2 against new models and sharing results | `runners/run_synthetic.py` |
+| **Corpus expansion** | Annotated real-world AI citation failure cases: especially UK/Commonwealth, Brazil, adversarial | `data/benchmark/tier1/corpus/citation_failure_cases.json` |
+| **Synthetic prompts** | New Tier 2 probe prompts across legal domains | `data/benchmark/tier2/` + `tools/mcp/` contributor tools |
+| **Ontology review** | Legal practitioners reviewing treatment and proposition ontology definitions | [dali/schemas/ontology.md](dali/schemas/ontology.md) + open a discussion issue |
+| **Parser coverage** | eyecite wrapper improvements, jurisdiction adapters | Roadmap: see [docs/roadmap.md](docs/roadmap.md). `dali/corpus/parsers/` will land with eyecite integration. |
+| **Spec authorship** | Drafting and reviewing changes to schemas and the Evidence JSON contract | `docs/specs/` |
+| **Benchmark replication** | Running Tier 2 against new models and sharing results | `dali/runners/run_synthetic.py` |
 | **Academic partnerships** | Law schools and court data projects: structured dataset contributions, co-authored methodology | Open issue with label `partnership` |
 
 Code contributions are welcome but secondary to corpus quality, ontology
@@ -157,7 +157,7 @@ correctness, and specification rigor.
 Court-documented AI citation failure incidents. These live in:
 
 ```
-benchmarks/tier1/corpus/citation_failure_cases.json
+data/benchmark/tier1/corpus/citation_failure_cases.json
 ```
 
 Each scoring-eligible record requires these fields:
@@ -173,23 +173,23 @@ Each scoring-eligible record requires these fields:
 | `source_type` | `sanctions_order`, `judicial_opinion`, `court_filing`, or `other` |
 | `alleged_generated_citation` | The fabricated or hallucinated citation string |
 | `actual_status` | `nonexistent_authority`, `misattributed`, `real_authority_wrong_proposition`, or `other` |
-| `failure_class` | Array of failure taxonomy values (see `specs/ontology/`) |
+| `failure_class` | Array of failure taxonomy values (see `dali/schemas/ontology.md`) |
 | `ground_truth_notes` | Human-readable explanation of what actually happened |
 
 Validate your record before submitting:
 
 ```bash
-python -m dali_cli lint benchmarks/tier1/corpus/citation_failure_cases.json
+python -m tools.cli lint data/benchmark/tier1/corpus/citation_failure_cases.json
 # or, the underlying canonical command:
-python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json
+python -m dali.corpus.validator data/benchmark/tier1/corpus/citation_failure_cases.json
 ```
 
-Optional: the `dali_mcp/` contributor interface exposes the same validation via the `lint` MCP tool for editor-integrated workflows.
+Optional: the `tools/mcp/` contributor interface exposes the same validation via the `lint` MCP tool for editor-integrated workflows.
 
 Records with `needs_verification: true` load for inspection but are excluded
 from scoring aggregates.
 
-Attorney names must be removed from public records. Run `corpus/anonymizer.py`
+Attorney names must be removed from public records. Run `dali/corpus/anonymizer.py`
 if your record contains names from the original filing.
 
 ### Tier 2: Synthetic prompt probes
@@ -197,7 +197,7 @@ if your record contains names from the original filing.
 Model-facing prompts for live Tier 2 evaluation. These live in:
 
 ```
-benchmarks/tier2/
+data/benchmark/tier2/
   legal/
     case_citations.jsonl
     statutory_interpretation.jsonl
@@ -215,7 +215,7 @@ Each record requires `id` (lowercase alphanumeric + underscore), `category`,
 `subcategory`, `prompt` (≥ 30 chars), and `difficulty`.
 
 **Easiest path:** use the `draft` and `pack` MCP tools to scaffold,
-validate, and package prompts. See [dali_mcp/README.md](dali_mcp/README.md)
+validate, and package prompts. See [tools/mcp/README.md](tools/mcp/README.md)
 for setup.
 
 **Taxonomy values:**
@@ -233,21 +233,21 @@ External run results are welcome.
 **Tier 1 results** (no API key required):
 
 ```bash
-python runners/run_integrity.py \
-  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-  --output results/v0.2/{your-run-date}/integrity.json
+python -m dali.runners.run_integrity \
+  --corpus data/benchmark/tier1/corpus/citation_failure_cases.json \
+  --output data/results/v0.2/{your-run-date}/integrity.json
 ```
 
 **Tier 2 results** (requires model API access):
 
 ```bash
-python runners/run_synthetic.py \
+python -m dali.runners.run_synthetic \
   --models <model-id> \
-  --prompts benchmarks/tier2/ \
-  --output results/v0.2/{your-run-date}/
+  --prompts data/benchmark/tier2/ \
+  --output data/results/v0.2/{your-run-date}/
 ```
 
-Open a PR adding the output JSON to `results/v0.2/{your-run-date}/`. Include the `policy_version` field from the output and the `methodology.json` produced by the runner. Result files are immutable once merged.
+Open a PR adding the output JSON to `data/results/v0.2/{your-run-date}/`. Include the `policy_version` field from the output and the `methodology.json` produced by the runner. Result files are immutable once merged.
 
 ## Specification contributions
 
@@ -277,10 +277,10 @@ The repository uses labels to route contributions by review path:
 ## Pull request checklist
 
 - [ ] Tests pass: `pytest tests/`
-- [ ] New corpus records pass `lint` (MCP) or `python -m dali_cli lint <path>` (terminal)
-- [ ] New synthetic prompts pass `probe` (MCP) or `python -m dali_cli probe <path>` (terminal)
+- [ ] New corpus records pass `lint` (MCP) or `python -m tools.cli lint <path>` (terminal)
+- [ ] New synthetic prompts pass `probe` (MCP) or `python -m tools.cli probe <path>` (terminal)
 - [ ] Schema changes have an accompanying `spec-change` issue
-- [ ] No PII in corpus records: run `corpus/anonymizer.py` if needed
+- [ ] No PII in corpus records: run `dali/corpus/anonymizer.py` if needed
 - [ ] Commit authorship must accurately represent the contributor responsible for the change
 
 ---

@@ -10,19 +10,19 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
-- **`dali_cli` short-verb CLI dispatcher.** New `python -m dali_cli <verb>`
+- **`tools.cli` short-verb CLI dispatcher.** New `python -m tools.cli <verb>`
   interface mirroring the six MCP tool names so Path A (terminal) and
   Path B (MCP) share one vocabulary:
-  - `python -m dali_cli lint [corpus.json]`
-  - `python -m dali_cli score [corpus.json] [--output …]`
-  - `python -m dali_cli replay [corpus.json] [--output …]`
-  - `python -m dali_cli probe <prompt.json or .jsonl>`
-  - `python -m dali_cli draft --category … --subcategory … --difficulty …`
-  - `python -m dali_cli pack <prompt.jsonl> [more.jsonl …]`
-  The CLI is a thin wrapper — it calls `runners/run_integrity.py:main` for
+  - `python -m tools.cli lint [corpus.json]`
+  - `python -m tools.cli score [corpus.json] [--output …]`
+  - `python -m tools.cli replay [corpus.json] [--output …]`
+  - `python -m tools.cli probe <prompt.json or .jsonl>`
+  - `python -m tools.cli draft --category … --subcategory … --difficulty …`
+  - `python -m tools.cli pack <prompt.jsonl> [more.jsonl …]`
+  The CLI is a thin wrapper — it calls `dali/runners/run_integrity.py:main` for
   `score`/`replay` and the existing `_*_impl` functions for the prompt-related
   verbs. Output and cryptographic hashes are byte-identical to direct invocation.
-  Canonical `python runners/run_integrity.py` and `python -m corpus.validator`
+  Canonical `python -m dali.runners.run_integrity` and `python -m dali.corpus.validator`
   paths continue to work unchanged.
 - **`tests/test_dali_cli.py`** — 9 end-to-end tests covering all six verbs
   including replay-determinism on the canonical corpus and exit codes.
@@ -37,29 +37,29 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `bundle_prompts` → `pack`
   Rationale: easier to remember, faster to invoke, consistent verb vocabulary.
   Private `_*_impl` implementation function names are unchanged — only the
-  public MCP tool names rotated. All docs (`dali_mcp/README.md`,
-  `CONTRIBUTING.md`, persona doorways, root README, `benchmarks/tier2/README.md`)
+  public MCP tool names rotated. All docs (`tools/mcp/README.md`,
+  `CONTRIBUTING.md`, persona doorways, root README, `data/benchmark/tier2/README.md`)
   updated.
 - **Root README restructured around "Get started — pick your path"** with
   Path A (terminal) and Path B (MCP) as side-by-side first-class options.
   MCP install instructions now appear in the root README, not only in
-  `dali_mcp/README.md`.
+  `tools/mcp/README.md`.
 
 ### Added
 - **Two new MCP tools surface the demo to non-terminal contributors:**
-  - `evaluate_case` — MCP equivalent of `python runners/run_integrity.py`.
+  - `evaluate_case` — MCP equivalent of `python -m dali.runners.run_integrity`.
     Runs the deterministic Tier 1 evaluator on a single record and returns
     the full `CitationIntegrityResult` including the three cryptographic
     hashes. Contributors can now run the demo by talking to Claude.
   - `verify_replay` — MCP equivalent of `--verify-replay`. Runs the
     evaluator twice and asserts replay_hash equality.
-  Both live in `dali_mcp/tools/integrity_tools.py`; both share the exact
+  Both live in `tools/mcp/tools/integrity_tools.py`; both share the exact
   code path the CLI uses, so MCP and terminal outputs are byte-identical.
 - **`tests/test_mcp_tools.py`** — 20 unit tests covering all six MCP tool
   implementations (`check_case`, `evaluate_case`, `verify_replay`,
   `check_prompt`, `new_prompt`, `bundle_prompts`). Pure-Python tests; no
   MCP runtime required. The MCP layer is now testable like any other module.
-- **`dali_mcp/README.md` rewritten value-first**: 5 ready-to-paste
+- **`tools/mcp/README.md` rewritten value-first**: 5 ready-to-paste
   contributor prompts (the workflows people actually do), a 30-second
   smoke test, a CLI ↔ MCP mapping table, and troubleshooting. Setup demoted
   from the lede to a single 5-minute section.
@@ -75,7 +75,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `evidence_hash` — over (case_id, policy_version, run_timestamp). Per-run
     tamper-evident seal (docstring corrected; previously claimed replay-stability
     incorrectly).
-- **`runners/run_integrity.py --verify-replay`** flag. Re-evaluates every case
+- **`dali/runners/run_integrity.py --verify-replay`** flag. Re-evaluates every case
   a second time and asserts every `replay_hash` is byte-identical. Exit code
   `4` on mismatch. Proves the determinism claim is testable, not merely asserted.
 - **`.github/workflows/replay-verification.yml`** — CI workflow running
@@ -98,7 +98,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - README rewritten top-to-fold: leads with the v0.2 GPT-4.1 fabrication and
   Portuguese civil-law verification findings; adds CI/release/license badges;
   three persona doorways; explicit Dali / GammaLex disclosure.
-- `schemas/integrity-result.schema.json` requires `corpus_record_hash` and
+- `dali/schemas/integrity-result.schema.json` requires `corpus_record_hash` and
   `replay_hash` (both 64-char hex). Existing field descriptions clarified.
 - `evidence_hash` docstring corrected: it is a per-run tamper-evident seal,
   not a replay invariant. For replay-invariance see `replay_hash`.
@@ -115,9 +115,9 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Repo URL standardised to `github.com/yenk/Dali` across all files (was
   drifting between `Dali` and `Dali-Foundation` in CITATION.cff, README
   bibtex, and the RFC schema ref).
-- `runners/run_synthetic.py` docstring used fish-shell `(date)` syntax;
+- `dali/runners/run_synthetic.py` docstring used fish-shell `(date)` syntax;
   corrected to bash `$(date +%Y-%m-%d)`.
-- `specs/RFC-001-evidence-json-v1.md` `$schema` URL pointed at a non-existent
+- `docs/specs/RFC-001-evidence-json-v1.md` `$schema` URL pointed at a non-existent
   host; corrected to GitHub raw URL.
 - Synthetic corpus Mata derivative record had a broken `source_url` pointing
   at a non-existent repo (`dali-citation-benchmark`); corrected to current
@@ -128,19 +128,19 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   (Claude, Cursor, Copilot, ChatGPT, Gemini, `[bot]` patterns).
 
 ### Added
-- `dali_mcp/` MCP contributor tools server with four tools:
+- `tools/mcp/` MCP contributor tools server with four tools:
   `check_case`, `check_prompt`, `new_prompt`, `bundle_prompts`.
   Setup instructions for Claude Desktop, Cursor, and VS Code in
-  `dali_mcp/README.md`.
+  `tools/mcp/README.md`.
 - `.github/ISSUE_TEMPLATE/` with three templates: corpus-contribution,
   spec-change, bug.
 - `.github/PULL_REQUEST_TEMPLATE.md` mirroring the CONTRIBUTING.md checklist.
 - `.github/CODEOWNERS` assigning `@yenk` as default reviewer with explicit
-  gates on specs/, schemas/, data/, corpus/, and CI workflows.
+  gates on docs/specs/, dali/schemas/, data/, dali/corpus/, and CI workflows.
 - `CHANGELOG.md` (this file).
 
 ### Changed
-- `specs/evidence-json-v1.md` renamed to `specs/RFC-001-evidence-json-v1.md`
+- `docs/specs/evidence-json-v1.md` renamed to `docs/specs/RFC-001-evidence-json-v1.md`
   to surface the RFC numbering.
 - RFC status changed from `ACCEPTED` → `DRAFT: public review open`;
   §7 reference implementation section updated to reflect actual repo state.
@@ -148,8 +148,8 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   scoring-eligible cases) directly above the v0.2 headline numbers.
 - CONTRIBUTING.md parser-coverage track now correctly scoped to the
   eyecite integration roadmap item.
-- v0.2 run artifacts (`results/v0.2/2026-05-26/`,
-  `results/v0.2/smoke-2026-05-26/`) committed to the public tree for
+- v0.2 run artifacts (`data/results/v0.2/2026-05-26/`,
+  `data/results/v0.2/smoke-2026-05-26/`) committed to the public tree for
   reproducibility. `.gitignore` updated so versioned runs are committed
   by default.
 
@@ -159,31 +159,31 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - **Tier 2 synthetic probe corpus**: 150 prompts across 8 categories and
-  5 jurisdictions (`benchmarks/tier2/`).
+  5 jurisdictions (`data/benchmark/tier2/`).
 - **First public benchmark run**: 450 evaluations across GPT-4o-mini,
   GPT-4.1, and GPT-4o, producing 524 citations with deterministic
   existence verification and HTTP-status-level fabrication distinction.
 - **Cross-jurisdictional results**: US, UK/Commonwealth, Brazil (PT),
   adversarial traps, and research/policy tracks.
-- **`runners/run_synthetic.py`**: Tier 2 runner with async model calls,
+- **`dali/runners/run_synthetic.py`**: Tier 2 runner with async model calls,
   model registry, provider-reliability tracking, and per-run
   `methodology.json` output.
-- **`runners/model_registry.py`**: pinned model alias registry.
-- **`runners/export.py`**: result export utilities.
-- **`scoring/support.py`**: LLM-based support scorer with fallback chain.
-- **`scoring/verification.py`**: URL existence verification with
+- **`dali/runners/model_registry.py`**: pinned model alias registry.
+- **`dali/runners/export.py`**: result export utilities.
+- **`dali/scoring/support.py`**: LLM-based support scorer with fallback chain.
+- **`dali/scoring/verification.py`**: URL existence verification with
   HTTP-status-level distinction (200/403/404/network).
-- **`schemas/`**: JSON Schema files for `CitationIntegrityResult`,
+- **`dali/schemas/`**: JSON Schema files for `CitationIntegrityResult`,
   `EvidenceBundle`, and canonical citation.
-- **`schemas/ontology.md`**: normative ontology definitions
+- **`dali/schemas/ontology.md`**: normative ontology definitions
   (AuthorityType, Verdict, ResolutionMethod, JurisdictionHierarchy).
-- **`specs/RFC-001-evidence-json-v1.md`**: Evidence JSON v1.0 contract
+- **`docs/specs/RFC-001-evidence-json-v1.md`**: Evidence JSON v1.0 contract
   (EvidenceBundle, CitationIntegrityResult, ReplayState, taxonomies).
 - **`docs/policy-versioning.md`**: composite policy version schema with
   five sub-dimensions and cross-version aggregation guard.
-- **`docs/faq.md`**, **`docs/examples.md`**, **`docs/roadmap.md`**,
+- **`docs/faq.md`**, **`docs/examples/README.md`**, **`docs/roadmap.md`**,
   **`docs/architecture.md`**, supporting documentation.
-- **`results/v0.2/README.md`**: full v0.2 results with per-model
+- **`data/results/v0.2/README.md`**: full v0.2 results with per-model
   leaderboard, per-jurisdiction breakdown, and methodology notes.
 - **`.github/workflows/benchmark-validation.yml`**: CI pipeline: Tier 1
   evaluator, corpus quality gate, schema validation, JSONL validation.
