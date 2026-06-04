@@ -10,6 +10,26 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Two new MCP tools surface the demo to non-terminal contributors:**
+  - `evaluate_case` — MCP equivalent of `python runners/run_integrity.py`.
+    Runs the deterministic Tier 1 evaluator on a single record and returns
+    the full `CitationIntegrityResult` including the three cryptographic
+    hashes. Contributors can now run the demo by talking to Claude.
+  - `verify_replay` — MCP equivalent of `--verify-replay`. Runs the
+    evaluator twice and asserts replay_hash equality.
+  Both live in `dali_mcp/tools/integrity_tools.py`; both share the exact
+  code path the CLI uses, so MCP and terminal outputs are byte-identical.
+- **`tests/test_mcp_tools.py`** — 20 unit tests covering all six MCP tool
+  implementations (`check_case`, `evaluate_case`, `verify_replay`,
+  `check_prompt`, `new_prompt`, `bundle_prompts`). Pure-Python tests; no
+  MCP runtime required. The MCP layer is now testable like any other module.
+- **`dali_mcp/README.md` rewritten value-first**: 5 ready-to-paste
+  contributor prompts (the workflows people actually do), a 30-second
+  smoke test, a CLI ↔ MCP mapping table, and troubleshooting. Setup demoted
+  from the lede to a single 5-minute section.
+- **No-terminal contribution path called out** in `README.md` and
+  `docs/for-legal-practitioners.md`. Legal practitioners can now contribute
+  a court-documented case entirely through their AI editor.
 - **Cryptographic lineage on every Tier 1 result.** `CitationIntegrityResult`
   now carries three SHA-256 hashes:
   - `corpus_record_hash` — over the canonical JSON of the input corpus record.

@@ -2,7 +2,9 @@
 
 You are the most valuable contributor to Dali. The benchmark's evidentiary thesis depends on court-documented incidents, and identifying them requires legal training. Engineers can't replace this work.
 
-This doc is the 30-minute on-ramp. No Python required.
+This doc is the 30-minute on-ramp. **No Python required. No terminal required.**
+
+If you have an AI editor (Claude Desktop, Cursor, VS Code with the MCP extension), the entire workflow — validate a record, run the deterministic evaluator, confirm replay determinism, get a PR-ready JSON — happens by *talking* to your AI. See [dali_mcp/README.md](../dali_mcp/README.md) for the 5-minute setup. The rest of this doc shows you what to ask.
 
 ---
 
@@ -76,11 +78,20 @@ Include:
 
 That is sufficient for the maintainer to begin canonicalization. You do not need to edit JSON or run any code.
 
-### Step 4 — Optional: submit the record yourself (10 min)
+### Step 4 — Optional: submit the record yourself (10 min, no terminal)
 
-If you are comfortable editing JSON, the record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json`, and open a PR.
+The fastest no-terminal path uses the MCP tools. After the [5-minute setup](../dali_mcp/README.md), paste this into your AI editor:
 
-If your record contains attorney names from the original filing, the `corpus/anonymizer.py` script will strip them — public corpus records identify cases by case caption only.
+> I have a court-documented AI citation failure I want to add to Dali. The case is [paste case name and court document URL]. Walk me through filling out the corpus record, then:
+>
+> 1. Use `check_case` to validate it.
+> 2. Use `evaluate_case` to confirm it produces a clean Tier 1 verdict with cryptographic hashes.
+> 3. Use `verify_replay` to confirm the result is deterministic.
+> 4. Give me the final JSON ready to paste into `benchmarks/tier1/corpus/citation_failure_cases.json`.
+
+Your AI will walk through each field, validate as it goes, and produce a PR-ready record. If your record contains attorney names from the original filing, mention that — the AI knows to flag them for the anonymizer.
+
+**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json`, and open a PR.
 
 ---
 

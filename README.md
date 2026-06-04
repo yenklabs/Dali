@@ -44,6 +44,8 @@ Dali consolidates the missing infrastructure into one MIT-licensed, deterministi
 | **AI researcher / eval engineer** | Run Tier 2 against a new model and submit a leaderboard PR → [docs/for-researchers.md](docs/for-researchers.md) | 60 min |
 | **Software engineer** | Pick a `good first issue` — canonicalization, MCP, visualization → [docs/for-engineers.md](docs/for-engineers.md) | 2 hr |
 
+**No terminal? No problem.** The Dali MCP server exposes the full workflow — validate, evaluate, verify replay determinism, scaffold prompts, bundle a PR — through Claude Desktop, Cursor, or VS Code. You don't need to know Python. See [dali_mcp/README.md](dali_mcp/README.md).
+
 Every merged contribution is credited in the next release notes and the `CITATION.cff` contributor roll. For substantial corpus or methodology work, the project supports co-authorship on the v0.3 technical report (in progress).
 
 ---
