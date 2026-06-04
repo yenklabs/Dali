@@ -9,8 +9,8 @@ authors:
     alias: yenk
 repository-code: "https://github.com/yenk/Dali"
 url: "https://github.com/yenk/Dali"
-version: "0.2.0"
-date-released: "2026-05-26"
+version: "0.2.1"
+date-released: "2026-05-27"
 license: MIT
 abstract: >
   Dali evaluates whether AI-generated legal citations remain reproducible,
@@ -35,6 +35,6 @@ preferred-citation:
       email: yen.kha@gammalex.com
   institution: "GammaLex AI Inc."
   year: 2026
-  version: "0.2.0"
+  version: "0.2.1"
   url: "https://github.com/yenk/Dali"
   notes: "Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny"
