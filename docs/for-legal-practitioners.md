@@ -84,14 +84,14 @@ The fastest no-terminal path uses the MCP tools. After the [5-minute setup](../d
 
 > I have a court-documented AI citation failure I want to add to Dali. The case is [paste case name and court document URL]. Walk me through filling out the corpus record, then:
 >
-> 1. Use `check_case` to validate it.
-> 2. Use `evaluate_case` to confirm it produces a clean Tier 1 verdict with cryptographic hashes.
-> 3. Use `verify_replay` to confirm the result is deterministic.
+> 1. `lint` it to catch missing or invalid fields.
+> 2. `score` it to confirm a clean Tier 1 verdict with cryptographic hashes.
+> 3. `replay` it to confirm the result is deterministic.
 > 4. Give me the final JSON ready to paste into `benchmarks/tier1/corpus/citation_failure_cases.json`.
 
 Your AI will walk through each field, validate as it goes, and produce a PR-ready record. If your record contains attorney names from the original filing, mention that — the AI knows to flag them for the anonymizer.
 
-**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json`, and open a PR.
+**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m dali_cli lint`, and open a PR. The CLI uses the same verbs as the MCP tools — `lint`, `score`, `replay` — so the muscle memory is identical across both paths.
 
 ---
 

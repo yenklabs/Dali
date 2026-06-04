@@ -40,7 +40,7 @@ python runners/run_synthetic.py \
 
 ## Adding prompts
 
-Use the MCP contributor tools (`new_prompt`, `check_prompt`, `bundle_prompts`) or follow the manual path in [CONTRIBUTING.md](../../CONTRIBUTING.md).
+Use the MCP contributor tools (`draft`, `probe`, `pack`) or follow the manual path in [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 ## Track strategy
 

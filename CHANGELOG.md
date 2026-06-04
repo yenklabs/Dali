@@ -10,6 +10,42 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **`dali_cli` short-verb CLI dispatcher.** New `python -m dali_cli <verb>`
+  interface mirroring the six MCP tool names so Path A (terminal) and
+  Path B (MCP) share one vocabulary:
+  - `python -m dali_cli lint [corpus.json]`
+  - `python -m dali_cli score [corpus.json] [--output …]`
+  - `python -m dali_cli replay [corpus.json] [--output …]`
+  - `python -m dali_cli probe <prompt.json or .jsonl>`
+  - `python -m dali_cli draft --category … --subcategory … --difficulty …`
+  - `python -m dali_cli pack <prompt.jsonl> [more.jsonl …]`
+  The CLI is a thin wrapper — it calls `runners/run_integrity.py:main` for
+  `score`/`replay` and the existing `_*_impl` functions for the prompt-related
+  verbs. Output and cryptographic hashes are byte-identical to direct invocation.
+  Canonical `python runners/run_integrity.py` and `python -m corpus.validator`
+  paths continue to work unchanged.
+- **`tests/test_dali_cli.py`** — 9 end-to-end tests covering all six verbs
+  including replay-determinism on the canonical corpus and exit codes.
+
+### Changed
+- **MCP tool names shortened to action verbs** (BREAKING for any existing MCP users):
+  - `check_case` → `lint`
+  - `evaluate_case` → `score`
+  - `verify_replay` → `replay`
+  - `check_prompt` → `probe`
+  - `new_prompt` → `draft`
+  - `bundle_prompts` → `pack`
+  Rationale: easier to remember, faster to invoke, consistent verb vocabulary.
+  Private `_*_impl` implementation function names are unchanged — only the
+  public MCP tool names rotated. All docs (`dali_mcp/README.md`,
+  `CONTRIBUTING.md`, persona doorways, root README, `benchmarks/tier2/README.md`)
+  updated.
+- **Root README restructured around "Get started — pick your path"** with
+  Path A (terminal) and Path B (MCP) as side-by-side first-class options.
+  MCP install instructions now appear in the root README, not only in
+  `dali_mcp/README.md`.
+
+### Added
 - **Two new MCP tools surface the demo to non-terminal contributors:**
   - `evaluate_case` — MCP equivalent of `python runners/run_integrity.py`.
     Runs the deterministic Tier 1 evaluator on a single record and returns

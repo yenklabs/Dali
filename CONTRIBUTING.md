@@ -68,10 +68,14 @@ source .venv/bin/activate.fish
 pip install -r requirements.txt
 
 # Run the Tier 1 deterministic evaluator (no API keys needed)
-python runners/run_integrity.py \
-  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
+python -m dali_cli score
+
+# Or with explicit args / additional flags:
+python -m dali_cli score benchmarks/tier1/corpus/citation_failure_cases.json \
   --output results/demo/integrity.json
 ```
+
+The `python -m dali_cli` shim mirrors the six MCP verbs (`lint`, `score`, `replay`, `probe`, `draft`, `pack`) and wraps the underlying runners. `python runners/run_integrity.py` continues to work as the canonical entry point.
 
 Expected output:
 ```text
@@ -104,7 +108,7 @@ INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
 
 Tier 1 runs entirely offline. No API keys. No external services.
 
-**Prefer working in an editor?** If you use Claude Desktop, VS Code, or Cursor, the `dali_mcp/` tools let you validate corpus records and scaffold prompts without touching the terminal. See [dali_mcp/README.md](dali_mcp/README.md) for setup. The `check_case` and `check_prompt` tools cover the same validation logic as the CLI commands above.
+**Prefer working in an editor?** If you use Claude Desktop, VS Code, or Cursor, the `dali_mcp/` tools let you do the entire contribution workflow — validate, evaluate, verify replay determinism, scaffold prompts, bundle a PR — without touching the terminal. Six short verbs: `lint`, `score`, `replay`, `probe`, `draft`, `pack`. See [dali_mcp/README.md](dali_mcp/README.md) for the 5-minute setup.
 
 ---
 
@@ -175,10 +179,12 @@ Each scoring-eligible record requires these fields:
 Validate your record before submitting:
 
 ```bash
+python -m dali_cli lint benchmarks/tier1/corpus/citation_failure_cases.json
+# or, the underlying canonical command:
 python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json
 ```
 
-Optional: the `dali_mcp/` contributor interface exposes the same validation as an MCP tool (`check_case`) for editor-integrated workflows.
+Optional: the `dali_mcp/` contributor interface exposes the same validation via the `lint` MCP tool for editor-integrated workflows.
 
 Records with `needs_verification: true` load for inspection but are excluded
 from scoring aggregates.
@@ -208,9 +214,9 @@ benchmarks/tier2/
 Each record requires `id` (lowercase alphanumeric + underscore), `category`,
 `subcategory`, `prompt` (≥ 30 chars), and `difficulty`.
 
-**Easiest path:** use the `new_prompt` and `bundle_prompts`
-MCP tools to scaffold, validate, and package prompts. See
-[dali_mcp/README.md](dali_mcp/README.md) for setup.
+**Easiest path:** use the `draft` and `pack` MCP tools to scaffold,
+validate, and package prompts. See [dali_mcp/README.md](dali_mcp/README.md)
+for setup.
 
 **Taxonomy values:**
 
@@ -271,8 +277,8 @@ The repository uses labels to route contributions by review path:
 ## Pull request checklist
 
 - [ ] Tests pass: `pytest tests/`
-- [ ] New corpus records pass `check_case`
-- [ ] New synthetic prompts pass `check_prompt`
+- [ ] New corpus records pass `lint` (MCP) or `python -m dali_cli lint <path>` (terminal)
+- [ ] New synthetic prompts pass `probe` (MCP) or `python -m dali_cli probe <path>` (terminal)
 - [ ] Schema changes have an accompanying `spec-change` issue
 - [ ] No PII in corpus records: run `corpus/anonymizer.py` if needed
 - [ ] Commit authorship must accurately represent the contributor responsible for the change
