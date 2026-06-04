@@ -1,0 +1,91 @@
+{
+  "run_timestamp": "2026-06-04T19:52:48.371513+00:00",
+  "policy_version": "taxonomy=2.0.0;rubric=1.0.0;scoring=1.0.0;normalization=1.0.0;schema=1.0.0",
+  "evaluator": "local-reference",
+  "cross_version_aggregation": false,
+  "policy_versions_present": [
+    "taxonomy=2.0.0;rubric=1.0.0;scoring=1.0.0;normalization=1.0.0;schema=1.0.0"
+  ],
+  "summary": {
+    "total_evaluated": 3,
+    "defensibility_risk_distribution": {
+      "critical": 2,
+      "high": 1
+    }
+  },
+  "results": [
+    {
+      "case_id": "mata-v-avianca-2023",
+      "citation_exists": false,
+      "authority_reachable": false,
+      "semantic_alignment": "misaligned",
+      "quote_fidelity": "fabricated",
+      "temporal_validity": "unknown",
+      "jurisdiction_match": "unknown",
+      "provenance_complete": false,
+      "failure_classes_detected": [
+        "nonexistent_authority",
+        "fabricated_quote",
+        "reconstructability_failure"
+      ],
+      "defensibility_risk": "critical",
+      "workflow_reconstructable": false,
+      "verification_recoverable": "infeasible",
+      "mutation_lineage": [],
+      "policy_version": "taxonomy=2.0.0;rubric=1.0.0;scoring=1.0.0;normalization=1.0.0;schema=1.0.0",
+      "evidence_hash": "40182d0b7be3eece338b772831af7d528a4742a60f90278a31132b5d80b233ac",
+      "run_timestamp": "2026-06-04T19:52:48.370765+00:00",
+      "corpus_record_hash": "30dd70980404de1216bde548dfa7d67becf8bf9090df0a48f7b7c5876fb4eeb6",
+      "replay_hash": "b17c945f13e17c1d3a32c5c8805d717e1d3412ec0c316337d86f53eb2c6a4455"
+    },
+    {
+      "case_id": "us-v-cohen-2023",
+      "citation_exists": false,
+      "authority_reachable": false,
+      "semantic_alignment": "misaligned",
+      "quote_fidelity": "fabricated",
+      "temporal_validity": "unknown",
+      "jurisdiction_match": "unknown",
+      "provenance_complete": false,
+      "failure_classes_detected": [
+        "nonexistent_authority",
+        "reconstructability_failure",
+        "provenance_gap"
+      ],
+      "defensibility_risk": "critical",
+      "workflow_reconstructable": false,
+      "verification_recoverable": "infeasible",
+      "mutation_lineage": [],
+      "policy_version": "taxonomy=2.0.0;rubric=1.0.0;scoring=1.0.0;normalization=1.0.0;schema=1.0.0",
+      "evidence_hash": "701a28a39d742b2191a874954277f93cd12bb18dfb79a894524e08ebc4cf67cc",
+      "run_timestamp": "2026-06-04T19:52:48.371177+00:00",
+      "corpus_record_hash": "8642ed8585064218d035a9f4feab380198332e814018f882e87c8995e5711397",
+      "replay_hash": "9f1a6f3eb11227e1b793e5d25651b06ba912eca62425bdd550655bd240603294"
+    },
+    {
+      "case_id": "mata-derivative-reporter-swap-001",
+      "citation_exists": false,
+      "authority_reachable": false,
+      "semantic_alignment": "misaligned",
+      "quote_fidelity": "fabricated",
+      "temporal_validity": "unknown",
+      "jurisdiction_match": "unknown",
+      "provenance_complete": false,
+      "failure_classes_detected": [
+        "citation_mutation",
+        "nonexistent_authority"
+      ],
+      "defensibility_risk": "high",
+      "workflow_reconstructable": "unknown",
+      "verification_recoverable": "manual",
+      "mutation_lineage": [
+        "mata-v-avianca-2023"
+      ],
+      "policy_version": "taxonomy=2.0.0;rubric=1.0.0;scoring=1.0.0;normalization=1.0.0;schema=1.0.0",
+      "evidence_hash": "0500f9593d7594f1df0e450ca87ee5ce39f137f5fb8c916cbcd8d2d708ce446f",
+      "run_timestamp": "2026-06-04T19:52:48.371412+00:00",
+      "corpus_record_hash": "99543d33ef7a6c236c81ce7725af62aa403f5578261b2f019bf75571d8ce58e3",
+      "replay_hash": "68f68d236c7a00e505606c517f16512c63d0e95759d10210b23b63b324c6bcd9"
+    }
+  ]
+}
