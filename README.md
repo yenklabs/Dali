@@ -81,7 +81,7 @@ See [CITATION.cff](CITATION.cff), or:
   title        = {Dali: Evidentiary Infrastructure for Legal AI},
   author       = {Kha, Yen},
   year         = {2026},
-  version      = {0.2.1},
+  version      = {1.0.0},
   organization = {GammaLex AI Inc.},
   url          = {https://github.com/yenk/Dali},
   note         = {Open benchmark for citation integrity, provenance, and evidence reconstructability in legal AI}

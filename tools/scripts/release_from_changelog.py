@@ -31,6 +31,10 @@ MINOR_HEADINGS = ("added", "changed", "deprecated")
 PATCH_HEADINGS = ("fixed", "security")
 
 
+class NoPendingReleaseError(ValueError):
+    """Raised when CHANGELOG.md has no releasable Unreleased content."""
+
+
 @dataclass(frozen=True)
 class SemVer:
     major: int
@@ -72,10 +76,10 @@ def _extract_unreleased_block(changelog_text: str) -> tuple[str, int, int]:
         flags=re.MULTILINE | re.DOTALL,
     )
     if not match:
-        raise ValueError("CHANGELOG.md does not contain a [Unreleased] section")
+        raise NoPendingReleaseError("CHANGELOG.md does not contain a [Unreleased] section")
     body = match.group("body")
     if not body.strip():
-        raise ValueError("[Unreleased] is empty; nothing to release")
+        raise NoPendingReleaseError("[Unreleased] is empty; nothing to release")
     return body, match.start(), match.end()
 
 
@@ -128,7 +132,7 @@ def build_release_plan(
 def finalize_changelog(changelog_text: str, plan: ReleasePlan) -> str:
     unreleased_body, start, end = _extract_unreleased_block(changelog_text)
     release_header = f"## [{plan.next_version}] - {plan.release_date}\n"
-    new_block = f"## [Unreleased]\n\n{release_header}{unreleased_body}"
+    new_block = f"{release_header}{unreleased_body}"
     return changelog_text[:start] + new_block + changelog_text[end:]
 
 
@@ -226,12 +230,16 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    plan = run_release(
-        repo_root=args.repo_root.resolve(),
-        bump=args.bump,
-        release_date=args.date,
-        dry_run=args.dry_run,
-    )
+    try:
+        plan = run_release(
+            repo_root=args.repo_root.resolve(),
+            bump=args.bump,
+            release_date=args.date,
+            dry_run=args.dry_run,
+        )
+    except NoPendingReleaseError as exc:
+        print(str(exc))
+        return 0
     print(
         f"current={plan.current_version} "
         f"bump={plan.bump_kind} "

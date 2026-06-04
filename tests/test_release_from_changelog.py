@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from tools.scripts.release_from_changelog import (
+    NoPendingReleaseError,
     SemVer,
     build_release_plan,
     finalize_changelog,
@@ -84,7 +85,8 @@ def test_finalize_changelog_promotes_unreleased_block():
     changelog = CHANGELOG_TEMPLATE.format(section="Added", body="New tool.")
     plan = build_release_plan(changelog, bump="auto", release_date="2026-06-04")
     updated = finalize_changelog(changelog, plan)
-    assert "## [Unreleased]\n\n## [1.3.0] - 2026-06-04" in updated
+    assert "## [Unreleased]" not in updated
+    assert "## [1.3.0] - 2026-06-04" in updated
     assert "### Added\n- New tool." in updated
 
 
@@ -125,3 +127,26 @@ def test_run_release_dry_run_leaves_files_unchanged(tmp_path):
 
     assert str(plan.next_version) == "1.2.4"
     assert (tmp_path / "CHANGELOG.md").read_text(encoding="utf-8") == changelog_text
+
+
+def test_run_release_raises_when_no_pending_unreleased(tmp_path):
+    changelog = """# Changelog
+
+## [1.2.3] - 2026-06-01
+
+### Fixed
+- Previous release note.
+"""
+    _write_repo(tmp_path, changelog)
+
+    try:
+        run_release(
+            repo_root=tmp_path,
+            bump="auto",
+            release_date="2026-06-04",
+            dry_run=False,
+        )
+    except NoPendingReleaseError as exc:
+        assert "does not contain a [Unreleased] section" in str(exc)
+    else:
+        raise AssertionError("expected NoPendingReleaseError")
