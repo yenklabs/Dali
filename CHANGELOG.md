@@ -7,7 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [Unreleased]
+## [1.0.0] - 2026-06-04
 
 ### Added
 - **`tools.cli` short-verb CLI dispatcher.** New `python -m tools.cli <verb>`

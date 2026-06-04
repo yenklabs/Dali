@@ -293,7 +293,7 @@ Both runs used identical `policy_version=v1.0.0` and `parser_version=v1.1.0`. Th
   title        = {Dali: Evidentiary Infrastructure for Legal AI},
   author       = {Kha, Yen},
   year         = {2026},
-  version      = {0.2.1},
+  version      = {1.0.0},
   organization = {GammaLex AI Inc.},
   url          = {https://github.com/yenk/Dali},
   note         = {Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny}
