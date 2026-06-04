@@ -18,7 +18,7 @@ Three properties make Dali useful as research infrastructure:
 2. **Policy versioning is enforced**: runs across mismatched policy versions cannot be silently aggregated. The runner refuses without `--allow-cross-version`. This is unusual in current eval infrastructure and we believe it should be standard.
 3. **Tier 2 is cross-jurisdictional**: most legal-AI evals are U.S.-common-law only. Dali stresses civil-law structures, non-English sources, and adversarial citation traps as separate tracks — surfacing failure modes that aggregate metrics hide.
 
-See [METHODOLOGY.md](../METHODOLOGY.md) for the full rubric and [docs/policy-versioning.md](policy-versioning.md) for the version invariants.
+See [METHODOLOGY.md](METHODOLOGY.md) for the full rubric and [docs/policy-versioning.md](policy-versioning.md) for the version invariants.
 
 ---
 
@@ -31,7 +31,7 @@ See [METHODOLOGY.md](../METHODOLOGY.md) for the full rubric and [docs/policy-ver
 | Adversarial citation traps: GPT-4.1 took bait 76% of the time, 48% fabricated URLs | Adversarial robustness in domain-specific citation is much weaker than reported on general benchmarks |
 | Brazilian / Portuguese civil-law track: 3% verified vs UK common-law: 76% | A 25× verification gap between two legal systems on the same models — the single most important data point in v0.2 |
 
-Full per-model breakdown: [LEADERBOARD.md](../LEADERBOARD.md). Raw artifacts: [results/v0.2/](../results/v0.2/).
+Full per-model breakdown: [LEADERBOARD.md](LEADERBOARD.md). Raw artifacts: [data/results/v0.2/](../data/results/v0.2/).
 
 ---
 
@@ -51,7 +51,7 @@ Engagement on any of these via [GitHub Issues](https://github.com/yenk/Dali/issu
 
 ## Submit a model to the leaderboard
 
-The leaderboard is open. The minimum viable submission runs Tier 2 against any OpenAI-compatible or Anthropic API endpoint and produces a result file under `results/v0.2/<date>-<your-handle>/`.
+The leaderboard is open. The minimum viable submission runs Tier 2 against any OpenAI-compatible or Anthropic API endpoint and produces a result file under `data/results/v0.2/<date>-<your-handle>/`.
 
 ### 60-minute submission protocol
 
@@ -62,21 +62,21 @@ pip install -r requirements.txt
 
 # Set your API key for the provider you want to evaluate
 export OPENAI_API_KEY=...
-# or ANTHROPIC_API_KEY, etc. — see runners/model_registry.py
+# or ANTHROPIC_API_KEY, etc. — see dali/runners/model_registry.py
 
-python runners/run_synthetic.py \
+python -m dali.runners.run_synthetic \
   --models <your-model-id> \
-  --prompts benchmarks/tier2/ \
-  --output results/v0.2/$(date +%Y-%m-%d)-<your-handle>/
+  --prompts data/benchmark/tier2/ \
+  --output data/results/v0.2/$(date +%Y-%m-%d)-<your-handle>/
 
 # Validate
-python -m corpus.validator results/v0.2/$(date +%Y-%m-%d)-<your-handle>/
+python -m dali.corpus.validator data/results/v0.2/$(date +%Y-%m-%d)-<your-handle>/
 ```
 
 Open a PR titled `leaderboard: add <model-id> v0.2 results` adding:
 
-- Your run directory under `results/v0.2/`
-- A new row in [LEADERBOARD.md](../LEADERBOARD.md)
+- Your run directory under `data/results/v0.2/`
+- A new row in [LEADERBOARD.md](LEADERBOARD.md)
 - The `policy_version` from your run output (required)
 
 Reviewers verify deterministic replay before merge. Result files are immutable once merged.
@@ -89,8 +89,8 @@ See [CONTRIBUTING.md § Result contributions](../CONTRIBUTING.md#result-contribu
 
 | Track | What it looks like | Time |
 |---|---|---|
-| **Tier 2 prompt corpus** | Add probe prompts in `benchmarks/tier2/` for under-covered jurisdictions or failure modes. EU civil-law and policy/regulatory citations are highest priority. | 2-4 hr |
-| **Methodology critique** | Read [METHODOLOGY.md](../METHODOLOGY.md) and open an issue with label `methodology` proposing a specific rubric or scoring change | 2 hr |
+| **Tier 2 prompt corpus** | Add probe prompts in `data/benchmark/tier2/` for under-covered jurisdictions or failure modes. EU civil-law and policy/regulatory citations are highest priority. | 2-4 hr |
+| **Methodology critique** | Read [METHODOLOGY.md](METHODOLOGY.md) and open an issue with label `methodology` proposing a specific rubric or scoring change | 2 hr |
 | **Reproducibility audit** | Independently replay v0.2 against the same OpenAI models and confirm (or refute) the reported numbers within tolerance. This is a publication-worthy artifact on its own. | 4 hr |
 | **Cross-benchmark mapping** | Map Dali's failure-class taxonomy to existing benchmarks (TruthfulQA, HELM, MTBench legal subsets, Patronus FinanceBench-style domain evals) | 1 day |
 | **Academic partnership** | Open an issue with label `research-partner` describing your group's interest. Law-school clinics, AI risk labs, legal-empirical research groups especially welcome. | varies |

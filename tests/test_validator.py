@@ -2,15 +2,15 @@
 
 import pytest
 
-from corpus.schema import CitationFailureCase, WorkflowContext
-from corpus.taxonomy import (
+from dali.corpus.schema import CitationFailureCase, WorkflowContext
+from dali.corpus.taxonomy import (
     ActualStatus,
     CitationFailureClass,
     CurationSource,
     MutationType,
     SourceType,
 )
-from corpus.validator import (
+from dali.corpus.validator import (
     CANONICAL_WINDOW,
     INTAKE_WINDOW,
     filter_scoring_eligible,

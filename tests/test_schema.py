@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from corpus.schema import (
+from dali.corpus.schema import (
     CitationFailureCase,
     CitationIntegrityResult,
     WorkflowContext,
@@ -13,7 +13,7 @@ from corpus.schema import (
     evidence_hash,
     now_iso,
 )
-from corpus.taxonomy import (
+from dali.corpus.taxonomy import (
     ActualStatus,
     AnnotationConfidence,
     CitationFailureClass,

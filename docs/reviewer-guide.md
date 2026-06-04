@@ -16,10 +16,10 @@ It is not a hosted product repo and it is not a general legal assistant.
 
 | Question | Evidence |
 |---|---|
-| Is there a real benchmark? | [results/v0.2](../results/v0.2/) |
+| Is there a real benchmark? | [data/results/v0.2](../data/results/v0.2/) |
 | Can I reproduce anything locally? | [Quick start](../README.md#quick-start) |
-| Are the scoring rules documented? | [METHODOLOGY.md](../METHODOLOGY.md) |
-| Are results versioned and schema-backed? | [schemas](../schemas/) and [docs/policy-versioning.md](policy-versioning.md) |
+| Are the scoring rules documented? | [METHODOLOGY.md](METHODOLOGY.md) |
+| Are results versioned and schema-backed? | [schemas](../dali/schemas/) and [docs/policy-versioning.md](policy-versioning.md) |
 | Can contributors extend the corpus? | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
 ## Proof points

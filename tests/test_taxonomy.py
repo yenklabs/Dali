@@ -2,7 +2,7 @@
 
 import pytest
 
-from corpus.taxonomy import (
+from dali.corpus.taxonomy import (
     FAILURE_CLASS_DESCRIPTIONS,
     ActualStatus,
     AnnotationConfidence,

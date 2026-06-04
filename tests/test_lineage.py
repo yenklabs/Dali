@@ -2,9 +2,9 @@
 
 import pytest
 
-from corpus.lineage import derivatives_of, mutation_chain, resolve_parent
-from corpus.schema import CitationFailureCase
-from corpus.taxonomy import (
+from dali.corpus.lineage import derivatives_of, mutation_chain, resolve_parent
+from dali.corpus.schema import CitationFailureCase
+from dali.corpus.taxonomy import (
     ActualStatus,
     CitationFailureClass,
     CurationSource,

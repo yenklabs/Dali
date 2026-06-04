@@ -52,9 +52,9 @@ No private keys. No trusted server. No dependency on the Dali maintainer being a
 ## The `--verify-replay` flag
 
 ```bash
-python runners/run_integrity.py \
-  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-  --output results/demo/integrity.json \
+python -m dali.runners.run_integrity \
+  --corpus data/benchmark/tier1/corpus/citation_failure_cases.json \
+  --output data/results/demo/integrity.json \
   --verify-replay
 ```
 
@@ -93,7 +93,7 @@ See [docs/roadmap.md](roadmap.md) for the broader v0.3–v0.5 plan.
 
 ## Schema reference
 
-The three hash fields are required by [`schemas/integrity-result.schema.json`](../schemas/integrity-result.schema.json). All three are validated as 64-character lowercase hex strings (SHA-256 hexdigest).
+The three hash fields are required by [`dali/schemas/integrity-result.schema.json`](../dali/schemas/integrity-result.schema.json). All three are validated as 64-character lowercase hex strings (SHA-256 hexdigest).
 
 ```json
 {

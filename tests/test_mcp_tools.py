@@ -10,12 +10,12 @@ import json
 
 import pytest
 
-from dali_mcp.tools.corpus_tools import _check_case_impl
-from dali_mcp.tools.integrity_tools import (
+from tools.mcp.tools.corpus_tools import _check_case_impl
+from tools.mcp.tools.integrity_tools import (
     _evaluate_case_impl,
     _verify_replay_impl,
 )
-from dali_mcp.tools.prompt_tools import (
+from tools.mcp.tools.prompt_tools import (
     _bundle_prompts_impl,
     _check_prompt_impl,
     _new_prompt_impl,

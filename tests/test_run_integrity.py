@@ -6,15 +6,15 @@ from pathlib import Path
 
 import pytest
 
-from corpus.schema import CitationFailureCase
-from corpus.taxonomy import (
+from dali.corpus.schema import CitationFailureCase
+from dali.corpus.taxonomy import (
     ActualStatus,
     CitationFailureClass,
     DefensibilityRisk,
     MutationType,
     SourceType,
 )
-from runners.run_integrity import evaluate_local, main as run_main
+from dali.runners.run_integrity import evaluate_local, main as run_main
 
 
 def _case(**kwargs) -> CitationFailureCase:
@@ -124,7 +124,7 @@ class TestEvaluateLocal:
         assert "parent-001" in result.mutation_lineage
 
     def test_medium_risk_citation_mutation(self):
-        from corpus.schema import WorkflowContext
+        from dali.corpus.schema import WorkflowContext
         wf = WorkflowContext(source_chain_complete=True)
         case = _case(
             failure_class=[CitationFailureClass.CITATION_MUTATION],
@@ -195,7 +195,7 @@ class TestCryptographicLineage:
 
     def test_verify_replay_flag_passes_on_clean_corpus(self, tmp_path):
         from pathlib import Path
-        corpus_path = Path("benchmarks/tier1/corpus/citation_failure_cases.json")
+        corpus_path = Path("data/benchmark/tier1/corpus/citation_failure_cases.json")
         if not corpus_path.is_file():
             pytest.skip("seed corpus not found")
         output = tmp_path / "integrity.json"
@@ -209,7 +209,7 @@ class TestCryptographicLineage:
 
 class TestRunMain:
     def test_runs_against_seed_corpus(self, tmp_path):
-        corpus_path = Path("benchmarks/tier1/corpus/citation_failure_cases.json")
+        corpus_path = Path("data/benchmark/tier1/corpus/citation_failure_cases.json")
         if not corpus_path.is_file():
             pytest.skip("seed corpus not found")
 
@@ -228,7 +228,7 @@ class TestRunMain:
         assert data["evaluator"] == "local-reference"
 
     def test_result_shape(self, tmp_path):
-        corpus_path = Path("benchmarks/tier1/corpus/citation_failure_cases.json")
+        corpus_path = Path("data/benchmark/tier1/corpus/citation_failure_cases.json")
         if not corpus_path.is_file():
             pytest.skip("seed corpus not found")
 
