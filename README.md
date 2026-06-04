@@ -37,7 +37,7 @@ Choose the path that matches your role:
 - **Software engineer**: [docs/for-engineers.md](docs/for-engineers.md)
 - **Methodology reviewer**: [docs/reviewer-guide.md](docs/reviewer-guide.md)
 
-Quick start:
+### Quick start
 
 ```bash
 git clone https://github.com/yenk/Dali && cd Dali
@@ -46,6 +46,8 @@ python -m tools.cli replay
 ```
 
 The Tier 1 evaluator runs entirely offline with no API keys or network access required. Every evaluation verifies replay determinism through Dali's cryptographic lineage chain.
+
+Standalone setup guide: [docs/quickstart.md](docs/quickstart.md).
 
 Dali exposes the same contributor workflow through both the CLI and MCP:
 
