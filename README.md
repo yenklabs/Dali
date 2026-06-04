@@ -1,81 +1,118 @@
 # Dali
 
-**Dali is open evidentiary infrastructure for legal AI.**
+> **U.S. lawyers are being sanctioned for AI-fabricated citations on a near-weekly cadence.**
+> **Dali is the open benchmark that finds the failures before a judge does.**
 
-Most evaluations focus on outputs.
+[![CI](https://github.com/yenk/Dali/actions/workflows/test-suite.yml/badge.svg)](https://github.com/yenk/Dali/actions/workflows/test-suite.yml)
+[![Latest release](https://img.shields.io/github/v/release/yenk/Dali)](https://github.com/yenk/Dali/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Cite](https://img.shields.io/badge/cite-CITATION.cff-orange)](CITATION.cff)
 
-Dali focuses on evidence.
+**v0.2 headline findings · 524 citations · 3 OpenAI models · 5 jurisdiction tracks:**
 
-It evaluates whether the evidence behind an AI-generated output remains
-attributable, verifiable, and reconstructable over time.
+- GPT-4.1 generated 374 legal citations. **23% point to URLs that do not exist.** On adversarial citation-trap prompts, it took the bait **76% of the time**.
+- Portuguese civil-law citations verified at **3%**. UK common-law at **76%**. Same models, same task, different legal system.
+- The model that cited most willingly (GPT-4.1, 94% citation rate) fabricated most often. The most cautious (GPT-4o, 26%) had the cleanest verification.
 
-A citation checker asks whether a citation exists.
+**Start here:**
+[▶ Leaderboard](LEADERBOARD.md) · [▶ v0.2 Results](results/v0.2/) · [▶ 60-second demo](#60-second-demo) · [▶ Case studies](CASE-STUDIES.md) · [▶ Methodology](METHODOLOGY.md)
 
-Dali asks whether the evidence behind that citation can still be independently
-reconstructed later.
+![Dali v0.2 Evidence Reconstructability Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
 
-The benchmark is the entry point.
+*Hero chart: verification durability by coverage track plus the evidence pathway from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
 
-The corpus is the network effect.
+---
 
-The evidence infrastructure is the mission.
+## What Dali is, in one paragraph
 
-**Start here:** [Latest benchmark results](results/v0.2/) · [Run Tier 1 locally](#quick-start) · [Methodology](METHODOLOGY.md) · [Contribute corpus](CONTRIBUTING.md) · [Reviewer guide](docs/reviewer-guide.md)
+Most legal-AI evaluations ask whether a model's **output** looks right. Dali asks whether the **evidence behind that output can be independently reconstructed**. A citation checker asks whether a citation exists. Dali asks whether the workflow that produced it can be audited and defended. Every Dali evaluation produces a deterministic, policy-versioned, hash-sealed `CitationIntegrityResult` artifact — replayable years from now.
 
-![Dali v0.2 Reproducibility & Attribution Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
+> Most evaluations focus on outputs. Dali focuses on evidence.
+> A citation checker asks whether a citation exists. Dali asks whether the evidence behind it can still be reconstructed.
 
-*Hero chart: evidence pathway (attribution → verification → reconstruction) plus verification durability by jurisdiction from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
+## Why now
 
-## Table of contents
+U.S. courts are no longer treating AI-fabricated citations as a curiosity. Sanctions orders are issuing on a near-weekly cadence across federal and state courts. The legal industry still lacks shared benchmarks, public corpora, or reproducible evidence standards for the failure pattern.
 
-- [Why Dali exists](#why-dali-exists)
-- [How it works](#how-it-works)
-- [Core concepts](#core-concepts)
-- [Evaluation tiers](#evaluation-tiers)
-- [Latest results (v0.2)](#latest-results-v02--2026-05-26)
-- [Quick start](#quick-start)
-- [What this enables](#what-this-enables)
-- [Research opportunities](#research-opportunities)
-- [Near-term roadmap](#near-term-roadmap)
-- [Contributing](#contributing)
-- [Related resources](#related-resources)
-- [How to cite](#how-to-cite)
-- [License](#license)
+Dali consolidates the missing infrastructure into one MIT-licensed, deterministically replayable artifact — built so a court, a regulator, a researcher, or a journalist can all reproduce the same evaluation under the same fixed policy version.
 
-## Why Dali exists
+## Three ways to contribute
 
-Legal AI systems continue to generate fabricated, misattributed, and
-unverifiable citations.
+| If you are a... | First task | Time |
+|---|---|---|
+| **Legal researcher / law student / practitioner** | Add one court-documented citation failure case → [docs/for-legal-practitioners.md](docs/for-legal-practitioners.md) | 30 min |
+| **AI researcher / eval engineer** | Run Tier 2 against a new model and submit a leaderboard PR → [docs/for-researchers.md](docs/for-researchers.md) | 60 min |
+| **Software engineer** | Pick a `good first issue` — canonicalization, MCP, visualization → [docs/for-engineers.md](docs/for-engineers.md) | 2 hr |
 
-The legal industry lacks shared benchmarks, public corpora, and reproducible
-evidence standards for studying these failures. Dali exists to help fill that
-gap.
+Every merged contribution is credited in the next release notes and the `CITATION.cff` contributor roll. For substantial corpus or methodology work, the project supports co-authorship on the v0.3 technical report (in progress).
 
-## How it works
+---
 
-```text
-        Legal AI workflow
-                |
-                v
-         Citation generated
-                |
-                v
-    Evidence created or cited
-                |
-                v
- Can the evidence still be verified,
- attributed, and reconstructed later?
-                |
-                v
-          Dali evaluates
-                |
-   +-----------+------------+-------------+
-   |            |            |            |          
-   v            v            v            v           
-Attribution  Provenance  Verifiability  Reconstructability
+## 60-second demo
+
+```bash
+git clone https://github.com/yenk/Dali && cd Dali
+python -m venv .venv && source .venv/bin/activate    # use activate.fish on Fish
+pip install -r requirements.txt
+python runners/run_integrity.py \
+  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
+  --output results/demo/integrity.json
 ```
 
-Dali produces a deterministic, versioned `CitationIntegrityResult` for every evaluated citation, including reproducible scoring metadata and evidence hashes so benchmark runs can be replayed consistently over time.
+Runs the deterministic Tier 1 evaluator against the canonical court-documented incidents. **No API keys. No external services. No network.** Output is a `CitationIntegrityResult` artifact per case with a deterministic evidence hash.
+
+```text
+case_id:        mata-v-avianca-2023
+authority:      Mata v. Avianca, Inc.
+citation:       Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)
+source_url:     https://www.courtlistener.com/docket/63107798/mata-v-avianca-inc/
+verification:   FAILED
+recoverability: infeasible
+risk:           critical
+```
+
+For Tier 2 (live model evaluation across jurisdictions) see [docs/examples.md](docs/examples.md) and [docs/for-researchers.md](docs/for-researchers.md).
+
+---
+
+## v0.2 results in detail (2026-05-26)
+
+**450 prompt evaluations across 3 OpenAI models produced 524 citations, evaluated under a deterministic, policy-versioned verification pipeline.**
+
+> **Tier 1 canonical corpus: 3 scoring-eligible cases** — *Mata v. Avianca*, *United States v. Cohen*, *Park v. Kim*.
+> Expanding this corpus is the highest-priority contribution track. See [docs/for-legal-practitioners.md](docs/for-legal-practitioners.md).
+>
+> The 524-citation figures below reflect Tier 2 synthetic probe evaluations.
+
+### The model that cited most willingly also fabricated most often
+
+```
+                       0%        25%        50%        75%       100%
+                       ├──────────┼──────────┼──────────┼──────────┤
+  GPT-4o-mini   49%    ████████████░░░░░░░░░░░░░  → 94 cites, 16% return HTTP 404
+  GPT-4.1       94%    ████████████████████████░  → 374 cites, 23% return HTTP 404
+  GPT-4o        26%    ██████░░░░░░░░░░░░░░░░░░░  → 56 cites, 20% return HTTP 404
+```
+
+Of GPT-4.1's 374 citations, **86 point to URLs that do not exist**. On adversarial citation-trap prompts specifically, GPT-4.1 took the bait 76% of the time, fabricating 48% of those URLs.
+
+### Verification durability across jurisdictions
+
+Legal citation systems do not operate exclusively in U.S. common-law environments. Aggregated across all 524 generated citations:
+
+| Jurisdiction track | Verified (HTTP 200) | Confirmed fabricated (HTTP 404) |
+|---|---:|---:|
+| UK / Commonwealth (UKSC, BAILII) | **76%** | 5% |
+| Cross-jurisdictional policy / regulatory | 57% | 27% |
+| US legal (cases, statutes, contracts) | 33% | 17% |
+| Adversarial citation traps | 29% | 47% |
+| Brazil / Civil Law (Portuguese) | **3%** | 9% |
+
+UK common-law citation structures transferred relatively well from dominant English-language training distributions. Brazilian / Civil-Law (Portuguese) showed the weakest transferability — only **3%** resolved successfully under deterministic verification. The track exists precisely because it stresses civil-law structure, Portuguese-language sources, and non-English retrieval durability. A model that fails this track is unsafe to deploy in any non-anglophone legal market.
+
+→ Full per-model leaderboard, jurisdictional breakdown, methodology, and reproducible run instructions: **[LEADERBOARD.md](LEADERBOARD.md)** · **[results/v0.2/](results/v0.2/)**
+
+---
 
 ## Core concepts
 
@@ -91,188 +128,47 @@ Dali produces a deterministic, versioned `CitationIntegrityResult` for every eva
 
 | Tier | Corpus | Purpose |
 |---|---|---|
-| **Tier 1** | Court-documented citation failures (e.g. *Mata v. Avianca*) | Deterministic, policy-versioned ground truth |
+| **Tier 1** | Court-documented citation failures (*Mata v. Avianca*, *US v. Cohen*, *Park v. Kim*) | Deterministic, policy-versioned ground truth — runs offline |
 | **Tier 2** | Synthetic probe corpus across US, UK / Commonwealth, Brazil / Civil Law (Portuguese), adversarial traps, and policy / regulatory workflows | Live model and workflow evaluation |
 
-Tier 1 establishes the canonical benchmark corpus.
-
-Tier 2 extends evaluation into AI-generated citation behavior, retrieval robustness, and evidence reconstructability across jurisdictions and failure conditions.
-
-## Latest results (v0.2 · 2026-05-26)
-
-**450 prompt evaluations across 3 OpenAI models produced 524 citations in aggregate, evaluated under a deterministic, policy-versioned verification pipeline.**
-
-> **Tier 1 corpus (canonical standard): 3 scoring-eligible cases**  
-> *Mata v. Avianca*, *United States v. Cohen*, and *Park v. Kim*
->
-> Expanding this corpus is the highest-priority contribution track. See [CONTRIBUTING.md](CONTRIBUTING.md).
->
-> The 524-citation figures below reflect Tier 2 synthetic probe evaluations.
-
-### The model that cited most willingly also fabricated most often
-
-```
-                       0%        25%        50%        75%       100%
-                       ├──────────┼──────────┼──────────┼──────────┤
-  GPT-4o-mini   49%    ████████████░░░░░░░░░░░░░  → 94 cites, 16% return HTTP 404
-  GPT-4.1       94%    ████████████████████████░  → 374 cites, 23% return HTTP 404
-  GPT-4o        26%    ██████░░░░░░░░░░░░░░░░░░░  → 56 cites, 20% return HTTP 404
-```
-
-GPT-4.1 was the most engaged model and the most fabrication-prone: of its 374 citations, **86 point to URLs that do not exist**. On adversarial citation-trap prompts specifically, GPT-4.1 took the bait 76% of the time, fabricating 48% of those URLs.
-
-### Why we test across jurisdictions
-
-Legal citation systems do not operate exclusively in US common-law environments.
-
-Different legal systems introduce different citation structures, languages,
-publication systems, retrieval pathways, and verification challenges.
-
-Aggregated across all 524 generated citations:
-
-| Jurisdiction track | Verified (HTTP 200) | Confirmed fabricated (HTTP 404) |
-|---|---:|---:|
-| UK / Commonwealth (UKSC, BAILII) | **76%** | 5% |
-| Cross-jurisdictional policy / regulatory | 57% | 27% |
-| US legal (cases, statutes, contracts) | 33% | 17% |
-| Adversarial citation traps | 29% | 47% |
-| Brazil / Civil Law (Portuguese) | **3%** | 9% |
-
-UK common-law citation structures transferred relatively well from dominant English-language training distributions.
-
-Brazil / Civil Law (Portuguese) showed the weakest transferability across all evaluated tracks, with only 3% resolving successfully under deterministic verification. The track exists because it stresses civil-law structure, Portuguese-language sources, and non-English retrieval durability.
-
-Future benchmark expansion may include EU regulatory and civil-law coverage.
-
-A cross-jurisdiction benchmark is how you identify these failures before the system is operating in front of courts, regulators, or legal review bodies.
-
-→ Bar charts, per-model leaderboard, full per-jurisdiction breakdown, methodology, and reproducible run instructions: **[results/v0.2/](results/v0.2/)**
-
 ---
-
-## Quick start
-
-```bash
-git clone https://github.com/yenk/Dali
-cd Dali
-python -m venv .venv
-```
-
-Activate the environment:
-
-```bash
-# Bash / Zsh
-source .venv/bin/activate
-
-# Fish
-source .venv/bin/activate.fish
-```
-
-```bash
-pip install -r requirements.txt
-python runners/run_integrity.py \
-  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-  --output results/demo/integrity.json
-```
-
-This runs the deterministic Tier 1 evaluator locally. No API keys or hosted services required.
-
-Expected output:
-
-```text
-INFO run_integrity: loading corpus: benchmarks/tier1/corpus/citation_failure_cases.json
-INFO run_integrity: corpus: 4 total, 3 scoring-eligible, 0 pre-canonical, 1 needs-verification
-INFO run_integrity: evaluating 3 record(s)
-INFO run_integrity:   evaluating: mata-v-avianca-2023
-INFO run_integrity:   evaluating: us-v-cohen-2023
-INFO run_integrity:   evaluating: mata-derivative-reporter-swap-001
-INFO run_integrity: wrote 3 result(s) to results/demo/integrity.json
-
---- Integrity Run Summary ---
-
-  case_id:        mata-v-avianca-2023
-  authority:      Mata v. Avianca, Inc.
-  citation:       Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)
-  source_url:     https://www.courtlistener.com/docket/63107798/mata-v-avianca-inc/
-  verification:   FAILED
-  recoverability: infeasible
-  risk:           critical
-
-  case_id:        us-v-cohen-2023
-  authority:      United States v. Cohen (post-conviction motion citation incident)
-  citation:       Three nonexistent federal decisions cited in a supervised-release termination mo...
-  source_url:     https://www.courtlistener.com/docket/8009608/united-states-v-cohen/
-  verification:   FAILED
-  recoverability: infeasible
-  risk:           critical
-```
-
-Each result is a `CitationIntegrityResult` artifact with reconstructability, defensibility risk, verification recoverability, and a deterministic evidence hash.
-
-For Tier 2 setup, model registry, and benchmark commands see [docs/examples.md](docs/examples.md).
 
 ## What this enables
 
 Using the canonical corpus and the shared `CitationIntegrityResult` contract, you can:
 
-- evaluate AI-assisted citation workflows against real court-documented failures
-- measure provenance continuity and evidence reconstructability
-- test retrieval and RAG systems for authority integrity regressions
-- compare citation integrity behavior across models or pipeline versions
-- replay evaluations under fixed policy versions for reproducibility
-- study evidence durability over time
-- produce deterministic benchmark artifacts and evidence hashes
-
-## Research opportunities
-
-Areas of active interest include:
-
-- citation attribution
-- evidence reconstructability
-- retrieval durability
-- source drift
-- policy version drift
-- temporal durability
-- cross-jurisdiction verification
-- evidence replayability
-
-Researchers, legal professionals, and organizations interested in collaboration are encouraged to contribute proposals, corpus records, and methodology improvements.
+- Evaluate AI-assisted citation workflows against real court-documented failures
+- Measure provenance continuity and evidence reconstructability
+- Test retrieval and RAG systems for authority-integrity regressions
+- Compare citation integrity behavior across models or pipeline versions
+- Replay evaluations under fixed policy versions for reproducibility
+- Study evidence durability over time
+- Produce deterministic benchmark artifacts and tamper-evident evidence hashes
 
 ## Near-term roadmap
 
 - eyecite integration as the canonical legal citation parser
 - CourtListener-backed canonical citation schema and resolution layer
 - Evidence JSON v1.0 RFC publication
-- expanded EU regulatory and civil-law coverage
-- additional jurisdiction tracks
-- evidence durability research
-- temporal reconstructability testing
-- deterministic replay and reproducibility artifacts
-- multi-model comparison runs across OpenAI, Gemini, and open-weight models
-- expanded benchmark coverage for:
-  - fabricated citations
-  - misattribution
-  - proposition drift
-  - source drift
-  - retrieval failures
-- contributor and academic partnership expansion around legal AI reproducibility research
+- Expanded EU regulatory and civil-law coverage
+- Multi-model comparison runs across OpenAI, Gemini, and open-weight providers
+- Expanded coverage for fabrication, misattribution, proposition drift, source drift, retrieval failures
+- Academic partnership expansion
 
 Longer-range direction: [docs/roadmap.md](docs/roadmap.md).
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the quick start, corpus field reference, and contribution tracks. Open issues are tagged `good first issue` and `help wanted`.
+Three persona doorways above. For the full taxonomy, label system, and PR checklist, see [CONTRIBUTING.md](CONTRIBUTING.md). For methodology and scoring rubric, see [METHODOLOGY.md](METHODOLOGY.md) and [docs/policy-versioning.md](docs/policy-versioning.md).
 
-For methodology, scoring rubric, and policy versioning see [METHODOLOGY.md](METHODOLOGY.md) and [docs/policy-versioning.md](docs/policy-versioning.md).
+Open issues are tagged `good first issue`, `help wanted`, `corpus-contribution`, `synthetic-prompt`, `methodology`, `research-partner`.
 
 ## Related resources
 
-- Benchmark corpus and evaluation workflows: this repository
-- Dali Platform: [https://dali.gammalex.com](https://dali.gammalex.com)
-- GammaLex: [https://gammalex.com](https://gammalex.com)
+- **Dali Platform** (hosted evaluation, complementary to this open repo): [dali.gammalex.com](https://dali.gammalex.com)
+- **GammaLex** (commercial legal-AI product; Dali is independent open infrastructure): [gammalex.com](https://gammalex.com)
 
-This repository focuses on benchmark artifacts, evaluation methodology, and
-reproducible evidence workflows for legal AI.
+This repository is MIT-licensed and intentionally upstream of any commercial product. It contains the benchmark artifacts, evaluation methodology, and reproducible evidence workflows — nothing else.
 
 ## How to cite
 
@@ -283,10 +179,10 @@ See [CITATION.cff](CITATION.cff), or:
   title        = {Dali: Evidentiary Infrastructure for Legal AI},
   author       = {Kha, Yen},
   year         = {2026},
-  version      = {0.2.0},
+  version      = {0.2.1},
   organization = {GammaLex AI Inc.},
   url          = {https://github.com/yenk/Dali},
-  note         = {Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny}
+  note         = {Open benchmark for citation integrity, provenance, and evidence reconstructability in legal AI}
 }
 ```
 
@@ -294,7 +190,4 @@ See [CITATION.cff](CITATION.cff), or:
 
 MIT. See [LICENSE](LICENSE).
 
-Dali is an open evidentiary infrastructure project for legal AI systems.
-
-Maintained by GammaLex AI Inc.
-Primary author: Yen Kha.
+Maintained by Yen Kha at GammaLex AI Inc. Contributions are MIT-licensed unless explicitly stated otherwise.
