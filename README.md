@@ -20,9 +20,9 @@ The evidence infrastructure is the mission.
 
 **Start here:** [Latest benchmark results](results/v0.2/) · [Run Tier 1 locally](#quick-start) · [Methodology](METHODOLOGY.md) · [Contribute corpus](CONTRIBUTING.md) · [Reviewer guide](docs/reviewer-guide.md)
 
-![Dali v0.2 Evidence Reconstructability Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
+![Dali v0.2 Reproducibility & Attribution Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
 
-*Hero chart: verification durability by coverage track plus the evidence pathway from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
+*Hero chart: evidence pathway (attribution → verification → reconstruction) plus verification durability by jurisdiction from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
 
 ## Core concepts
 
@@ -78,7 +78,7 @@ gap.
 | Tier | Corpus | Purpose |
 |---|---|---|
 | **Tier 1** | Court-documented citation failures (e.g. *Mata v. Avianca*) | Deterministic, policy-versioned ground truth |
-| **Tier 2** | Synthetic probe corpus across US, UK / Commonwealth, Brazil / Civil Law (Portuguese), adversarial traps, and cross-jurisdictional policy / regulatory workflows | Live model evaluation |
+| **Tier 2** | Synthetic probe corpus across US, UK / Commonwealth, Brazil, adversarial traps, and cross-jurisdictional policy / academic workflows | Live model evaluation |
 
 Tier 1 establishes the canonical benchmark corpus. Tier 2 extends evaluation into model-facing prompt behavior and cross-jurisdiction citation robustness.
 
@@ -114,14 +114,14 @@ Aggregated across all 524 generated citations:
 | Jurisdiction track | Verified (HTTP 200) | Confirmed fabricated (HTTP 404) |
 |---|---:|---:|
 | UK / Commonwealth (UKSC, BAILII) | **76%** | 5% |
-| Cross-jurisdictional policy / regulatory | 57% | 27% |
+| Cross-jurisdictional research / policy | 57% | 27% |
 | US legal (cases, statutes, contracts) | 33% | 17% |
 | Adversarial citation traps | 29% | 47% |
-| Brazil / Civil Law (Portuguese) | **3%** | 9% |
+| Brazil (Portuguese, civil law) | **3%** | 9% |
 
 UK common-law citation structures transferred relatively well from dominant English-language training distributions.
 
-Brazil / Civil Law (Portuguese) showed the weakest transferability across all evaluated tracks, with only 3% resolving successfully under deterministic verification. The track exists because it stresses civil-law structure, Portuguese-language sources, and non-English retrieval durability.
+Brazilian Portuguese civil-law workflows showed the weakest transferability across all evaluated tracks, with only 3% resolving successfully under deterministic verification.
 
 A cross-jurisdiction benchmark is how you identify these failures before the system is operating in front of courts, regulators, or legal review bodies.
 
@@ -206,7 +206,7 @@ Using the canonical corpus and the shared `CitationIntegrityResult` contract, yo
 - eyecite integration as the canonical legal citation parser
 - CourtListener-backed canonical citation schema and resolution layer
 - Evidence JSON v1.0 RFC publication
-- expanded cross-jurisdiction benchmark corpus (UK / Commonwealth, Brazil / Civil Law, EU / Regulatory)
+- expanded cross-jurisdiction benchmark corpus (UK / Commonwealth, Brazil)
 - deterministic replay and reproducibility artifacts
 - multi-model comparison runs across OpenAI, Gemini, and open-weight models
 - expanded benchmark coverage for:

@@ -7,7 +7,7 @@ Dali is open citation integrity and evidentiary infrastructure for legal AI syst
 - eyecite integration as the canonical legal citation parser
 - CourtListener-backed canonical citation schema and resolution layer
 - Evidence JSON v1.0 RFC publication
-- expanded cross-jurisdiction benchmark corpus (UK / Commonwealth, Brazil / Civil Law, EU / Regulatory)
+- expanded cross-jurisdiction benchmark corpus (UK / Commonwealth, Brazil)
 - deterministic replay and reproducibility artifacts
 - first public multi-model benchmark runs across OpenAI, Gemini, and open-weight models
 - expanded benchmark coverage for misattribution, proposition drift, and fabricated authority detection
@@ -34,16 +34,6 @@ Potential future additions include:
 Unverified anecdotes, social-media reports, or non-reproducible claims do not become scoring-eligible benchmark records. This constraint is not a limitation. It is what makes the Tier 1 corpus defensible.
 
 The highest-value corpus contributions are court documents, sanctions orders, and judicial findings that are already in the public record and can be independently retrieved. Expanding the corpus with weaker sourcing would undermine the evidentiary thesis the benchmark is built on.
-
-## Benchmark expansion path
-
-| Version | Focus | Goal |
-|---|---|---|
-| v0.3 | EU / Regulatory + clearer coverage model | Add high-relevance regulatory and multilingual legal-policy citations without optimizing for raw prompt count |
-| v0.4 | Evidence-pathway analysis | Move beyond jurisdiction labels into generated citation, retrieved source, verified state, evidence artifact, and reconstruction test |
-| v0.5 | Durability metrics | Add temporal drift, source decay, reconstructability scoring, and evidence replay testing |
-
-See [benchmark-expansion-strategy.md](benchmark-expansion-strategy.md) for the jurisdiction strategy and v0.3-v0.5 rationale.
 
 ## Long-range direction
 

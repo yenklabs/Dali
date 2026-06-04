@@ -1,6 +1,6 @@
 # Dali Benchmark Results: v0.2
 
-**Corpus:** 150 prompts across 8 categories and 5 jurisdiction / coverage tracks  
+**Corpus:** 150 prompts across 8 categories and 5 jurisdictions  
 **Run scope:** 450 prompt evaluations across 3 OpenAI models  
 **Run date:** 2026-05-26  
 **Verification:** deterministic citation existence and HTTP recoverability checks  
@@ -15,7 +15,7 @@
 | What was evaluated? | [Appendix: Corpus composition](#appendix-corpus-composition) |
 | What is the headline result? | [Key finding](#key-finding) |
 | Which model fabricated most? | [Summary leaderboard](#summary-leaderboard) |
-| Which coverage tracks were hardest? | [Breakdown by jurisdiction](#breakdown-by-jurisdiction) |
+| Which jurisdictions were hardest? | [Breakdown by jurisdiction](#breakdown-by-jurisdiction) |
 | What are the limitations? | [Limitations](#limitations) |
 | How do I reproduce it? | [How to reproduce](#how-to-reproduce) |
 
@@ -53,16 +53,16 @@ Most legal-AI citation benchmarks evaluate US federal cases only. That underweig
 
 In this run, higher citation engagement correlated with higher fabrication rates under adversarial pressure. GPT-4.1 produced 374 citations across 150 prompts; 86 point to URLs that do not exist.
 
-### Existence rate by jurisdiction / coverage track (aggregated across all 3 models · 524 citations)
+### Existence rate by jurisdiction (aggregated across all 3 models · 524 citations)
 
 ```
                           0%        25%        50%        75%       100%
                           ├──────────┼──────────┼──────────┼──────────┤
   UK / Commonwealth  76%  ███████████████████░░░░░░  ← most reliable
-  Policy / regulatory 57% ██████████████░░░░░░░░░░░
+  Research / policy  57%  ██████████████░░░░░░░░░░░
   US legal           33%  ████████░░░░░░░░░░░░░░░░░
   Adversarial traps  29%  ███████░░░░░░░░░░░░░░░░░░  ← citations under pressure
-  Brazil / Civil Law  3%  █░░░░░░░░░░░░░░░░░░░░░░░░  ← weakest track*
+  Brazil (PT)         3%  █░░░░░░░░░░░░░░░░░░░░░░░░  ← weakest jurisdiction*
 ```
 
 \* Brazilian gov fetches may include geo-block / robots.txt errors, not only fabrication. See [Limitations](#limitations).
@@ -90,9 +90,9 @@ In this run, higher citation engagement correlated with higher fabrication rates
 |---|---:|---:|---:|---:|---:|
 | US legal | 55 | 65% | 51 | 43% | 12% |
 | UK / Commonwealth | 20 | 65% | 13 | **69%** | 15% |
-| Brazil / Civil Law (Portuguese) | 20 | 35% | 8 | **0%** | 0% |
+| Brazil (Portuguese) | 20 | 35% | 8 | **0%** | 0% |
 | Adversarial traps | 25 | 8% | 3 | 67% | 33% |
-| Policy / regulatory | 30 | 53% | 19 | 53% | 32% |
+| Research / policy | 30 | 53% | 19 | 53% | 32% |
 
 ### GPT-4.1
 
@@ -100,9 +100,9 @@ In this run, higher citation engagement correlated with higher fabrication rates
 |---|---:|---:|---:|---:|---:|
 | US legal | 55 | 96% | 138 | 33% | 18% |
 | UK / Commonwealth | 20 | **100%** | 23 | **78%** | **0%** |
-| Brazil / Civil Law (Portuguese) | 20 | 100% | 57 | 19% | 11% |
+| Brazil (Portuguese) | 20 | 100% | 57 | 19% | 11% |
 | Adversarial traps | 25 | 76% | 64 | 27% | **48%** |
-| Policy / regulatory | 30 | 97% | 92 | 60% | 26% |
+| Research / policy | 30 | 97% | 92 | 60% | 26% |
 
 ### GPT-4o
 
@@ -110,9 +110,9 @@ In this run, higher citation engagement correlated with higher fabrication rates
 |---|---:|---:|---:|---:|---:|
 | US legal | 55 | 35% | 32 | 22% | 19% |
 | UK / Commonwealth | 20 | 25% | 5 | **80%** | **0%** |
-| Brazil / Civil Law (Portuguese) | 20 | 5% | 1 | 0% | 0% |
+| Brazil (Portuguese) | 20 | 5% | 1 | 0% | 0% |
 | Adversarial traps | 25 | 4% | 1 | 100% | 0% |
-| Policy / regulatory | 30 | 43% | 17 | 59% | 29% |
+| Research / policy | 30 | 43% | 17 | 59% | 29% |
 
 ---
 
@@ -140,8 +140,8 @@ Most legal-AI citation benchmarks evaluate US federal cases only. That underweig
 Three tracks address this directly:
 
 - **UK / Commonwealth (20 prompts).** Common-law structure that should transfer cleanly from US-heavy training data. If a model fabricates here, it's a hard signal. In v0.2 it didn't: UK/Commonwealth was the strongest jurisdiction at 76% verified, 5% confirmed fabricated.
-- **Brazil / Civil Law (20 prompts, Portuguese).** Civil-law system with Portuguese-language statutory citations. Tests multilingual, non-common-law, non-English retrieval durability. In v0.2 this was the weakest track at 3% verified. Caveat: some Brazilian gov failures may be fetch-pipeline issues (geo-block / robots.txt), not fabrication.
-- **Policy / regulatory (30 prompts).** EU AI Act, OECD, NIST, ICO, Singapore PDPC: citations that span borders, institutions, and citation conventions. In v0.2 these resolved at 57% verified, 27% confirmed fabricated.
+- **Brazil (20 prompts, Portuguese).** Civil-law system with Portuguese-language statutory citations. Tests multilingual and non-common-law citation behavior. In v0.2 this was the weakest jurisdiction at 3% verified. Caveat: some Brazilian gov failures may be fetch-pipeline issues (geo-block / robots.txt), not fabrication.
+- **Cross-jurisdictional research and policy (30 prompts).** EU AI Act, OECD, NIST, ICO, Singapore PDPC: citations that span borders and citation conventions. In v0.2 these resolved at 57% verified, 27% confirmed fabricated.
 
 The gap between UK (76% verified) and Brazil (3% verified) is what a US-only benchmark cannot see.
 
@@ -153,7 +153,7 @@ The gap between UK (76% verified) and Brazil (3% verified) is what a US-only ben
 
 **UK / Commonwealth was the strongest jurisdiction: 76% verified, 5% confirmed fabricated.** BAILII (`bailii.org`) and UK Supreme Court (`supremecourt.uk`) URL patterns resolved consistently. Common-law citation structure appears well-represented in training data.
 
-**Brazil / Civil Law was the weakest track: 3% verified across 66 citations.** Brazilian government sources (`planalto.gov.br`, `stf.jus.br`, `stj.jus.br`) almost never resolved. GPT-4.1 cited on 100% of Brazil prompts but only 19% of those URLs verified. The track is included because it stresses civil-law structure, Portuguese-language sources, and non-English retrieval durability. Note: some failures may be fetch-pipeline (geo-block, robots.txt) rather than fabrication.
+**Brazil was the weakest jurisdiction: 3% verified across 66 citations.** Brazilian government sources (`planalto.gov.br`, `stf.jus.br`, `stj.jus.br`) almost never resolved. GPT-4.1 cited on 100% of Brazil prompts but only 19% of those URLs verified. Note: some failures may be fetch-pipeline (geo-block, robots.txt) rather than fabrication.
 
 **GPT-4.1 on adversarial traps: 76% engaged, 48% confirmed fabricated.** The highest-engagement model also produced the highest confirmed fabrication rate in this run. Nearly half the URLs it produced in response to citation-trap prompts return HTTP 404.
 
@@ -169,7 +169,7 @@ The gap between UK (76% verified) and Brazil (3% verified) is what a US-only ben
 |---|---:|---:|---:|---:|---:|
 | US case citations | 75 | 71% | 105 | 24% | 13% |
 | Adversarial traps | 75 | 29% | 68 | 29% | **47%** |
-| Brazil / Civil Law (Portuguese) | 60 | 47% | 66 | **3%** | 9% |
+| Brazil (Portuguese) | 60 | 47% | 66 | **3%** | 9% |
 | US statutory interpretation | 45 | 76% | 65 | 43% | 18% |
 | Policy / regulatory | 45 | 67% | 65 | 48% | **43%** |
 | Academic claims | 45 | 62% | 63 | **67%** | 11% |
@@ -242,7 +242,7 @@ Full methodology: [METHODOLOGY.md](../../METHODOLOGY.md). Per-result schema: `re
 
 ## Appendix: Corpus composition
 
-See `benchmarks/tier2/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corpus composition. The v0.2 public run used 150 prompts across 8 categories and 5 jurisdiction / coverage tracks.
+See `benchmarks/tier2/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corpus composition. The v0.2 public run used 150 prompts across 8 categories and 5 jurisdiction tracks.
 
 | File | Category | Count |
 |---|---|---|
@@ -250,8 +250,8 @@ See `benchmarks/tier2/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corp
 | `benchmarks/tier2/legal/statutory_interpretation.jsonl` | US statutes | 15 |
 | `benchmarks/tier2/legal/contract_law.jsonl` | Contract law | 15 |
 | `benchmarks/tier2/legal/uk_commonwealth.jsonl` | UK / Commonwealth | 20 |
-| `benchmarks/tier2/legal/brazil.jsonl` | Brazil / Civil Law (Portuguese) | 20 |
-| `benchmarks/tier2/research/policy_citations.jsonl` | Policy / Regulatory | 15 |
+| `benchmarks/tier2/legal/brazil.jsonl` | Brazil | 20 |
+| `benchmarks/tier2/research/policy_citations.jsonl` | Policy / regulatory | 15 |
 | `benchmarks/tier2/research/academic_claims.jsonl` | Academic / empirical | 15 |
 | `benchmarks/tier2/adversarial/hallucination_prone.jsonl` | Adversarial | 25 |
 | **Total** | | **150** |

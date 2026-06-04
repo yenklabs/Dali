@@ -9,7 +9,7 @@ tier2/
     statutory_interpretation.jsonl US statutes and regulatory text
     contract_law.jsonl             Contract law
     uk_commonwealth.jsonl          UK / Commonwealth authorities
-    brazil.jsonl                   Brazil / Civil Law (Portuguese)
+    brazil.jsonl                   Brazilian Portuguese civil law
   research/
     academic_claims.jsonl          Academic and empirical claims
     policy_citations.jsonl         Policy and regulatory citations
@@ -41,20 +41,3 @@ python runners/run_synthetic.py \
 ## Adding prompts
 
 Use the MCP contributor tools (`new_prompt`, `check_prompt`, `bundle_prompts`) or follow the manual path in [CONTRIBUTING.md](../../CONTRIBUTING.md).
-
-## Track strategy
-
-Tier 2 uses a hybrid coverage model. Tracks are concrete enough to reproduce
-and inspect, but selected because they stress different evidence-durability
-dimensions:
-
-| Track | Evidence-durability dimension |
-|---|---|
-| US Legal | Baseline US legal citation behavior |
-| UK / Commonwealth | Common-law transfer outside the US |
-| Brazil / Civil Law (Portuguese) | Civil-law, Portuguese-language, non-English retrieval durability |
-| Policy / Regulatory | Cross-institution regulatory and policy citation stability |
-| Adversarial Traps | Citation pressure and fabrication resistance |
-
-Future expansion should prioritize differentiated evidence behavior over raw
-prompt count. See [docs/benchmark-expansion-strategy.md](../../docs/benchmark-expansion-strategy.md).
