@@ -112,7 +112,7 @@ Tier 1 runs entirely offline. No API keys. No external services.
 
 ---
 
-## First 30 minutes
+## First 15 minutes
 
 If you are new to the project, this is the fastest useful path:
 
