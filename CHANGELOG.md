@@ -9,6 +9,24 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- **MCP tool names shortened to action verbs** (BREAKING for any existing MCP users):
+  - `check_case` → `lint`
+  - `evaluate_case` → `score`
+  - `verify_replay` → `replay`
+  - `check_prompt` → `probe`
+  - `new_prompt` → `draft`
+  - `bundle_prompts` → `pack`
+  Rationale: easier to remember, faster to invoke, consistent verb vocabulary.
+  Private `_*_impl` implementation function names are unchanged — only the
+  public MCP tool names rotated. All docs (`dali_mcp/README.md`,
+  `CONTRIBUTING.md`, persona doorways, root README, `benchmarks/tier2/README.md`)
+  updated.
+- **Root README restructured around "Get started — pick your path"** with
+  Path A (terminal) and Path B (MCP) as side-by-side first-class options.
+  MCP install instructions now appear in the root README, not only in
+  `dali_mcp/README.md`.
+
 ### Added
 - **Two new MCP tools surface the demo to non-terminal contributors:**
   - `evaluate_case` — MCP equivalent of `python runners/run_integrity.py`.

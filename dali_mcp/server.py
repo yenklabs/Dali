@@ -7,13 +7,13 @@ Start the server:
 Or via uvx (no install required):
     uvx --from . dali-mcp
 
-Tools:
-    check_case       Validate a canonical citation-failure case record
-    evaluate_case    Run the Tier 1 deterministic evaluator on one record
-    verify_replay    Prove the evaluation is replay-deterministic for one record
-    check_prompt     Validate a synthetic benchmark prompt entry
-    new_prompt       Generate a scaffolded prompt template
-    bundle_prompts   Validate a batch and return a PR-ready checklist
+Tools (short verbs — easy to remember, fast to invoke):
+    lint    Validate a canonical citation-failure case record
+    score   Run the Tier 1 deterministic evaluator on one record
+    replay  Prove the evaluation is replay-deterministic for one record
+    probe   Validate a synthetic benchmark prompt entry
+    draft   Generate a scaffolded prompt template
+    pack    Validate a batch of prompts and return a PR-ready checklist
 """
 
 from __future__ import annotations
@@ -40,24 +40,27 @@ from dali_mcp.tools.prompt_tools import (
 mcp = FastMCP(
     "Dali",
     instructions=(
-        "You are a Dali contributor assistant. Use these tools to validate "
-        "corpus records and synthetic prompts, scaffold new entries, run the "
-        "deterministic Tier 1 evaluator, verify replay determinism, and bundle "
-        "contributions for pull-request submission. Run check_case before "
-        "evaluate_case; run evaluate_case before suggesting a record is ready "
-        "to PR."
+        "You are a Dali contributor assistant. Six tools, short verb names:\n"
+        "  lint    — validate a corpus record\n"
+        "  score   — run the Tier 1 evaluator on a record\n"
+        "  replay  — prove replay-determinism for a record\n"
+        "  probe   — validate a Tier 2 prompt\n"
+        "  draft   — scaffold a new prompt template\n"
+        "  pack    — validate a batch of prompts and produce a PR-ready checklist\n"
+        "Run lint before score; run score before claiming a record is ready "
+        "to PR; run replay when the contributor asks about determinism."
     ),
 )
 
 
 @mcp.tool()
-def check_case(record_json: str) -> str:
+def lint(record_json: str) -> str:
     """Validate a canonical citation-failure case for the Tier 1 corpus.
 
     Accepts a JSON object representing one record from
-    benchmarks/tier1/corpus/citation_failure_cases.json. Returns a validation report
-    showing whether the record is scoring-eligible, which required fields
-    are missing, and any taxonomy or lineage violations.
+    benchmarks/tier1/corpus/citation_failure_cases.json. Returns a validation
+    report showing whether the record is scoring-eligible, which required
+    fields are missing, and any taxonomy or lineage violations.
 
     Args:
         record_json: JSON string of a single CitationFailureCase record.
@@ -74,20 +77,20 @@ def check_case(record_json: str) -> str:
 
 
 @mcp.tool()
-def evaluate_case(record_json: str) -> str:
+def score(record_json: str) -> str:
     """Run the deterministic Tier 1 evaluator on a single corpus record.
 
-    This is the MCP equivalent of ``python runners/run_integrity.py``.
-    Returns the full CitationIntegrityResult — verdict, defensibility risk,
-    workflow reconstructability, mutation lineage, and the three SHA-256
-    hashes that anchor cryptographic lineage:
+    The MCP equivalent of ``python runners/run_integrity.py``. Returns the
+    full CitationIntegrityResult — verdict, defensibility risk, workflow
+    reconstructability, mutation lineage, and the three SHA-256 hashes
+    that anchor cryptographic lineage:
 
       - corpus_record_hash : input integrity (detects silent corpus mutation)
       - replay_hash        : verdict reproducibility (deterministic across runs)
       - evidence_hash      : per-run tamper-evident seal
 
     Use this to confirm a record evaluates cleanly before opening a PR.
-    Run check_case first if the record may have structural issues.
+    Run ``lint`` first if the record may have structural issues.
 
     Args:
         record_json: JSON string of a single CitationFailureCase record.
@@ -102,13 +105,13 @@ def evaluate_case(record_json: str) -> str:
 
 
 @mcp.tool()
-def verify_replay(record_json: str) -> str:
+def replay(record_json: str) -> str:
     """Prove the evaluation is replay-deterministic for one corpus record.
 
-    Runs evaluate_local twice on the same record and asserts the
+    Runs the evaluator twice on the same record and asserts the
     replay_hash and corpus_record_hash are byte-identical across runs.
-    This is the MCP equivalent of the runner's ``--verify-replay`` flag
-    and the same property CI verifies on every PR.
+    The MCP equivalent of the runner's ``--verify-replay`` flag — the same
+    property CI verifies on every PR.
 
     Args:
         record_json: JSON string of a single CitationFailureCase record.
@@ -127,7 +130,7 @@ def verify_replay(record_json: str) -> str:
 
 
 @mcp.tool()
-def check_prompt(prompt_json: str) -> str:
+def probe(prompt_json: str) -> str:
     """Validate a synthetic prompt entry for the Tier 2 corpus.
 
     Accepts a single prompt record as a JSON string. Checks required
@@ -148,7 +151,7 @@ def check_prompt(prompt_json: str) -> str:
 
 
 @mcp.tool()
-def new_prompt(
+def draft(
     category: str,
     subcategory: str,
     difficulty: str,
@@ -178,7 +181,7 @@ def new_prompt(
 
 
 @mcp.tool()
-def bundle_prompts(prompts_json: str) -> str:
+def pack(prompts_json: str) -> str:
     """Validate a batch of synthetic prompts and return a PR-ready checklist.
 
     Accepts a JSON array of prompt records. Validates every record,

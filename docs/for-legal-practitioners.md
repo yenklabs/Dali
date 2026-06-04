@@ -84,9 +84,9 @@ The fastest no-terminal path uses the MCP tools. After the [5-minute setup](../d
 
 > I have a court-documented AI citation failure I want to add to Dali. The case is [paste case name and court document URL]. Walk me through filling out the corpus record, then:
 >
-> 1. Use `check_case` to validate it.
-> 2. Use `evaluate_case` to confirm it produces a clean Tier 1 verdict with cryptographic hashes.
-> 3. Use `verify_replay` to confirm the result is deterministic.
+> 1. `lint` it to catch missing or invalid fields.
+> 2. `score` it to confirm a clean Tier 1 verdict with cryptographic hashes.
+> 3. `replay` it to confirm the result is deterministic.
 > 4. Give me the final JSON ready to paste into `benchmarks/tier1/corpus/citation_failure_cases.json`.
 
 Your AI will walk through each field, validate as it goes, and produce a PR-ready record. If your record contains attorney names from the original filing, mention that — the AI knows to flag them for the anonymizer.

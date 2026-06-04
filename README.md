@@ -44,13 +44,17 @@ Dali consolidates the missing infrastructure into one MIT-licensed, deterministi
 | **AI researcher / eval engineer** | Run Tier 2 against a new model and submit a leaderboard PR → [docs/for-researchers.md](docs/for-researchers.md) | 60 min |
 | **Software engineer** | Pick a `good first issue` — canonicalization, MCP, visualization → [docs/for-engineers.md](docs/for-engineers.md) | 2 hr |
 
-**No terminal? No problem.** The Dali MCP server exposes the full workflow — validate, evaluate, verify replay determinism, scaffold prompts, bundle a PR — through Claude Desktop, Cursor, or VS Code. You don't need to know Python. See [dali_mcp/README.md](dali_mcp/README.md).
+**Contribute via terminal or MCP — same outcome, same hashes.** Path A (terminal) and Path B (MCP, no Python required after a 5-minute setup) are both first-class. See [Get started](#get-started--pick-your-path) below.
 
 Every merged contribution is credited in the next release notes and the `CITATION.cff` contributor roll. For substantial corpus or methodology work, the project supports co-authorship on the v0.3 technical report (in progress).
 
 ---
 
-## 60-second demo
+## Get started — pick your path
+
+**You can contribute through either path. Same code, same output, same cryptographic hashes.** Pick the one that matches your workflow.
+
+### Path A — Terminal (60 seconds)
 
 ```bash
 git clone https://github.com/yenk/Dali && cd Dali
@@ -80,7 +84,51 @@ evidence_hash:  85150dbae5f5729e…  ← per-run tamper-evident seal
 verify-replay: PASS — all 3 replay_hash values byte-identical
 ```
 
-Every result carries three SHA-256 hashes: `corpus_record_hash` (input integrity), `replay_hash` (verdict reproducibility), `evidence_hash` (per-run seal). CI re-runs `--verify-replay` on every PR. See [docs/cryptographic-lineage.md](docs/cryptographic-lineage.md).
+### Path B — MCP (no terminal after a 5-minute setup)
+
+For contributors who'd rather talk to Claude than type Python. After this setup, every contributor workflow happens in your AI editor.
+
+**1. Install once:**
+
+```bash
+git clone https://github.com/yenk/Dali && cd Dali
+pip install -r requirements.txt
+```
+
+**2. Wire it into your AI editor.** Add this to your config (Claude Desktop, Cursor, or VS Code — full per-editor instructions in [dali_mcp/README.md](dali_mcp/README.md)):
+
+```json
+{
+  "mcpServers": {
+    "dali": {
+      "command": "python",
+      "args": ["-m", "dali_mcp"],
+      "cwd": "/absolute/path/to/your/Dali/clone"
+    }
+  }
+}
+```
+
+**3. Restart your editor and paste this:**
+
+> Use `score` on the *Mata v. Avianca* record in `benchmarks/tier1/corpus/citation_failure_cases.json`.
+
+The AI returns the same verdict, same three hashes, same `verify-replay: PASS` you'd get from the terminal.
+
+**Six tools, short verbs:**
+
+| Verb | Does | Equivalent terminal command |
+|---|---|---|
+| `lint` | validate a corpus record | `python -m corpus.validator <file>` |
+| `score` | run the Tier 1 evaluator | `python runners/run_integrity.py …` |
+| `replay` | prove replay-determinism | `… --verify-replay` |
+| `probe` | validate a Tier 2 prompt | (pytest schema check) |
+| `draft` | scaffold a new prompt template | — |
+| `pack` | bundle prompts into a PR | — |
+
+---
+
+Every result on either path carries three SHA-256 hashes: `corpus_record_hash` (input integrity), `replay_hash` (verdict reproducibility), `evidence_hash` (per-run seal). CI re-runs `--verify-replay` on every PR. See [docs/cryptographic-lineage.md](docs/cryptographic-lineage.md).
 
 For Tier 2 (live model evaluation across jurisdictions) see [docs/examples.md](docs/examples.md) and [docs/for-researchers.md](docs/for-researchers.md).
 
