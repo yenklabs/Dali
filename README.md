@@ -2,9 +2,7 @@
 
 **Dali is open evidentiary infrastructure for legal AI.**
 
-Most evaluations focus on outputs.
-
-Dali focuses on evidence.
+Most evaluations focus on outputs. Dali focuses on evidence.
 
 It evaluates whether the evidence behind an AI-generated output remains
 attributable, verifiable, and reconstructable over time.
