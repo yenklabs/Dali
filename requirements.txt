@@ -14,6 +14,9 @@ openai>=1.50.0
 mcp>=1.0.0
 
 # ── Optional ──────────────────────────────────────────────────────────────────
+# Regenerate README hero chart (scripts/generate_benchmark_snapshot.py):
+# matplotlib>=3.8.0
+
 # Load a local .env file during benchmark runs (run_synthetic.py).
 # If not installed, the runner falls back to shell environment variables.
 # python-dotenv>=1.0.0

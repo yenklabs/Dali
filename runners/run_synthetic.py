@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dali Citation Integrity Benchmark runner.
+"""Dali Reproducibility & Attribution Benchmark runner.
 
 Usage:
 
@@ -774,7 +774,7 @@ def print_category_summary(all_results: dict[str, list[dict]]) -> None:
 
 async def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Dali Citation Integrity Benchmark runner",
+        description="Dali Reproducibility & Attribution Benchmark runner",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Model aliases (recommended for public runs):\n"
@@ -895,7 +895,7 @@ async def main() -> None:
         if e.get("alias") != e["model_id"] else e["model_id"]
         for e in resolved
     ]
-    print(f"Dali Citation Integrity Benchmark {BENCHMARK_VERSION}")
+    print(f"Dali Reproducibility & Attribution Benchmark {BENCHMARK_VERSION}")
     print(f"Models:  {model_labels}")
     print(f"Prompts: {len(prompts)}{' (smoke test)' if smoke else ''}")
     print(f"Output:  {args.output}")

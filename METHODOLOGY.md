@@ -1,4 +1,4 @@
-# Methodology: Dali Citation Integrity Benchmark v0.2
+# Methodology: Dali Reproducibility & Attribution Benchmark v0.2
 
 Dali evaluates whether AI-assisted legal citation workflows remain reconstructable, attributable, and defensible under judicial scrutiny.
 

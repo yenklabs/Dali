@@ -1,13 +1,28 @@
 # Dali
 
-**Dali is open evidentiary infrastructure for evaluating whether AI-generated legal citations remain reproducible, attributable, and verifiable over time.**
+**Dali is open evidentiary infrastructure for legal AI.**
 
-Dali is designed for probabilistic AI systems operating in legal environments where reproducibility, provenance, and reconstructability matter.
+Most evaluations measure whether a model was correct when an answer was
+generated. Dali evaluates whether the evidence supporting that answer remains
+reproducible, attributable, verifiable, and reconstructable over time.
 
-> A citation checker asks whether a citation exists.
->
-> Dali asks whether the citation, retrieval pathway, verification state, and policy context can still be reconstructed months or years later during litigation, audit, or appellate review.
+A citation checker asks whether a citation exists.
 
+Dali asks whether the citation, retrieval pathway, verification state,
+supporting sources, and policy context can still be independently reconstructed
+later.
+
+The benchmark is the entry point.
+
+The corpus is the network effect.
+
+The evidence infrastructure is the mission.
+
+**Start here:** [Latest benchmark results](results/v0.2/) · [Run Tier 1 locally](#quick-start) · [Methodology](METHODOLOGY.md) · [Contribute corpus](CONTRIBUTING.md) · [Reviewer guide](docs/reviewer-guide.md)
+
+![Dali v0.2 Reproducibility & Attribution Benchmark](docs/assets/dali-v0.2-benchmark-snapshot.png)
+
+*Hero chart: evidence pathway (attribution → verification → reconstruction) plus verification durability by jurisdiction from the [v0.2 run](results/v0.2/). Regenerate with `python scripts/generate_benchmark_snapshot.py`.*
 
 ## Core concepts
 
@@ -39,6 +54,24 @@ Attribution  Provenance  Replayability  Verifiability
 ```
 
 Dali produces a deterministic, versioned `CitationIntegrityResult` for every evaluated citation, including reproducible scoring metadata and evidence hashes so benchmark runs can be replayed consistently over time.
+
+## Why Dali exists
+
+Legal AI systems continue to generate fabricated, misattributed, and
+unverifiable citations.
+
+The legal industry lacks shared benchmarks, public corpora, and reproducible
+evidence standards for studying these failures. Dali exists to help fill that
+gap.
+
+## What you'll find here
+
+- citation failure corpus
+- evaluation workflows
+- evidence artifacts
+- benchmark results
+- methodology documentation
+- contribution tooling
 
 ## Evaluation tiers
 
@@ -189,6 +222,15 @@ Longer-range direction: [docs/roadmap.md](docs/roadmap.md).
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the quick start, corpus field reference, and contribution tracks. Open issues are tagged `good first issue` and `help wanted`.
 
 For methodology, scoring rubric, and policy versioning see [METHODOLOGY.md](METHODOLOGY.md) and [docs/policy-versioning.md](docs/policy-versioning.md).
+
+## Related resources
+
+- Benchmark corpus and evaluation workflows: this repository
+- Dali Platform: [https://dali.gammalex.com](https://dali.gammalex.com)
+- GammaLex: [https://gammalex.com](https://gammalex.com)
+
+This repository focuses on benchmark artifacts, evaluation methodology, and
+reproducible evidence workflows for legal AI.
 
 ## How to cite
 

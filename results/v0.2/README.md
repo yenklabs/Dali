@@ -8,6 +8,19 @@
 
 ---
 
+## Where to look first
+
+| Question | Start here |
+|---|---|
+| What was evaluated? | [Appendix: Corpus composition](#appendix-corpus-composition) |
+| What is the headline result? | [Key finding](#key-finding) |
+| Which model fabricated most? | [Summary leaderboard](#summary-leaderboard) |
+| Which jurisdictions were hardest? | [Breakdown by jurisdiction](#breakdown-by-jurisdiction) |
+| What are the limitations? | [Limitations](#limitations) |
+| How do I reproduce it? | [How to reproduce](#how-to-reproduce) |
+
+---
+
 ## Key finding
 
 **The gap between UK (76% verified) and Brazil (3% verified) is what a US-only benchmark cannot see.**
@@ -229,7 +242,7 @@ Full methodology: [METHODOLOGY.md](../../METHODOLOGY.md). Per-result schema: `re
 
 ## Appendix: Corpus composition
 
-See `benchmarks/tier2/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corpus composition.
+See `benchmarks/tier2/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corpus composition. The v0.2 public run used 150 prompts across 8 categories and 5 jurisdiction tracks.
 
 | File | Category | Count |
 |---|---|---|
@@ -242,6 +255,21 @@ See `benchmarks/tier2/` and [METHODOLOGY.md](../../METHODOLOGY.md) for full corp
 | `benchmarks/tier2/research/academic_claims.jsonl` | Academic / empirical | 15 |
 | `benchmarks/tier2/adversarial/hallucination_prone.jsonl` | Adversarial | 25 |
 | **Total** | | **150** |
+
+## Appendix: Failure types covered
+
+The v0.2 synthetic track focuses on model-facing citation behavior, especially:
+
+- fabricated or dead URLs
+- unresolvable case-pattern citations
+- jurisdiction transfer failures
+- adversarial citation traps
+- policy and regulatory URL instability
+- multilingual civil-law citation fragility
+
+Tier 1 covers court-documented citation failure classes in the canonical corpus.
+See [METHODOLOGY.md](../../METHODOLOGY.md#failure-class-taxonomy) for the
+closed taxonomy.
 
 ---
 

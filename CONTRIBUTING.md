@@ -108,6 +108,22 @@ Tier 1 runs entirely offline. No API keys. No external services.
 
 ---
 
+## First 30 minutes
+
+If you are new to the project, this is the fastest useful path:
+
+1. Run the Tier 1 evaluator above.
+2. Read [results/v0.2](results/v0.2/) to understand the public benchmark output.
+3. Open one existing Tier 1 record in `benchmarks/tier1/corpus/citation_failure_cases.json`.
+4. Validate the corpus with `python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json`.
+5. Choose a contribution track below.
+
+Good first contributions usually improve corpus evidence, prompt coverage,
+schema clarity, or methodology explanations. Code changes are useful when they
+make those artifacts easier to reproduce or review.
+
+---
+
 ## Contribution tracks
 
 Dali is evidentiary infrastructure, not a traditional application framework or
@@ -230,6 +246,25 @@ Open a PR adding the output JSON to `results/v0.2/{your-run-date}/`. Include the
 ## Specification contributions
 
 Schema and ontology changes go through a lightweight proposal, open an issue with label `spec-change` describing the motivation, the breaking impact (if any), and a migration note. Documentation and clarification changes do not need a proposal.
+
+---
+
+## Issue labels
+
+The repository uses labels to route contributions by review path:
+
+| Label | Use |
+|---|---|
+| `good first issue` | Small, self-contained contribution suitable for first-time contributors |
+| `help wanted` | Maintainer wants outside input or implementation help |
+| `corpus-contribution` | New or improved Tier 1 court-documented case record |
+| `synthetic-prompt` | New or improved Tier 2 prompt probe |
+| `methodology` | Rubric, scoring, policy-versioning, or documentation question |
+| `spec-change` | Schema, ontology, or Evidence JSON contract proposal |
+| `benchmark-result` | External run artifact or reproducibility report |
+| `research-partner` | Law school, research group, or dataset partnership |
+| `legal-review` | Legal-domain review requested before merging |
+| `bug` | Runner, validator, schema, or documentation defect |
 
 ---
 
