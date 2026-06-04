@@ -129,14 +129,18 @@ All tools return JSON strings. Your AI assistant will parse and present them.
 
 ## How this maps to terminal commands
 
-Every MCP tool has a direct CLI equivalent. They share the same Python functions, so output is byte-identical.
+Each MCP tool has a CLI counterpart with the **same name** under `python -m dali_cli`. Same code path, same cryptographic hashes.
 
 | MCP tool | Terminal equivalent |
 |---|---|
-| `lint` | `python -m corpus.validator <corpus.json>` |
-| `score` | `python runners/run_integrity.py --corpus <corpus.json> --output <out.json>` |
-| `replay` | `python runners/run_integrity.py --corpus <corpus.json> --output <out.json> --verify-replay` |
-| `probe` + `pack` | `pytest tests/` (schema validation runs here) |
+| `lint` | `python -m dali_cli lint [corpus.json]` |
+| `score` | `python -m dali_cli score [corpus.json] [--output …]` |
+| `replay` | `python -m dali_cli replay [corpus.json] [--output …]` |
+| `probe` | `python -m dali_cli probe <prompt.json or .jsonl>` |
+| `draft` | `python -m dali_cli draft --category … --subcategory … --difficulty …` |
+| `pack` | `python -m dali_cli pack <prompt.jsonl> [more.jsonl …]` |
+
+`python runners/run_integrity.py` remains the canonical underlying entry point and continues to work; the CLI is a thin wrapper.
 
 ---
 

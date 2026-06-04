@@ -61,7 +61,8 @@ If `pytest tests/` is green and `results/demo/integrity.json` exists, you're set
 | Path | What's in it | Notes |
 |---|---|---|
 | `corpus/` | Python package: schema, validator, anonymizer, taxonomy, policy, lineage, loader | Pure-Python, no external deps for Tier 1 |
-| `runners/` | CLI entrypoints: `run_integrity.py` (Tier 1, offline), `run_synthetic.py` (Tier 2, live), `model_registry.py` (provider config) | |
+| `runners/` | Canonical CLI entrypoints: `run_integrity.py` (Tier 1, offline), `run_synthetic.py` (Tier 2, live), `model_registry.py` (provider config) | |
+| `dali_cli/` | Short-verb dispatcher mirroring the MCP tool vocabulary (`lint`, `score`, `replay`, `probe`, `draft`, `pack`). Thin wrapper over the runners + MCP impl modules. | Invoke via `python -m dali_cli <verb>` |
 | `scoring/` | Scoring modules: `existence` (URL fetch), `verification` (HTTP-level), `support` (semantic) | Tier 2 only |
 | `schemas/` | JSON schemas: canonical citation, evidence bundle, integrity result | Schema-first; changes need spec proposal |
 | `specs/` | RFCs: currently RFC-001 (Evidence JSON v1) | Spec contributions live here |
@@ -109,8 +110,8 @@ These are calls the maintainer has made deliberately. Engaging with them is welc
 The full list lives in [CONTRIBUTING.md § Pull request checklist](../CONTRIBUTING.md#pull-request-checklist). The non-obvious items:
 
 - `pytest tests/` is green locally before pushing
-- New corpus records pass `python -m corpus.validator <path>` (terminal) or `lint` (MCP)
-- New synthetic prompts pass `probe` (MCP) or the pytest schema check (terminal)
+- New corpus records pass `python -m dali_cli lint <path>` (terminal) or `lint` (MCP)
+- New synthetic prompts pass `python -m dali_cli probe <path>` (terminal) or `probe` (MCP)
 - Schema changes have an accompanying `spec-change` issue
 - No PII in corpus records — `corpus/anonymizer.py` has been run if any attorney names appear in source text
 - Commit authorship accurately represents the contributor

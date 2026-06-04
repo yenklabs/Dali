@@ -68,10 +68,14 @@ source .venv/bin/activate.fish
 pip install -r requirements.txt
 
 # Run the Tier 1 deterministic evaluator (no API keys needed)
-python runners/run_integrity.py \
-  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
+python -m dali_cli score
+
+# Or with explicit args / additional flags:
+python -m dali_cli score benchmarks/tier1/corpus/citation_failure_cases.json \
   --output results/demo/integrity.json
 ```
+
+The `python -m dali_cli` shim mirrors the six MCP verbs (`lint`, `score`, `replay`, `probe`, `draft`, `pack`) and wraps the underlying runners. `python runners/run_integrity.py` continues to work as the canonical entry point.
 
 Expected output:
 ```text
@@ -175,6 +179,8 @@ Each scoring-eligible record requires these fields:
 Validate your record before submitting:
 
 ```bash
+python -m dali_cli lint benchmarks/tier1/corpus/citation_failure_cases.json
+# or, the underlying canonical command:
 python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json
 ```
 
@@ -271,8 +277,8 @@ The repository uses labels to route contributions by review path:
 ## Pull request checklist
 
 - [ ] Tests pass: `pytest tests/`
-- [ ] New corpus records pass `lint` (MCP) or `python -m corpus.validator <path>` (terminal)
-- [ ] New synthetic prompts pass `probe` (MCP) or the pytest schema check
+- [ ] New corpus records pass `lint` (MCP) or `python -m dali_cli lint <path>` (terminal)
+- [ ] New synthetic prompts pass `probe` (MCP) or `python -m dali_cli probe <path>` (terminal)
 - [ ] Schema changes have an accompanying `spec-change` issue
 - [ ] No PII in corpus records: run `corpus/anonymizer.py` if needed
 - [ ] Commit authorship must accurately represent the contributor responsible for the change

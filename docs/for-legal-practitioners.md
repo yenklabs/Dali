@@ -91,7 +91,7 @@ The fastest no-terminal path uses the MCP tools. After the [5-minute setup](../d
 
 Your AI will walk through each field, validate as it goes, and produce a PR-ready record. If your record contains attorney names from the original filing, mention that — the AI knows to flag them for the anonymizer.
 
-**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json`, and open a PR.
+**Terminal path (if you prefer):** The record format is documented in [CONTRIBUTING.md § Tier 1: Canonical case records](../CONTRIBUTING.md#tier-1-canonical-case-records). Add your record to [`benchmarks/tier1/corpus/citation_failure_cases.json`](../benchmarks/tier1/corpus/citation_failure_cases.json), validate with `python -m dali_cli lint`, and open a PR. The CLI uses the same verbs as the MCP tools — `lint`, `score`, `replay` — so the muscle memory is identical across both paths.
 
 ---
 

@@ -60,13 +60,21 @@ Every merged contribution is credited in the next release notes and the `CITATIO
 git clone https://github.com/yenk/Dali && cd Dali
 python -m venv .venv && source .venv/bin/activate    # use activate.fish on Fish
 pip install -r requirements.txt
-python runners/run_integrity.py \
-  --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-  --output results/demo/integrity.json \
-  --verify-replay
+python -m dali_cli replay
 ```
 
 Runs the deterministic Tier 1 evaluator against the canonical court-documented incidents, then runs it a second time and asserts every replay hash is byte-identical. **No API keys. No external services. No network.**
+
+The CLI uses the same short-verb vocabulary as the MCP tools:
+
+| Verb | What it does |
+|---|---|
+| `python -m dali_cli lint` | Validate a corpus file |
+| `python -m dali_cli score` | Run the Tier 1 evaluator |
+| `python -m dali_cli replay` | Run the evaluator twice and verify replay determinism |
+| `python -m dali_cli probe <file>` | Validate a Tier 2 prompt or JSONL |
+| `python -m dali_cli draft --category … --subcategory … --difficulty …` | Scaffold a new prompt |
+| `python -m dali_cli pack <files…>` | Bundle prompts and emit a PR-ready checklist |
 
 ```text
 case_id:        mata-v-avianca-2023
@@ -115,16 +123,16 @@ pip install -r requirements.txt
 
 The AI returns the same verdict, same three hashes, same `verify-replay: PASS` you'd get from the terminal.
 
-**Six tools, short verbs:**
+**Six tools, identical to the CLI verbs:**
 
-| Verb | Does | Equivalent terminal command |
+| Verb | Does | CLI equivalent |
 |---|---|---|
-| `lint` | validate a corpus record | `python -m corpus.validator <file>` |
-| `score` | run the Tier 1 evaluator | `python runners/run_integrity.py …` |
-| `replay` | prove replay-determinism | `… --verify-replay` |
-| `probe` | validate a Tier 2 prompt | (pytest schema check) |
-| `draft` | scaffold a new prompt template | — |
-| `pack` | bundle prompts into a PR | — |
+| `lint` | validate a corpus record | `python -m dali_cli lint` |
+| `score` | run the Tier 1 evaluator | `python -m dali_cli score` |
+| `replay` | prove replay-determinism | `python -m dali_cli replay` |
+| `probe` | validate a Tier 2 prompt | `python -m dali_cli probe <file>` |
+| `draft` | scaffold a new prompt template | `python -m dali_cli draft --category …` |
+| `pack` | bundle prompts into a PR | `python -m dali_cli pack <files…>` |
 
 ---
 
