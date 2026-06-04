@@ -66,7 +66,7 @@ Or from AI-native editors and assistants through MCP:
 
 - [dali_mcp/README.md](dali_mcp/README.md)
 
-The goal is a single contribution workflow regardless of whether contributors work from the terminal, Cursor, Claude Code, VS Code, Windsurf, or other MCP-compatible tools.
+Dali is designed so researchers, developers, legal professionals, and AI practitioners can contribute evidence, benchmarks, and evaluation artifacts through a consistent, reproducible workflow.
 
 For contribution rules, taxonomy, labels, and the PR checklist, see [CONTRIBUTING.md](CONTRIBUTING.md). For methodology and scoring, see [METHODOLOGY.md](METHODOLOGY.md) and [docs/policy-versioning.md](docs/policy-versioning.md). For cryptographic lineage, see [docs/cryptographic-lineage.md](docs/cryptographic-lineage.md). For a deeper repo tour, see [dali_cli/README.md](dali_cli/README.md) and [dali_mcp/README.md](dali_mcp/README.md).
 
