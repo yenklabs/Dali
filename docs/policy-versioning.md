@@ -1,4 +1,4 @@
-# Policy Versioning: Dali Reproducibility & Attribution Benchmark
+# Policy Versioning: Dali Evidence Reconstructability Benchmark
 
 The benchmark records a composite `policy_version` on every `CitationIntegrityResult`. This document defines what each sub-version covers, when to bump, and how cross-version comparison works.
 

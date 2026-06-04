@@ -26,7 +26,7 @@ It is not a hosted product repo and it is not a general legal assistant.
 
 - Tier 1 runs locally without API keys.
 - v0.2 includes 450 prompt evaluations across 3 OpenAI models.
-- v0.2 evaluates 524 citations across 5 jurisdiction tracks.
+- v0.2 evaluates 524 citations across 5 jurisdiction / coverage tracks.
 - Published results separate confirmed HTTP 404 fabrication from blocked or
   indeterminate verification.
 - Results include methodology metadata and policy-versioning rules.
@@ -55,7 +55,9 @@ inflated benchmark claims.
 ## What would strengthen the project next
 
 - Expanded Tier 1 court-documented corpus
+- EU / Regulatory prompt track
+- Clearer Brazil / Civil Law positioning
 - CourtListener-backed canonical citation resolution
-- More cross-jurisdiction prompt tracks
+- More evidence-pathway and durability metrics
 - Independent replication runs from external model providers
 - Public review of Evidence JSON v1.0
