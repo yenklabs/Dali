@@ -9,7 +9,43 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- **Cryptographic lineage on every Tier 1 result.** `CitationIntegrityResult`
+  now carries three SHA-256 hashes:
+  - `corpus_record_hash` — over the canonical JSON of the input corpus record.
+    Detects silent mutation of the input.
+  - `replay_hash` — over (canonical record, policy_version, source_document_hash).
+    Replay-invariant: same inputs under same policy always yield the same hash.
+  - `evidence_hash` — over (case_id, policy_version, run_timestamp). Per-run
+    tamper-evident seal (docstring corrected; previously claimed replay-stability
+    incorrectly).
+- **`runners/run_integrity.py --verify-replay`** flag. Re-evaluates every case
+  a second time and asserts every `replay_hash` is byte-identical. Exit code
+  `4` on mismatch. Proves the determinism claim is testable, not merely asserted.
+- **`.github/workflows/replay-verification.yml`** — CI workflow running
+  `--verify-replay` on every PR and on `main`. A determinism regression now
+  blocks merge.
+- **`docs/cryptographic-lineage.md`** — full explanation of the three-hash
+  chain, what each protects against, what a verifier can independently prove,
+  and the v0.3+ roadmap items (source content hashing, sigstore signing,
+  Merkle commitments).
+- Demo summary in `run_integrity.py` now surfaces `policy_version`,
+  `corpus_record_hash`, `replay_hash`, `evidence_hash`, and mutation lineage —
+  previously computed but invisible in CLI output.
+- Promotional surface: `LEADERBOARD.md`, `CASE-STUDIES.md`, and three
+  persona doorways (`docs/for-legal-practitioners.md`, `docs/for-researchers.md`,
+  `docs/for-engineers.md`) for clearer contributor on-ramps.
+- New FAQ entries on `replay_hash`, `corpus_record_hash`, and why three hashes
+  instead of one.
+
 ### Changed
+- README rewritten top-to-fold: leads with the v0.2 GPT-4.1 fabrication and
+  Portuguese civil-law verification findings; adds CI/release/license badges;
+  three persona doorways; explicit Dali / GammaLex disclosure.
+- `schemas/integrity-result.schema.json` requires `corpus_record_hash` and
+  `replay_hash` (both 64-char hex). Existing field descriptions clarified.
+- `evidence_hash` docstring corrected: it is a per-run tamper-evident seal,
+  not a replay invariant. For replay-invariance see `replay_hash`.
 - README hero visual upgraded: evidence pathway (attribution → reconstruction) plus
   verification-durability chart; title **Dali v0.2 Reproducibility & Attribution Benchmark**.
 - Benchmark naming aligned across METHODOLOGY, policy-versioning, corpus, and

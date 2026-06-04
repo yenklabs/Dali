@@ -34,6 +34,7 @@ Exit codes
     1  — argument / config error
     2  — no scoring-eligible records found
     3  — cross-version policy conflict (without --allow-cross-version)
+    4  — --verify-replay mismatch (deterministic replay broken)
 """
 
 from __future__ import annotations
@@ -57,6 +58,8 @@ from corpus.policy import POLICY_VERSION, assert_same_version_or_raise
 from corpus.schema import (
     CitationFailureCase,
     CitationIntegrityResult,
+    compute_replay_hash,
+    corpus_record_hash,
     now_iso,
 )
 from corpus.taxonomy import CitationFailureClass, DefensibilityRisk, MutationType
@@ -151,10 +154,12 @@ def _verification_recoverable(
 
 
 def _result_evidence_hash(case_id: str, policy_version: str, run_timestamp: str) -> str:
-    """Deterministic hash over case identity + policy version + timestamp.
+    """Per-run tamper-evident seal over case identity + policy version + timestamp.
 
-    Stable across runs for the same inputs. Tier 1 deliberately hashes the
-    benchmark record identity and policy version, not fetched source content.
+    Differs across runs by design — the timestamp is part of the seal. For the
+    replay invariant (same input + same policy → same hash forever) see
+    :func:`corpus.schema.compute_replay_hash`, surfaced on the result as
+    ``replay_hash``.
     """
     payload = json.dumps(
         {"case_id": case_id, "policy_version": policy_version, "run_timestamp": run_timestamp},
@@ -281,7 +286,11 @@ def evaluate_local(
     # Mutation lineage
     mutation_lineage = _resolve_mutation_lineage(case, by_id)
 
+    # Per-run seal (timestamped — differs across runs by design)
     evidence_hash = _result_evidence_hash(case.case_id, policy_version_str, run_timestamp)
+    # Replay-invariant hashes (timestamp-free — stable across runs forever)
+    record_hash = corpus_record_hash(case)
+    replay_hash = compute_replay_hash(case, policy_version_str)
 
     return CitationIntegrityResult(
         case_id=case.case_id,
@@ -300,6 +309,8 @@ def evaluate_local(
         policy_version=policy_version_str,
         evidence_hash=evidence_hash,
         run_timestamp=run_timestamp,
+        corpus_record_hash=record_hash,
+        replay_hash=replay_hash,
     )
 
 
@@ -359,6 +370,14 @@ def parse_args(argv=None) -> argparse.Namespace:
         "--allow-cross-version",
         action="store_true",
         help="Permit aggregating results from different policy versions",
+    )
+    p.add_argument(
+        "--verify-replay",
+        action="store_true",
+        help=(
+            "Run the evaluator twice and assert every replay_hash is byte-identical "
+            "across runs. Proves deterministic replay. Exit code 4 on mismatch."
+        ),
     )
     return p.parse_args(argv)
 
@@ -445,7 +464,48 @@ def main(argv=None) -> int:
         json.dump(output, f, indent=2, default=str)
 
     logger.info("wrote %d result(s) to %s", len(results), output_path)
+
+    # Deterministic replay check — runs evaluation a second time and asserts
+    # every replay_hash matches. This proves the determinism claim.
+    if args.verify_replay:
+        verify_exit = _verify_replay(eligible, policy_version_str, by_id, results)
+        if verify_exit != 0:
+            return verify_exit
+
     _print_summary(results, eligible)
+    return 0
+
+
+def _verify_replay(
+    eligible: list,
+    policy_version_str: str,
+    by_id: dict,
+    first_results: list[CitationIntegrityResult],
+) -> int:
+    """Re-evaluate the same cases and assert byte-identical replay_hash values.
+
+    Returns 0 on full match, 4 on any mismatch.
+    """
+    logger.info("verify-replay: re-evaluating %d case(s) for determinism check", len(eligible))
+    first_by_id = {r.case_id: r for r in first_results}
+    mismatches: list[tuple[str, str, str]] = []
+    for case in eligible:
+        second = evaluate_local(case, policy_version_str, by_id)
+        first = first_by_id[case.case_id]
+        if first.replay_hash != second.replay_hash:
+            mismatches.append((case.case_id, first.replay_hash, second.replay_hash))
+        if first.corpus_record_hash != second.corpus_record_hash:
+            mismatches.append(
+                (f"{case.case_id} (corpus_record_hash)", first.corpus_record_hash, second.corpus_record_hash)
+            )
+
+    if mismatches:
+        logger.error("verify-replay: %d mismatch(es) — determinism is broken", len(mismatches))
+        for case_id, h1, h2 in mismatches:
+            logger.error("  %s: %s != %s", case_id, h1[:16], h2[:16])
+        return 4
+
+    logger.info("verify-replay: PASS — all %d replay_hash values byte-identical", len(eligible))
     return 0
 
 
@@ -474,6 +534,12 @@ def _print_summary(results: list[CitationIntegrityResult], records: list) -> Non
         print(f"  verification:   {verification}")
         print(f"  recoverability: {result.verification_recoverable}")
         print(f"  risk:           {risk}")
+        print(f"  policy_version: {result.policy_version}")
+        print(f"  corpus_hash:    {result.corpus_record_hash[:16]}…  ← tamper-detect on input corpus")
+        print(f"  replay_hash:    {result.replay_hash[:16]}…  ← deterministic across runs (verify with --verify-replay)")
+        print(f"  evidence_hash:  {result.evidence_hash[:16]}…  ← per-run tamper-evident seal")
+        if result.mutation_lineage:
+            print(f"  lineage:        {' ← '.join(result.mutation_lineage)}")
         print()
 
 
