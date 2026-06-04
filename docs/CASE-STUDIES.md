@@ -2,7 +2,7 @@
 
 The three court-documented incidents that anchor the Tier 1 canonical corpus. Each is a real legal filing in which AI-generated citations failed under judicial scrutiny.
 
-The narrative below is the human-readable version. The machine-readable evidence artifact for each case lives in [`data/benchmark/tier1/corpus/citation_failure_cases.json`](data/benchmark/tier1/corpus/citation_failure_cases.json).
+The narrative below is the human-readable version. The machine-readable evidence artifact for each case lives in [`data/benchmark/tier1/corpus/citation_failure_cases.json`](../data/benchmark/tier1/corpus/citation_failure_cases.json).
 
 ---
 
@@ -95,6 +95,6 @@ Dali is the open infrastructure for measuring whether that structural change is 
 
 The Tier 1 corpus currently has 3 scoring-eligible cases. The public record contains many more — sanctions orders, judicial findings, disciplinary referrals, court-documented retrieval failures across U.S. state and federal courts and increasingly internationally. [Damien Charlotin's AI hallucination tracker](https://www.damiencharlotin.com/hallucinations/) maintains the canonical public list.
 
-Corpus expansion is the **highest-priority contribution track** in the project. If you know of a court-documented incident that meets the [Tier 1 sourcing standard](CONTRIBUTING.md#tier-1-corpus-sourcing-standard) — verifiable source URL, retrieval timestamp, reproducible verification path, stable citation metadata — see [docs/for-legal-practitioners.md](docs/for-legal-practitioners.md) for the 30-minute contribution path.
+Corpus expansion is the **highest-priority contribution track** in the project. If you know of a court-documented incident that meets the [Tier 1 sourcing standard](../CONTRIBUTING.md#tier-1-corpus-sourcing-standard) — verifiable source URL, retrieval timestamp, reproducible verification path, stable citation metadata — see [docs/for-legal-practitioners.md](for-legal-practitioners.md) for the 30-minute contribution path.
 
 Every additional case strengthens the benchmark's evidentiary thesis. The corpus is the network effect.

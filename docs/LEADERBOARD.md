@@ -71,7 +71,7 @@ The leaderboard is open. To add your model:
 
 Reviewers verify deterministic replay before merge. Result files are immutable once merged.
 
-See [docs/for-researchers.md](docs/for-researchers.md) for the full submission protocol and what counts as a defensible row.
+See [docs/for-researchers.md](for-researchers.md) for the full submission protocol and what counts as a defensible row.
 
 ---
 

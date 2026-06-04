@@ -40,7 +40,7 @@ python -m dali.runners.run_synthetic \
 
 ## Adding prompts
 
-Use the MCP contributor tools (`draft`, `probe`, `pack`) or follow the manual path in [CONTRIBUTING.md](../../CONTRIBUTING.md).
+Use the MCP contributor tools (`draft`, `probe`, `pack`) or follow the manual path in [CONTRIBUTING.md](../../../CONTRIBUTING.md).
 
 ## Track strategy
 
@@ -57,4 +57,4 @@ dimensions:
 | Adversarial Traps | Citation pressure and fabrication resistance |
 
 Future expansion should prioritize differentiated evidence behavior over raw
-prompt count. See [docs/benchmark-expansion-strategy.md](../../docs/benchmark-expansion-strategy.md).
+prompt count. See [docs/benchmark-expansion-strategy.md](../../../docs/benchmark-expansion-strategy.md).
