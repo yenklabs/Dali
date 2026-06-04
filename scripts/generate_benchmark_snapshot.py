@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Regenerate docs/assets/dali-v0.2-benchmark-snapshot.png for the README hero.
+"""Regenerate docs/assets/dali-v0.2-benchmark-snapshot.png for the README.
 
-Requires: pip install matplotlib
 Data source: results/v0.2/README.md (2026-05-26 public benchmark run)
 """
 
@@ -9,191 +8,110 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+from PIL import Image, ImageDraw, ImageFont
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = REPO_ROOT / "docs" / "assets" / "dali-v0.2-benchmark-snapshot.png"
 
-TITLE = "Dali v0.2 Reproducibility & Attribution Benchmark"
+TITLE = "Dali v0.2 Evidence Reconstructability Benchmark"
 SUBTITLE = (
-    "Open evidentiary infrastructure for legal AI — not merely whether a citation exists, "
-    "but whether the pathway can be attributed, verified, and reconstructed later."
+    "Evaluating whether AI-generated legal citations remain attributable, "
+    "verifiable, and reconstructable over time."
 )
-
-PIPELINE_STAGES = [
-    "Generated\nCitation",
-    "Retrieved\nSource",
-    "Verified\nState",
-    "Evidence\nArtifact",
-    "Reconstruction\nTest",
-    "Pass /\nFail",
-]
+PATHWAY = "Generated citation -> Retrieved source -> Verified state -> Evidence artifact -> Reconstruction test"
+FOOTER = "Source: results/v0.2/README.md - 2026-05-26 public benchmark run"
 
 METRICS = [
-    ("Policy-\nversioned", "reproducible runs", "same inputs → same scores"),
-    ("524", "attribution probes", "citation + retrieval pathway"),
-    ("Evidence\nhashes", "per evaluation", "deterministic artifacts"),
-    ("76% → 3%", "durability gap", "UK verified vs Brazil (v0.2)"),
+    ("450", "prompt evaluations"),
+    ("524", "citations evaluated"),
+    ("5", "jurisdiction tracks"),
+    ("8", "prompt categories"),
 ]
 
 JURISDICTION_ROWS = [
-    ("UK / Commonwealth", 76, "#22c55e"),
-    ("Research / policy", 57, "#3b82f6"),
-    ("US legal", 33, "#eab308"),
-    ("Adversarial traps", 29, "#f97316"),
-    ("Brazil (Portuguese)", 3, "#ef4444"),
+    ("UK / Commonwealth", 76, "#4ade80"),
+    ("Research / policy", 57, "#38bdf8"),
+    ("US legal", 33, "#facc15"),
+    ("Adversarial traps", 29, "#fb923c"),
+    ("Brazil (Portuguese)", 3, "#f87171"),
 ]
 
-FOOTER = "Source: results/v0.2/README.md · 2026-05-26 · Tier 2 synthetic run (450 prompts × 3 models)"
+
+def _font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    candidates = [
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/System/Library/Fonts/Supplemental/Georgia Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Georgia.ttf",
+        "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
+    ]
+    for path in candidates:
+        try:
+            return ImageFont.truetype(path, size)
+        except OSError:
+            pass
+    return ImageFont.load_default()
 
 
-def _rounded_box(ax, x, y, w, h, text, *, face="#1e293b", edge="#475569", fontsize=9, bold=False):
-    patch = FancyBboxPatch(
-        (x, y),
-        w,
-        h,
-        boxstyle="round,pad=0.015,rounding_size=0.03",
-        linewidth=1.2,
-        edgecolor=edge,
-        facecolor=face,
-        transform=ax.transAxes,
-        zorder=2,
-    )
-    ax.add_patch(patch)
-    weight = "bold" if bold else "normal"
-    ax.text(
-        x + w / 2,
-        y + h / 2,
-        text,
-        ha="center",
-        va="center",
-        fontsize=fontsize,
-        fontweight=weight,
-        color="#f8fafc",
-        transform=ax.transAxes,
-        zorder=3,
-        linespacing=1.15,
-    )
-
-
-def _metric_card(ax, x, y, w, h, value, label, sub):
-    patch = FancyBboxPatch(
-        (x, y),
-        w,
-        h,
-        boxstyle="round,pad=0.02,rounding_size=0.04",
-        linewidth=1,
-        edgecolor="#334155",
-        facecolor="#1e293b",
-        transform=ax.transAxes,
-        zorder=1,
-    )
-    ax.add_patch(patch)
-    ax.text(x + w / 2, y + h * 0.64, value, ha="center", va="center", fontsize=14, fontweight="bold", color="#f8fafc", transform=ax.transAxes, zorder=2, linespacing=1.1)
-    ax.text(x + w / 2, y + h * 0.38, label, ha="center", va="center", fontsize=9, color="#cbd5e1", transform=ax.transAxes, zorder=2)
-    ax.text(x + w / 2, y + h * 0.14, sub, ha="center", va="center", fontsize=7.5, color="#94a3b8", transform=ax.transAxes, zorder=2)
-
-
-def _draw_pipeline(ax) -> None:
-    ax.set_axis_off()
-    ax.set_facecolor("#0f172a")
-    ax.text(0.02, 0.92, "What Dali measures (evidence pathway)", ha="left", va="top", fontsize=12, fontweight="bold", color="#e2e8f0", transform=ax.transAxes)
-    ax.text(
-        0.02,
-        0.78,
-        "Each probe traces attribution and reconstructability — not only citation existence.",
-        ha="left",
-        va="top",
-        fontsize=8.5,
-        color="#94a3b8",
-        transform=ax.transAxes,
-    )
-
-    n = len(PIPELINE_STAGES)
-    box_w = 0.115
-    gap = (0.96 - n * box_w) / (n - 1)
-    y, h = 0.22, 0.48
-    x0 = 0.02
-    centers = []
-    for i, stage in enumerate(PIPELINE_STAGES):
-        x = x0 + i * (box_w + gap)
-        edge = "#22c55e" if i == n - 1 else "#3b82f6"
-        face = "#14532d" if i == n - 1 else "#1e3a5f"
-        _rounded_box(ax, x, y, box_w, h, stage, face=face, edge=edge, fontsize=8.5, bold=(i == 0 or i == n - 1))
-        centers.append((x + box_w / 2, y + h / 2))
-        if i > 0:
-            prev_x = x0 + (i - 1) * (box_w + gap) + box_w
-            arrow = FancyArrowPatch(
-                (prev_x, y + h / 2),
-                (x, y + h / 2),
-                transform=ax.transAxes,
-                arrowstyle="-|>",
-                mutation_scale=12,
-                linewidth=1.5,
-                color="#64748b",
-                zorder=1,
-            )
-            ax.add_patch(arrow)
+def _rounded(draw: ImageDraw.ImageDraw, xy: tuple[int, int, int, int], radius: int, fill: str, outline: str | None = None, width: int = 1) -> None:
+    draw.rounded_rectangle(xy, radius=radius, fill=fill, outline=outline, width=width)
 
 
 def main() -> None:
-    fig = plt.figure(figsize=(16, 10), facecolor="#0f172a")
-    fig.subplots_adjust(left=0.04, right=0.96, top=0.94, bottom=0.05)
+    width, height = 1600, 820
+    image = Image.new("RGB", (width, height), "#101820")
+    draw = ImageDraw.Draw(image)
 
-    fig.text(0.5, 0.97, TITLE, ha="center", va="top", fontsize=21, fontweight="bold", color="#f8fafc")
-    fig.text(0.5, 0.935, SUBTITLE, ha="center", va="top", fontsize=10, color="#94a3b8", wrap=True)
+    title_font = _font(54, bold=True)
+    subtitle_font = _font(28)
+    section_font = _font(30, bold=True)
+    label_font = _font(23)
+    label_bold = _font(25, bold=True)
+    metric_font = _font(42, bold=True)
+    small_font = _font(18)
 
-    ax_pipe = fig.add_axes([0.02, 0.72, 0.96, 0.18])
-    _draw_pipeline(ax_pipe)
+    _rounded(draw, (48, 42, width - 48, height - 42), 28, "#0f1724", "#334155", 2)
 
-    ax_cards = fig.add_axes([0, 0.54, 1, 0.14])
-    ax_cards.set_axis_off()
-    ax_cards.set_facecolor("#0f172a")
-    card_w, card_h, gap = 0.21, 0.88, 0.025
-    start_x = (1 - (4 * card_w + 3 * gap)) / 2
-    for i, (value, label, sub) in enumerate(METRICS):
-        _metric_card(ax_cards, start_x + i * (card_w + gap), 0.04, card_w, card_h, value, label, sub)
+    draw.text((90, 84), TITLE, font=title_font, fill="#f8fafc")
+    draw.text((90, 154), SUBTITLE, font=subtitle_font, fill="#cbd5e1")
 
-    ax = fig.add_axes([0.18, 0.08, 0.78, 0.42])
-    ax.set_facecolor("#0f172a")
-    ax.set_xlim(0, 100)
-    ax.set_ylim(0, len(JURISDICTION_ROWS) + 1)
-    ax.invert_yaxis()
-    ax.set_title(
-        "Verification durability by jurisdiction (v0.2)\n"
-        "HTTP recoverability under fixed policy version — durability gap across jurisdictions",
-        loc="left",
-        fontsize=11,
-        fontweight="bold",
-        color="#e2e8f0",
-        pad=14,
-    )
-    ax.tick_params(colors="#94a3b8", labelsize=9)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#334155")
-    ax.spines["bottom"].set_color("#334155")
-    ax.set_xticks([0, 25, 50, 75, 100])
-    ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
-    ax.grid(axis="x", color="#1e293b", linestyle="-", linewidth=0.8)
-    ax.set_axisbelow(True)
+    chart_left = 330
+    chart_top = 280
+    chart_width = 1050
+    label_left = 90
+    row_gap = 68
+    bar_height = 38
 
-    y_pos = [i + 0.65 for i in range(len(JURISDICTION_ROWS))]
-    labels = [row[0] for row in JURISDICTION_ROWS]
-    pcts = [row[1] for row in JURISDICTION_ROWS]
-    colors = [row[2] for row in JURISDICTION_ROWS]
-    ax.barh(y_pos, pcts, height=0.55, color=colors, alpha=0.92, edgecolor="none")
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(labels, color="#e2e8f0", fontsize=10)
-    for y, pct in zip(y_pos, pcts):
-        ax.text(pct + 1.5, y, f"{pct}%", ha="left", va="center", fontsize=10, fontweight="bold", color="#f8fafc")
+    draw.text((90, 230), "Verified citation URLs by jurisdiction", font=section_font, fill="#f8fafc")
 
-    fig.text(0.04, 0.02, FOOTER, ha="left", va="bottom", fontsize=8, color="#64748b")
+    for pct in [0, 25, 50, 75, 100]:
+        x = chart_left + int(chart_width * pct / 100)
+        draw.line((x, chart_top - 40, x, chart_top + 325), fill="#233044", width=1)
+        draw.text((x - 18, chart_top - 72), f"{pct}%", font=small_font, fill="#94a3b8")
+    draw.line((chart_left, chart_top - 16, chart_left + chart_width, chart_top - 16), fill="#334155", width=2)
+
+    for index, (label, pct, color) in enumerate(JURISDICTION_ROWS):
+        y = chart_top + index * row_gap
+        draw.text((label_left, y + 6), label, font=label_font, fill="#cbd5e1")
+        bar_width = max(10, int(chart_width * pct / 100))
+        _rounded(draw, (chart_left, y, chart_left + bar_width, y + bar_height), 9, color)
+        draw.text((chart_left + bar_width + 18, y + 3), f"{pct}%", font=label_bold, fill="#f8fafc")
+
+    card_width = 280
+    card_height = 82
+    card_gap = 26
+    total_cards_width = 4 * card_width + 3 * card_gap
+    card_x = (width - total_cards_width) // 2
+    card_y = 650
+    for index, (value, label) in enumerate(METRICS):
+        x = card_x + index * (card_width + card_gap)
+        _rounded(draw, (x, card_y, x + card_width, card_y + card_height), 16, "#172033", "#475569", 2)
+        draw.text((x + 28, card_y + 18), value, font=metric_font, fill="#f8fafc")
+        draw.text((x + 96, card_y + 29), label, font=small_font, fill="#cbd5e1")
+
+    draw.text((90, 764), f"Evidence pathway: {PATHWAY}", font=small_font, fill="#cbd5e1")
+    draw.text((90, 790), FOOTER, font=small_font, fill="#64748b")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUTPUT, dpi=150, facecolor=fig.get_facecolor(), edgecolor="none")
-    plt.close(fig)
+    image.save(OUTPUT, optimize=True)
     print(f"Wrote {OUTPUT}")
 
 
