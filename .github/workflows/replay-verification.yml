@@ -34,9 +34,9 @@ jobs:
         # test for Dali's determinism claim — if it fails, the project's core
         # property is broken and the PR must not merge.
         run: |
-          python runners/run_integrity.py \
-            --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-            --output results/ci/replay-verify.json \
+          python -m dali.runners.run_integrity \
+            --corpus data/benchmark/tier1/corpus/citation_failure_cases.json \
+            --output data/results/ci/replay-verify.json \
             --verify-replay
 
       - name: Upload artifact
@@ -44,5 +44,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: replay-verify-output
-          path: results/ci/replay-verify.json
+          path: data/results/ci/replay-verify.json
           retention-days: 7

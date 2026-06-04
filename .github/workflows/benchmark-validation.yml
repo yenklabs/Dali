@@ -3,11 +3,10 @@ name: Benchmark Validation
 on:
   pull_request:
     paths:
-      - 'benchmarks/**'
-      - 'corpus/**'
-      - 'runners/**'
-      - 'schemas/**'
-      - 'results/**'
+      - 'data/**'
+      - 'dali/**'
+      - 'tools/**'
+      - '.github/workflows/benchmark-validation.yml'
   push:
     branches:
       - main
@@ -38,7 +37,7 @@ jobs:
         run: |
           python3 -c "
           import json, sys
-          with open('benchmarks/tier1/corpus/citation_failure_cases.json') as f:
+          with open('data/benchmark/tier1/corpus/citation_failure_cases.json') as f:
               data = json.load(f)
           cases = data.get('records', data) if isinstance(data, dict) else data
           assert len(cases) >= 1, 'Corpus must have at least 1 record'
@@ -47,9 +46,9 @@ jobs:
 
       - name: Run Tier 1 deterministic evaluator
         run: |
-          python runners/run_integrity.py \
-            --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-            --output results/ci/integrity.json
+          python -m dali.runners.run_integrity \
+            --corpus data/benchmark/tier1/corpus/citation_failure_cases.json \
+            --output data/results/ci/integrity.json
           echo "Evaluator completed"
 
       - name: Validate result schema
@@ -57,9 +56,9 @@ jobs:
           python3 -c "
           import json, jsonschema
 
-          with open('schemas/integrity-result.schema.json') as f:
+          with open('dali/schemas/integrity-result.schema.json') as f:
               schema = json.load(f)
-          with open('results/ci/integrity.json') as f:
+          with open('data/results/ci/integrity.json') as f:
               results = json.load(f)
 
           records = results if isinstance(results, list) else results.get('results', [])
@@ -80,7 +79,7 @@ jobs:
         run: |
           python3 -c "
           import json
-          with open('results/ci/integrity.json') as f:
+          with open('data/results/ci/integrity.json') as f:
               results = json.load(f)
           records = results if isinstance(results, list) else results.get('results', [])
           eligible = [r for r in records if r.get('scoring_eligible', True)]
@@ -95,7 +94,7 @@ jobs:
         if: always()
         with:
           name: tier1-integrity-results
-          path: results/ci/integrity.json
+          path: data/results/ci/integrity.json
           retention-days: 30
 
   corpus-quality-gate:
@@ -116,7 +115,7 @@ jobs:
           python3 -c "
           import json, sys, pathlib
 
-          corpus_path = pathlib.Path('benchmarks/tier1/corpus/citation_failure_cases.json')
+          corpus_path = pathlib.Path('data/benchmark/tier1/corpus/citation_failure_cases.json')
           with open(corpus_path) as f:
               data = json.load(f)
 
@@ -166,8 +165,8 @@ jobs:
           python3 -c "
           import json, pathlib, sys
 
-          schema_files = list(pathlib.Path('schemas').glob('*.json')) + \
-                         list(pathlib.Path('results').glob('**/schema.json'))
+          schema_files = list(pathlib.Path('dali/schemas').glob('*.json')) + \
+                         list(pathlib.Path('data/results').glob('**/schema.json'))
 
           errors = []
           for f in schema_files:
@@ -191,7 +190,7 @@ jobs:
 
           errors = []
           total = 0
-          for jsonl_file in pathlib.Path('synthetic').rglob('*.jsonl'):
+          for jsonl_file in pathlib.Path('data/benchmark/tier2').rglob('*.jsonl'):
               with open(jsonl_file) as f:
                   for i, line in enumerate(f, 1):
                       line = line.strip()
