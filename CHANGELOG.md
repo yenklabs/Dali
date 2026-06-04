@@ -9,7 +9,63 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- **Two new MCP tools surface the demo to non-terminal contributors:**
+  - `evaluate_case` — MCP equivalent of `python runners/run_integrity.py`.
+    Runs the deterministic Tier 1 evaluator on a single record and returns
+    the full `CitationIntegrityResult` including the three cryptographic
+    hashes. Contributors can now run the demo by talking to Claude.
+  - `verify_replay` — MCP equivalent of `--verify-replay`. Runs the
+    evaluator twice and asserts replay_hash equality.
+  Both live in `dali_mcp/tools/integrity_tools.py`; both share the exact
+  code path the CLI uses, so MCP and terminal outputs are byte-identical.
+- **`tests/test_mcp_tools.py`** — 20 unit tests covering all six MCP tool
+  implementations (`check_case`, `evaluate_case`, `verify_replay`,
+  `check_prompt`, `new_prompt`, `bundle_prompts`). Pure-Python tests; no
+  MCP runtime required. The MCP layer is now testable like any other module.
+- **`dali_mcp/README.md` rewritten value-first**: 5 ready-to-paste
+  contributor prompts (the workflows people actually do), a 30-second
+  smoke test, a CLI ↔ MCP mapping table, and troubleshooting. Setup demoted
+  from the lede to a single 5-minute section.
+- **No-terminal contribution path called out** in `README.md` and
+  `docs/for-legal-practitioners.md`. Legal practitioners can now contribute
+  a court-documented case entirely through their AI editor.
+- **Cryptographic lineage on every Tier 1 result.** `CitationIntegrityResult`
+  now carries three SHA-256 hashes:
+  - `corpus_record_hash` — over the canonical JSON of the input corpus record.
+    Detects silent mutation of the input.
+  - `replay_hash` — over (canonical record, policy_version, source_document_hash).
+    Replay-invariant: same inputs under same policy always yield the same hash.
+  - `evidence_hash` — over (case_id, policy_version, run_timestamp). Per-run
+    tamper-evident seal (docstring corrected; previously claimed replay-stability
+    incorrectly).
+- **`runners/run_integrity.py --verify-replay`** flag. Re-evaluates every case
+  a second time and asserts every `replay_hash` is byte-identical. Exit code
+  `4` on mismatch. Proves the determinism claim is testable, not merely asserted.
+- **`.github/workflows/replay-verification.yml`** — CI workflow running
+  `--verify-replay` on every PR and on `main`. A determinism regression now
+  blocks merge.
+- **`docs/cryptographic-lineage.md`** — full explanation of the three-hash
+  chain, what each protects against, what a verifier can independently prove,
+  and the v0.3+ roadmap items (source content hashing, sigstore signing,
+  Merkle commitments).
+- Demo summary in `run_integrity.py` now surfaces `policy_version`,
+  `corpus_record_hash`, `replay_hash`, `evidence_hash`, and mutation lineage —
+  previously computed but invisible in CLI output.
+- Promotional surface: `LEADERBOARD.md`, `CASE-STUDIES.md`, and three
+  persona doorways (`docs/for-legal-practitioners.md`, `docs/for-researchers.md`,
+  `docs/for-engineers.md`) for clearer contributor on-ramps.
+- New FAQ entries on `replay_hash`, `corpus_record_hash`, and why three hashes
+  instead of one.
+
 ### Changed
+- README rewritten top-to-fold: leads with the v0.2 GPT-4.1 fabrication and
+  Portuguese civil-law verification findings; adds CI/release/license badges;
+  three persona doorways; explicit Dali / GammaLex disclosure.
+- `schemas/integrity-result.schema.json` requires `corpus_record_hash` and
+  `replay_hash` (both 64-char hex). Existing field descriptions clarified.
+- `evidence_hash` docstring corrected: it is a per-run tamper-evident seal,
+  not a replay invariant. For replay-invariance see `replay_hash`.
 - README hero visual upgraded: evidence pathway (attribution → reconstruction) plus
   verification-durability chart; title **Dali v0.2 Reproducibility & Attribution Benchmark**.
 - Benchmark naming aligned across METHODOLOGY, policy-versioning, corpus, and

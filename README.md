@@ -44,6 +44,8 @@ Dali consolidates the missing infrastructure into one MIT-licensed, deterministi
 | **AI researcher / eval engineer** | Run Tier 2 against a new model and submit a leaderboard PR → [docs/for-researchers.md](docs/for-researchers.md) | 60 min |
 | **Software engineer** | Pick a `good first issue` — canonicalization, MCP, visualization → [docs/for-engineers.md](docs/for-engineers.md) | 2 hr |
 
+**No terminal? No problem.** The Dali MCP server exposes the full workflow — validate, evaluate, verify replay determinism, scaffold prompts, bundle a PR — through Claude Desktop, Cursor, or VS Code. You don't need to know Python. See [dali_mcp/README.md](dali_mcp/README.md).
+
 Every merged contribution is credited in the next release notes and the `CITATION.cff` contributor roll. For substantial corpus or methodology work, the project supports co-authorship on the v0.3 technical report (in progress).
 
 ---
@@ -56,10 +58,11 @@ python -m venv .venv && source .venv/bin/activate    # use activate.fish on Fish
 pip install -r requirements.txt
 python runners/run_integrity.py \
   --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
-  --output results/demo/integrity.json
+  --output results/demo/integrity.json \
+  --verify-replay
 ```
 
-Runs the deterministic Tier 1 evaluator against the canonical court-documented incidents. **No API keys. No external services. No network.** Output is a `CitationIntegrityResult` artifact per case with a deterministic evidence hash.
+Runs the deterministic Tier 1 evaluator against the canonical court-documented incidents, then runs it a second time and asserts every replay hash is byte-identical. **No API keys. No external services. No network.**
 
 ```text
 case_id:        mata-v-avianca-2023
@@ -69,7 +72,15 @@ source_url:     https://www.courtlistener.com/docket/63107798/mata-v-avianca-inc
 verification:   FAILED
 recoverability: infeasible
 risk:           critical
+policy_version: taxonomy=2.0.0;rubric=1.0.0;scoring=1.0.0;normalization=1.0.0;schema=1.0.0
+corpus_hash:    30dd70980404de12…  ← tamper-detect on input corpus
+replay_hash:    b17c945f13e17c1d…  ← deterministic across runs
+evidence_hash:  85150dbae5f5729e…  ← per-run tamper-evident seal
+
+verify-replay: PASS — all 3 replay_hash values byte-identical
 ```
+
+Every result carries three SHA-256 hashes: `corpus_record_hash` (input integrity), `replay_hash` (verdict reproducibility), `evidence_hash` (per-run seal). CI re-runs `--verify-replay` on every PR. See [docs/cryptographic-lineage.md](docs/cryptographic-lineage.md).
 
 For Tier 2 (live model evaluation across jurisdictions) see [docs/examples.md](docs/examples.md) and [docs/for-researchers.md](docs/for-researchers.md).
 
@@ -123,6 +134,7 @@ UK common-law citation structures transferred relatively well from dominant Engl
 | **Workflow reconstructability** | Whether the pathway that produced a citation can be independently reconstructed |
 | **Replayable evidence** | Whether an evaluation can be reproduced and re-verified under a fixed policy version |
 | **Evidence durability** | Whether evidence remains verifiable and attributable over time |
+| **Cryptographic lineage** | Every result is sealed with three SHA-256 hashes — input integrity, verdict reproducibility, per-run authenticity. CI verifies determinism on every PR. See [docs/cryptographic-lineage.md](docs/cryptographic-lineage.md). |
 
 ## Evaluation tiers
 

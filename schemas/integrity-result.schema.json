@@ -9,7 +9,9 @@
     "citation_exists",
     "policy_version",
     "evidence_hash",
-    "run_timestamp"
+    "run_timestamp",
+    "corpus_record_hash",
+    "replay_hash"
   ],
   "properties": {
     "case_id": {
@@ -82,7 +84,17 @@
     },
     "evidence_hash": {
       "type": "string",
-      "description": "Deterministic SHA-256 over (case_id, policy_version, run_timestamp).",
+      "description": "SHA-256 over (case_id, policy_version, run_timestamp). Per-run tamper-evident seal; differs across runs by design (timestamp is part of the seal). For the replay invariant see replay_hash.",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "corpus_record_hash": {
+      "type": "string",
+      "description": "SHA-256 over the canonical JSON of the input corpus record alone. Independent of policy version; changes only when the record content itself changes. Detects silent mutation of the input corpus.",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "replay_hash": {
+      "type": "string",
+      "description": "SHA-256 over (canonical corpus record, policy_version, source_document_hash). Replay invariant: identical inputs under identical policy always yield the same hash. Two runs of the runner against the same corpus and policy MUST produce byte-identical replay_hash values per case. Enforced by --verify-replay.",
       "pattern": "^[a-f0-9]{64}$"
     },
     "run_timestamp": {

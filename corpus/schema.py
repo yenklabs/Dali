@@ -117,7 +117,19 @@ class CitationFailureCase:
 
 @dataclass
 class CitationIntegrityResult:
-    """Per-case output of the Tier 1 integrity runner."""
+    """Per-case output of the Tier 1 integrity runner.
+
+    Cryptographic lineage fields:
+      corpus_record_hash — SHA-256 over the canonical JSON of the input corpus
+                           record. Tamper-detects silent mutation of the input.
+      replay_hash        — SHA-256 over (corpus_record_hash, policy_version,
+                           source_document_hash). Replay invariant: same input
+                           under same policy produces the same hash forever.
+                           This is what --verify-replay checks for equality.
+      evidence_hash      — SHA-256 over (case_id, policy_version, run_timestamp).
+                           Per-run tamper-evident seal; differs across runs by
+                           design (the timestamp is part of the seal).
+    """
 
     case_id: str
     citation_exists: bool
@@ -141,6 +153,10 @@ class CitationIntegrityResult:
     policy_version: str
     evidence_hash: str
     run_timestamp: str
+
+    # Cryptographic lineage (replay-stable)
+    corpus_record_hash: str = ""
+    replay_hash: str = ""
 
 
 # ---------------------------------------------------------------------------
@@ -171,11 +187,36 @@ def canonical_json(record: CitationFailureCase) -> str:
 
 
 def evidence_hash(record: CitationFailureCase, policy_version: str) -> str:
-    """sha256 over canonical record + policy version + source content hash."""
+    """sha256 over canonical record + policy version + source content hash.
+
+    Replay-invariant: identical inputs under identical policy always yield
+    the same hash. Surfaced on CitationIntegrityResult as ``replay_hash``.
+    """
     base = canonical_json(record)
     content = record.source_document_hash or ""
     payload = f"{base}|policy={policy_version}|content={content}"
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def corpus_record_hash(record: CitationFailureCase) -> str:
+    """sha256 over the canonical JSON of the corpus record alone.
+
+    Detects silent mutation of the input corpus. Independent of policy
+    version — changes only when the record content itself changes.
+    """
+    return hashlib.sha256(canonical_json(record).encode("utf-8")).hexdigest()
+
+
+def compute_replay_hash(record: CitationFailureCase, policy_version: str) -> str:
+    """Replay-invariant hash for a single (record, policy) pair.
+
+    Alias of :func:`evidence_hash` with the name that matches what is exposed
+    on :class:`CitationIntegrityResult` as ``replay_hash``. Same inputs always
+    produce the same hash; if two runs of the runner produce different
+    ``replay_hash`` values for the same case, that is a determinism bug or
+    silent corpus mutation.
+    """
+    return evidence_hash(record, policy_version)
 
 
 def now_iso() -> str:

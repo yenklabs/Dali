@@ -1,0 +1,48 @@
+name: Replay Verification
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-replay:
+    name: deterministic replay
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Verify deterministic replay
+        # Runs the Tier 1 evaluator twice against the canonical corpus and asserts
+        # every replay_hash is byte-identical across runs. This is the load-bearing
+        # test for Dali's determinism claim — if it fails, the project's core
+        # property is broken and the PR must not merge.
+        run: |
+          python runners/run_integrity.py \
+            --corpus benchmarks/tier1/corpus/citation_failure_cases.json \
+            --output results/ci/replay-verify.json \
+            --verify-replay
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay-verify-output
+          path: results/ci/replay-verify.json
+          retention-days: 7

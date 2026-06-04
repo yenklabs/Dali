@@ -1,39 +1,42 @@
-# Dali MCP Contributor Tools
+# Dali MCP — contribute without touching a terminal
 
-Dali exposes four MCP tools so you can validate, scaffold, and bundle
-corpus records and synthetic prompts directly from Claude or any
-MCP-capable editor, without running terminal commands.
+Most contributors don't want to run Python from a terminal. The Dali MCP server lets you do the entire contribution workflow — validate a corpus record, run the deterministic evaluator, verify replay determinism, scaffold new prompts, bundle a PR — by talking to Claude (or Cursor, or VS Code).
 
-## Tools
-
-| Tool | Purpose |
-|---|---|
-| `check_case` | Validate a canonical citation-failure case |
-| `check_prompt` | Validate a synthetic benchmark prompt |
-| `new_prompt` | Generate a prompt scaffold |
-| `bundle_prompts` | Create a PR-ready contribution bundle |
-
-These tools wrap the same validation logic used by the CLI
-(`corpus/validator.py`, `runners/`) so there are no discrepancies
-between editor and terminal validation.
+If you've ever wanted to add a court-documented AI-citation failure to a research benchmark but didn't want to deal with `pip install`, this is the path.
 
 ---
 
-## Setup
+## What you can do
 
-### Prerequisites
+| Tool | What you ask the AI | Output |
+|---|---|---|
+| `check_case` | "Validate this corpus record" | Pass/fail + list of missing or invalid fields |
+| `evaluate_case` | "Run the Tier 1 evaluator on this record" | Full verdict + three cryptographic hashes (the demo, but in MCP) |
+| `verify_replay` | "Verify this record evaluates deterministically" | PASS/FAIL on replay-hash equality across two runs |
+| `check_prompt` | "Validate this Tier 2 prompt" | Pass/fail + which file to add it to |
+| `new_prompt` | "Scaffold a new adversarial prompt for hallucination_prone" | Ready-to-fill JSON template |
+| `bundle_prompts` | "Bundle these 5 prompts and tell me what's left to fix before PR" | Validation summary + pre-PR checklist |
 
-```bash
-pip install mcp
+`evaluate_case` is the most important one — it runs the same code path as `python runners/run_integrity.py` and surfaces the cryptographic lineage that anchors Dali's reproducibility claim. No terminal required.
+
+---
+
+## 5-minute setup
+
+### Step 1 — Clone the repo and install one dependency
+
+You do need a one-time install. After that you never touch a terminal again.
+
+```
+git clone https://github.com/yenk/Dali && cd Dali
+pip install -r requirements.txt
 ```
 
-The `mcp` package is listed under the MCP server section in
-`requirements.txt`. The rest of Dali (Tier 1 evaluator) runs on
-stdlib only. `mcp` is only required for the editor integration.
+### Step 2 — Wire it into your AI editor
 
-### Claude Desktop
+Pick the one you use.
 
-Add to your Claude Desktop `claude_desktop_config.json`:
+**Claude Desktop** — add to `claude_desktop_config.json`:
 
 ```json
 {
@@ -41,19 +44,17 @@ Add to your Claude Desktop `claude_desktop_config.json`:
     "dali": {
       "command": "python",
       "args": ["-m", "dali_mcp"],
-      "cwd": "/path/to/your/Dali/clone"
+      "cwd": "/absolute/path/to/your/Dali/clone"
     }
   }
 }
 ```
 
-Replace `/path/to/your/Dali/clone` with the absolute path to your
-local repo. Restart Claude Desktop. The four tools will appear in
-the tool list.
+Restart Claude Desktop. You'll see "dali" listed in the MCP server tray.
 
-### VS Code (with MCP extension)
+**Cursor** — same JSON, paste into Cursor → Settings → MCP.
 
-Add to your `.vscode/mcp.json`:
+**VS Code with the MCP extension** — add to `.vscode/mcp.json`:
 
 ```json
 {
@@ -68,60 +69,95 @@ Add to your `.vscode/mcp.json`:
 }
 ```
 
-### Cursor
+### Step 3 — Smoke test (30 seconds)
 
-Add to your Cursor MCP settings:
+In your editor, paste this prompt:
 
-```json
-{
-  "mcpServers": {
-    "dali": {
-      "command": "python",
-      "args": ["-m", "dali_mcp"],
-      "cwd": "/path/to/your/Dali/clone"
-    }
-  }
-}
-```
+> Use evaluate_case on this record:
+> ```json
+> {"case_id":"smoke-test","incident_name":"Smoke test","year":2024,"jurisdiction":"US-NY-SDNY","source_url":"https://example.com/order/1","retrieval_date":"2026-06-04","source_type":"sanctions_order","alleged_generated_citation":"Fake v. Real, 123 F.3d 456 (9th Cir. 2020)","actual_status":"nonexistent_authority","failure_class":["nonexistent_authority","reconstructability_failure"],"ground_truth_notes":"Smoke test."}
+> ```
+
+Expected: the AI returns `verification: FAILED`, `risk: critical`, and three SHA-256 hashes (`corpus_record_hash`, `replay_hash`, `evidence_hash`). If you see that, your setup works.
 
 ---
 
-## Usage examples
+## Five ready-to-paste contributor prompts
 
-### Validate a corpus record
+These are the workflows most contributors will actually do. Paste any of them into your AI editor as-is.
 
-Ask your editor assistant:
-> "Use check_case to validate this record: { "case_id": "my-case-2024", "year": 2024, ... }"
+### 1. Add a new court-documented case (legal practitioners)
 
-The tool returns `valid`, `scoring_eligible`, `issues`, and a one-line `summary`.
+> I found a court order where AI-generated citations were sanctioned. Help me add it to Dali. The case is [paste case name and URL]. Walk me through filling out the corpus record, then use check_case to validate it, then use evaluate_case to confirm it produces a clean Tier 1 verdict, then use verify_replay to confirm the result is deterministic. When everything passes, give me the JSON ready to paste into `benchmarks/tier1/corpus/citation_failure_cases.json`.
 
-### Scaffold a new adversarial prompt
+### 2. Run the Tier 1 demo against an existing case
 
-Ask your editor assistant:
-> "Use new_prompt for category=adversarial, subcategory=hallucination_prone, difficulty=adversarial, notes=Tests fabrication under recent AI regulation prompts"
+> Open `benchmarks/tier1/corpus/citation_failure_cases.json`, pick the Mata v. Avianca record, and use evaluate_case to run the Tier 1 evaluator on it. Show me the full verdict and explain what each of the three hashes (corpus_record_hash, replay_hash, evidence_hash) proves.
 
-The tool returns a ready-to-fill entry and tells you which file to add it to.
+### 3. Scaffold a new adversarial prompt
 
-### Bundle prompts for a PR
+> Use new_prompt to create an adversarial / hallucination_prone prompt at adversarial difficulty. The failure mode I want to test is: lawyers asking for recent appellate decisions on AI-generated evidence (a topic where the model is likely to fabricate citations). Then write the actual prompt text and run check_prompt to validate it.
 
-Ask your editor assistant:
-> "Use bundle_prompts on this list: [...]"
+### 4. Bundle five prompts into a PR-ready submission
 
-Returns pass/fail by prompt ID and a pre-PR checklist.
+> I have five Tier 2 prompts I want to contribute [paste the JSON array]. Use bundle_prompts to validate them all, show me anything I need to fix, and produce the pre-PR checklist.
+
+### 5. Verify a record I changed still evaluates the same
+
+> I edited the Park v. Kim record in `benchmarks/tier1/corpus/citation_failure_cases.json`. Use verify_replay to confirm the replay_hash still matches its prior value. If it doesn't, that means my edit changed the verdict — show me what's different.
 
 ---
 
-## CLI equivalent
+## What each tool returns
 
-All tools have direct CLI equivalents for terminal users:
+All tools return JSON strings. Your AI assistant will parse and present them.
 
-```bash
-# Validate corpus
-python -m corpus.validator benchmarks/tier1/corpus/citation_failure_cases.json
+| Tool | Key return fields |
+|---|---|
+| `check_case` | `valid`, `scoring_eligible`, `issues[]`, `summary` |
+| `evaluate_case` | `ok`, `result` (full `CitationIntegrityResult` with all hashes), `summary` |
+| `verify_replay` | `ok`, `replay_hash_match`, `corpus_record_hash_match`, `replay_hash`, `policy_version`, `summary` |
+| `check_prompt` | `valid`, `issues[]`, `summary`, `destination_file` |
+| `new_prompt` | A commented JSON template (string), with placeholder `<REPLACE>` markers |
+| `bundle_prompts` | `total`, `valid`, `invalid`, `issues_by_id`, `pr_checklist[]`, `ready_to_submit` |
 
-# Validate synthetic prompts (via CI schema check)
-pytest tests/ -q
-```
+---
 
-The MCP server is an editor-friendly wrapper around the same logic,
-not a separate code path.
+## How this maps to terminal commands
+
+If you ever want to drop down to the terminal — or if you're reviewing what the MCP tool actually did under the hood — every tool maps to a single CLI command:
+
+| MCP tool | Terminal equivalent |
+|---|---|
+| `check_case` | `python -m corpus.validator <corpus.json>` |
+| `evaluate_case` | `python runners/run_integrity.py --corpus <corpus.json> --output <out.json>` |
+| `verify_replay` | `python runners/run_integrity.py --corpus <corpus.json> --output <out.json> --verify-replay` |
+| `check_prompt` + `bundle_prompts` | `pytest tests/` (schema validation runs here) |
+
+The MCP tools call the same Python functions as the CLI. No discrepancy.
+
+---
+
+## Troubleshooting
+
+**"dali" doesn't appear in my editor's MCP server list**
+The `cwd` field in the JSON config must be the **absolute** path to your Dali clone. `~` and relative paths don't work. On macOS, run `pwd` inside the Dali directory and paste that exact string.
+
+**evaluate_case returns "Failed to construct CitationFailureCase"**
+The record is missing or has the wrong type for a required field. Run `check_case` first — it lists every missing or invalid field with the exact fix.
+
+**verify_replay returns ok: false**
+Either the runner has a determinism regression (unlikely; CI catches this on every PR) or the record itself contains non-deterministic content (e.g., a `datetime.now()` in a field, which should not happen in a well-formed corpus record). Open an issue with `methodology` label and include the record JSON.
+
+**Python version**
+The MCP server needs Python 3.10+. If `python -m dali_mcp` errors, try `python3 -m dali_mcp` and update your editor's MCP config accordingly.
+
+---
+
+## Related
+
+- **Persona doorways:**
+  [for legal practitioners](../docs/for-legal-practitioners.md) · [for AI researchers](../docs/for-researchers.md) · [for engineers](../docs/for-engineers.md)
+- **Cryptographic lineage** — what the three hashes actually prove: [docs/cryptographic-lineage.md](../docs/cryptographic-lineage.md)
+- **Methodology** — the scoring rubric and policy versioning: [METHODOLOGY.md](../METHODOLOGY.md)
+- **Full contributor guide** — taxonomy, labels, PR checklist: [CONTRIBUTING.md](../CONTRIBUTING.md)

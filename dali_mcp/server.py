@@ -8,10 +8,12 @@ Or via uvx (no install required):
     uvx --from . dali-mcp
 
 Tools:
-    check_case      Validate a canonical citation-failure case record
-    check_prompt    Validate a synthetic benchmark prompt entry
-    new_prompt      Generate a scaffolded prompt template
-    bundle_prompts  Validate a batch and return a PR-ready checklist
+    check_case       Validate a canonical citation-failure case record
+    evaluate_case    Run the Tier 1 deterministic evaluator on one record
+    verify_replay    Prove the evaluation is replay-deterministic for one record
+    check_prompt     Validate a synthetic benchmark prompt entry
+    new_prompt       Generate a scaffolded prompt template
+    bundle_prompts   Validate a batch and return a PR-ready checklist
 """
 
 from __future__ import annotations
@@ -25,6 +27,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from mcp.server.fastmcp import FastMCP
 
 from dali_mcp.tools.corpus_tools import _check_case_impl
+from dali_mcp.tools.integrity_tools import (
+    _evaluate_case_impl,
+    _verify_replay_impl,
+)
 from dali_mcp.tools.prompt_tools import (
     _bundle_prompts_impl,
     _check_prompt_impl,
@@ -35,9 +41,11 @@ mcp = FastMCP(
     "Dali",
     instructions=(
         "You are a Dali contributor assistant. Use these tools to validate "
-        "corpus records and synthetic prompts, scaffold new entries, and "
-        "bundle contributions for pull-request submission. "
-        "Run check_case or check_prompt before calling bundle_prompts."
+        "corpus records and synthetic prompts, scaffold new entries, run the "
+        "deterministic Tier 1 evaluator, verify replay determinism, and bundle "
+        "contributions for pull-request submission. Run check_case before "
+        "evaluate_case; run evaluate_case before suggesting a record is ready "
+        "to PR."
     ),
 )
 
@@ -63,6 +71,59 @@ def check_case(record_json: str) -> str:
             summary (str) - one-line status
     """
     return json.dumps(_check_case_impl(record_json), indent=2)
+
+
+@mcp.tool()
+def evaluate_case(record_json: str) -> str:
+    """Run the deterministic Tier 1 evaluator on a single corpus record.
+
+    This is the MCP equivalent of ``python runners/run_integrity.py``.
+    Returns the full CitationIntegrityResult — verdict, defensibility risk,
+    workflow reconstructability, mutation lineage, and the three SHA-256
+    hashes that anchor cryptographic lineage:
+
+      - corpus_record_hash : input integrity (detects silent corpus mutation)
+      - replay_hash        : verdict reproducibility (deterministic across runs)
+      - evidence_hash      : per-run tamper-evident seal
+
+    Use this to confirm a record evaluates cleanly before opening a PR.
+    Run check_case first if the record may have structural issues.
+
+    Args:
+        record_json: JSON string of a single CitationFailureCase record.
+
+    Returns:
+        JSON string with keys:
+            ok (bool) - evaluation succeeded
+            result (object) - the full CitationIntegrityResult
+            summary (str) - human-readable verdict + hash preview
+    """
+    return json.dumps(_evaluate_case_impl(record_json), indent=2)
+
+
+@mcp.tool()
+def verify_replay(record_json: str) -> str:
+    """Prove the evaluation is replay-deterministic for one corpus record.
+
+    Runs evaluate_local twice on the same record and asserts the
+    replay_hash and corpus_record_hash are byte-identical across runs.
+    This is the MCP equivalent of the runner's ``--verify-replay`` flag
+    and the same property CI verifies on every PR.
+
+    Args:
+        record_json: JSON string of a single CitationFailureCase record.
+
+    Returns:
+        JSON string with keys:
+            ok (bool) - True only when both hashes match across runs
+            replay_hash_match (bool)
+            corpus_record_hash_match (bool)
+            replay_hash (str) - the canonical replay_hash for the record
+            corpus_record_hash (str)
+            policy_version (str)
+            summary (str) - PASS/FAIL message
+    """
+    return json.dumps(_verify_replay_impl(record_json), indent=2)
 
 
 @mcp.tool()

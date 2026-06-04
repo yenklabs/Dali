@@ -135,6 +135,78 @@ class TestEvaluateLocal:
         assert result.defensibility_risk == DefensibilityRisk.MEDIUM
 
 
+class TestCryptographicLineage:
+    """The replay-invariant hash, the corpus record hash, and their stability."""
+
+    def test_replay_hash_is_hex(self):
+        case = _case()
+        result = evaluate_local(case, POLICY_V, {case.case_id: case})
+        assert len(result.replay_hash) == 64
+        int(result.replay_hash, 16)
+
+    def test_corpus_record_hash_is_hex(self):
+        case = _case()
+        result = evaluate_local(case, POLICY_V, {case.case_id: case})
+        assert len(result.corpus_record_hash) == 64
+        int(result.corpus_record_hash, 16)
+
+    def test_replay_hash_stable_across_runs(self):
+        """Same case + same policy → same replay_hash, regardless of timestamp.
+
+        This is the load-bearing determinism property. If this test fails,
+        the replay invariant is broken.
+        """
+        case = _case()
+        by_id = {case.case_id: case}
+        r1 = evaluate_local(case, POLICY_V, by_id)
+        r2 = evaluate_local(case, POLICY_V, by_id)
+        assert r1.replay_hash == r2.replay_hash
+        assert r1.corpus_record_hash == r2.corpus_record_hash
+        # And evidence_hash should differ (it includes timestamp by design)
+        # — but only if the timestamps actually differ; under sub-microsecond
+        # execution they may collide, which is fine.
+
+    def test_replay_hash_changes_when_corpus_changes(self):
+        """If the input corpus record changes, the replay_hash must change."""
+        case_a = _case(ground_truth_notes="version A")
+        case_b = _case(ground_truth_notes="version B")
+        r_a = evaluate_local(case_a, POLICY_V, {case_a.case_id: case_a})
+        r_b = evaluate_local(case_b, POLICY_V, {case_b.case_id: case_b})
+        assert r_a.replay_hash != r_b.replay_hash
+        assert r_a.corpus_record_hash != r_b.corpus_record_hash
+
+    def test_replay_hash_changes_when_policy_changes(self):
+        """If policy version changes, the replay_hash must change."""
+        case = _case()
+        by_id = {case.case_id: case}
+        r1 = evaluate_local(case, POLICY_V, by_id)
+        r2 = evaluate_local(case, POLICY_V.replace("rubric=1.0.0", "rubric=2.0.0"), by_id)
+        assert r1.replay_hash != r2.replay_hash
+        # corpus_record_hash does NOT depend on policy — must be equal
+        assert r1.corpus_record_hash == r2.corpus_record_hash
+
+    def test_corpus_record_hash_independent_of_policy(self):
+        """corpus_record_hash hashes the record alone, not the policy."""
+        case = _case()
+        by_id = {case.case_id: case}
+        r1 = evaluate_local(case, POLICY_V, by_id)
+        r2 = evaluate_local(case, POLICY_V.replace("scoring=1.0.0", "scoring=9.9.9"), by_id)
+        assert r1.corpus_record_hash == r2.corpus_record_hash
+
+    def test_verify_replay_flag_passes_on_clean_corpus(self, tmp_path):
+        from pathlib import Path
+        corpus_path = Path("benchmarks/tier1/corpus/citation_failure_cases.json")
+        if not corpus_path.is_file():
+            pytest.skip("seed corpus not found")
+        output = tmp_path / "integrity.json"
+        exit_code = run_main([
+            "--corpus", str(corpus_path),
+            "--output", str(output),
+            "--verify-replay",
+        ])
+        assert exit_code == 0, "verify-replay should pass on the canonical corpus"
+
+
 class TestRunMain:
     def test_runs_against_seed_corpus(self, tmp_path):
         corpus_path = Path("benchmarks/tier1/corpus/citation_failure_cases.json")
