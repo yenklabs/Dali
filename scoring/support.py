@@ -12,7 +12,7 @@ MAX_TOKENS = 256
 SOURCE_CHAR_LIMIT = 3000
 
 
-def _get_scorer_model() -> str:
+def get_scorer_model() -> str:
     model = os.environ.get("DALI_SCORER_MODEL", "").strip()
     if not model:
         raise EnvironmentError(
@@ -104,7 +104,7 @@ def score_support(
     try:
         from runners.models import call_model
 
-        raw = call_model(_get_scorer_model(), _build_prompt(claim, source_text))
+        raw = call_model(get_scorer_model(), _build_prompt(claim, source_text))
         return _parse_response(raw)
     except Exception as exc:
         return SupportScore(0.0, "unverifiable", f"scoring unavailable: {exc.__class__.__name__}")

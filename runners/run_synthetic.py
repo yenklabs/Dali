@@ -76,7 +76,7 @@ from runners.models import (
     classify_model_error,
 )
 from runners.model_registry import resolve_model, list_models, DEFAULT_DEV_MODELS
-from scoring.support import MAX_TOKENS, SCORER_MODEL, score_support
+from scoring.support import MAX_TOKENS, get_scorer_model, score_support
 from scoring.verification import inspect_citation_extraction, verify_citations
 
 _REPO_ROOT = Path(__file__).parent.parent
@@ -683,6 +683,11 @@ def write_methodology(
     fallback_entry: dict | None,
 ) -> None:
     """Write methodology.json alongside results."""
+    try:
+        scorer_model = get_scorer_model()
+    except EnvironmentError:
+        scorer_model = None
+
     methodology = {
         "benchmark_version": BENCHMARK_VERSION,
         "parser_version": PARSER_VERSION,
@@ -703,7 +708,7 @@ def write_methodology(
         ],
         "fallback_model": fallback_entry["model_id"] if fallback_entry else None,
         "scorer": {
-            "model_id": SCORER_MODEL,
+            "model_id": scorer_model,
             "max_tokens": MAX_TOKENS,
             "temperature": 0.0,
             "source_char_limit": 3000,
