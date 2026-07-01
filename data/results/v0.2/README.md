@@ -290,12 +290,12 @@ Both runs used identical `policy_version=v1.0.0` and `parser_version=v1.1.0`. Th
 
 ```bibtex
 @software{dali-2026,
-  title        = {Dali: Evidentiary Infrastructure for Legal AI},
   author       = {Kha, Yen},
+  title        = {Dali: Open Evidence Infrastructure for Legal AI},
+  organization = {GammaLex AI Inc.},
   year         = {2026},
   version      = {1.0.0},
-  organization = {GammaLex AI Inc.},
-  url          = {https://github.com/yenk/Dali},
-  note         = {Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny}
+  url          = {https://github.com/yenklabs/Dali},
+  note         = {Open source platform for reproducible legal AI evaluation, evidence preservation, verification workflows, and open research artifacts}
 }
 ```
