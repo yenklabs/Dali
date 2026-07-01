@@ -11,6 +11,63 @@ benchmark integrity.
 
 ---
 
+## New here? Start in 60 seconds
+
+| Question | Answer |
+|----------|--------|
+| **What is Dali?** | Open evidence infrastructure for legal AI — reproducible benchmarks, verification taxonomies, and evidence artifacts. See [README.md](README.md) and [docs/METHODOLOGY.md](docs/METHODOLOGY.md). |
+| **Good first issues** | Filter GitHub for labels `good first issue`, `benchmark`, or `corpus`. Corpus records, Tier 2 prompts, and docs are often the fastest path. |
+| **Run locally** | `git clone https://github.com/yenklabs/Dali && cd Dali && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pytest tests/` |
+| **Coding standards** | Match existing style; keep diffs focused; schema and methodology changes need a spec or issue first. See [docs/for-engineers.md](docs/for-engineers.md). |
+| **Where to ask** | Open a [GitHub Discussion](https://github.com/yenklabs/Dali/discussions) or issue with context and what you tried. |
+| **Submit a PR** | Fork → branch → `pytest tests/` green → open PR with what changed and why. Use the PR checklist below. |
+
+Prefer no terminal? Use the MCP contributor tools (`lint`, `score`, `replay`, `probe`, `draft`, `pack`) — see [tools/mcp/README.md](tools/mcp/README.md).
+
+---
+
+## Ways to contribute
+
+### Evidence
+
+- Evidence corpus submissions
+- Jurisdiction packs
+- Source validation
+
+### Datasets
+
+- Dataset improvements
+- Metadata quality
+- Documentation
+
+### Benchmarks
+
+- Prompt packs
+- Evaluation workflows
+- Reproducibility
+
+### Models
+
+- Baseline implementations
+- Training pipelines
+- Evaluation metrics
+
+### Tooling
+
+- MCP tools
+- Parsers
+- Evidence processing
+
+### Documentation
+
+- Tutorials
+- Methodology
+- Examples
+
+See also [contribution tracks](#contribution-tracks) below for file-level starting points and [docs/RESEARCH-ROADMAP.md](docs/RESEARCH-ROADMAP.md) for ecosystem direction.
+
+---
+
 ## Philosophy
 
 Dali is built on a simple assumption:
