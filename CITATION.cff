@@ -1,20 +1,20 @@
 cff-version: 1.2.0
 message: "If you use Dali in your research or evaluation work, please cite it using this metadata."
-title: "Dali: Evidentiary Infrastructure for Legal AI"
+title: "Dali: Open Evidence Infrastructure for Legal AI"
 type: software
 authors:
   - family-names: Kha
     given-names: Yen
     email: yen.kha@gammalex.com
     alias: yenk
-repository-code: "https://github.com/yenk/Dali"
-url: "https://github.com/yenk/Dali"
+repository-code: "https://github.com/yenklabs/Dali"
+url: "https://github.com/yenklabs/Dali"
 version: "1.0.0"
 date-released: "2026-06-04"
 license: MIT
 abstract: >
-  Dali evaluates whether AI-generated legal citations remain reproducible,
-  attributable, and defensible under scrutiny.
+  Open source platform for reproducible legal AI evaluation, evidence preservation,
+  verification workflows, and open research artifacts.
 keywords:
   - legal AI
   - citation integrity
@@ -28,7 +28,7 @@ keywords:
   - legal technology
 preferred-citation:
   type: software
-  title: "Dali: Evidentiary Infrastructure for Legal AI"
+  title: "Dali: Open Evidence Infrastructure for Legal AI"
   authors:
     - family-names: Kha
       given-names: Yen
@@ -36,5 +36,5 @@ preferred-citation:
   institution: "GammaLex AI Inc."
   year: 2026
   version: "1.0.0"
-  url: "https://github.com/yenk/Dali"
-  notes: "Evaluates whether AI-generated legal citations remain reproducible, attributable, and defensible under scrutiny"
+  url: "https://github.com/yenklabs/Dali"
+  notes: "Open source platform for reproducible legal AI evaluation, evidence preservation, verification workflows, and open research artifacts"

@@ -101,13 +101,13 @@ See [CITATION.cff](CITATION.cff), or:
 
 ```bibtex
 @software{dali-2026,
-  title        = {Dali: The Open Verification Layer for AI Evidence},
   author       = {Kha, Yen},
+  title        = {Dali: Open Evidence Infrastructure for Legal AI},
+  organization = {GammaLex AI Inc.},
   year         = {2026},
   version      = {1.0.0},
-  organization = {GammaLex AI Inc.},
   url          = {https://github.com/yenklabs/Dali},
-  note         = {Open verification infrastructure for portable AI evidence, replay, and trust benchmarks}
+  note         = {Open source platform for reproducible legal AI evaluation, evidence preservation, verification workflows, and open research artifacts}
 }
 ```
 
