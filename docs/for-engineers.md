@@ -36,7 +36,7 @@ dali/scoring/{existence,support,verification}.py           ← URL fetch + verif
 data/results/v0.2/<date>/openai_*.json                     ← per-model run output
 ```
 
-The MCP server in `tools/mcp/` exposes corpus validation and prompt scaffolding tools so contributors can work from Claude Desktop, VS Code, or Cursor without leaving their editor.
+The MCP server in `tools/mcp/` exposes corpus validation and prompt scaffolding tools so contributors can work from Claude Desktop, VS Code, or Cursor without leaving their editor. A companion **ai-context** MCP server (`tools/ai-context/`) provides local repo indexing for code navigation — see [agent-context.md](agent-context.md).
 
 ---
 

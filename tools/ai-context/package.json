@@ -1,0 +1,61 @@
+{
+	"name": "ai-context",
+	"version": "1.0.0",
+	"displayName": "AI Context",
+	"description": "A starter VS Code extension for AI Context.",
+	"main": "./extension.js",
+	"engines": {
+		"vscode": "^1.85.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "ai-context.buildIndex",
+				"title": "AI Context: Build Context Index"
+			},
+			{
+				"command": "ai-context.generateContextPack",
+				"title": "AI Context: Generate Context Pack"
+			},
+			{
+				"command": "ai-context.quickContext",
+				"title": "AI Context: Quick Context (No Prompts)"
+			}
+		],
+		"configuration": {
+			"title": "AI Context",
+			"properties": {
+				"aiContext.defaultTokenBudget": {
+					"type": "number",
+					"default": 1400,
+					"minimum": 200,
+					"maximum": 10000,
+					"description": "Default token budget used by AI Context quick mode."
+				},
+				"aiContext.autoReindexOnSave": {
+					"type": "boolean",
+					"default": true,
+					"description": "Automatically rebuild the AI Context index after file saves."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"test": "echo \"No tests configured\"",
+		"mcp:start": "node mcp-server.js",
+		"mcp:dev": "node mcp-server.js"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.17.4"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs"
+}
