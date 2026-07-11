@@ -29,19 +29,22 @@ Evidence Corpus · Benchmarks · Taxonomy
 Evidence Packages · Replay Engine · APIs
 ```
 
-| Public asset | Location |
-|---|---|
-| Seed evidence corpus | [legal-ai-failure-database](https://huggingface.co/datasets/yenklabs/legal-ai-failure-database) |
-| Verification benchmark v0.1 | [dali-citation-benchmark](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) |
-| Verification taxonomy | [dali-verification-taxonomy](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy) |
-| Evidence interchange (EPS / RFC-001) | [RFC-001](docs/specs/RFC-001-evidence-json-v1.md) · [yenklabs.com draft](https://yenklabs.com/artifacts/evidence-package-spec-v0.1) |
-| Investigations | [yenklabs.com/failures](https://yenklabs.com/failures) |
+| Public asset                         | Location                                                                                                                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Seed evidence corpus                 | [legal-ai-failure-database](https://huggingface.co/datasets/yenklabs/legal-ai-failure-database)                                                              |
+| Seed benchmark sample (public)       | [dali-citation-benchmark](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) — 5 hand-curated cases, 14 authorities, for methodology review and contribution |
+| Full evaluation run                  | [data/results/](https://github.com/yenklabs/Dali/blob/main/data/results) and [LEADERBOARD.md](https://github.com/yenklabs/Dali/blob/main/docs/LEADERBOARD.md) — 524 citations, 3 models, 5 jurisdiction tracks |
+| Verification taxonomy                | [dali-verification-taxonomy](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy)                                                            |
+| Evidence interchange (EPS / RFC-001) | [RFC-001](https://github.com/yenklabs/Dali/blob/main/docs/specs/RFC-001-evidence-json-v1.md) · [yenklabs.com draft](https://yenklabs.com/artifacts/evidence-package-spec-v0.1) |
+| Investigations                       | [yenklabs.com/failures](https://yenklabs.com/failures)                                                                                                       |
 
 Full index: [huggingface.co/yenklabs](https://huggingface.co/yenklabs)
 
 ## Why does it matter?
 
 AI systems lack a standard way to create, exchange, verify, and preserve evidence. The legal industry has been an early proving ground — court-documented incidents since [*Mata v. Avianca*](docs/CASE-STUDIES.md#1-mata-v-avianca-inc-sdny-2023) (2023), including [*United States v. Cohen*](docs/CASE-STUDIES.md#2-united-states-v-cohen-sdny-2023) and [*Park v. Kim*](docs/CASE-STUDIES.md#3-park-v-kim-2d-cir-2024), which anchor the Tier 1 canonical corpus in [data/benchmark/tier1/corpus/citation_failure_cases.json](data/benchmark/tier1/corpus/citation_failure_cases.json). Dali consolidates missing public infrastructure into one MIT-licensed, deterministically replayable verification layer, with reproducibility defined through [cryptographic lineage](docs/cryptographic-lineage.md) and the public [methodology](docs/METHODOLOGY.md).
+
+The full evaluation harness came first. The seed corpus above is a small, hand-picked public sample of that same case work, published separately so the methodology can be reviewed and contributed to without running the full harness.
 
 ## What did we find?
 
