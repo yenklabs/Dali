@@ -31,7 +31,7 @@ Evidence Packages · Replay Engine · APIs
 
 | Public asset                         | Location                                                                                                                                                     |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Seed evidence corpus                 | [legal-ai-failure-database](https://huggingface.co/datasets/yenklabs/legal-ai-failure-database)                                                              |
+| Seed evidence corpus                 | [open-evidence-corpus](https://huggingface.co/datasets/yenklabs/open-evidence-corpus)                                                                        |
 | Seed benchmark sample (public)       | [dali-citation-benchmark](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) — 5 hand-curated cases, 14 authorities, for methodology review and contribution |
 | Full evaluation run                  | [data/results/](https://github.com/yenklabs/Dali/blob/main/data/results) and [LEADERBOARD.md](https://github.com/yenklabs/Dali/blob/main/docs/LEADERBOARD.md) — 524 citations, 3 models, 5 jurisdiction tracks |
 | Verification taxonomy                | [dali-verification-taxonomy](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy)                                                            |
@@ -39,6 +39,39 @@ Evidence Packages · Replay Engine · APIs
 | Investigations                       | [yenklabs.com/failures](https://yenklabs.com/failures)                                                                                                       |
 
 Full index: [huggingface.co/yenklabs](https://huggingface.co/yenklabs)
+
+## Research artifacts
+
+Dali publishes reusable research assets that support reproducible evaluation. Seed samples and the full evaluation run are named separately.
+
+### Datasets
+
+- [Dali Open Evidence Corpus](datasets/open-evidence-corpus/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/open-evidence-corpus) · *available*
+- [Dali Citation Benchmark (Seed Sample)](datasets/citation-benchmark/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) · *available* (5 cases / 14 authorities)
+- [Dali Verification Taxonomy](datasets/verification-taxonomy/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy) · *available*
+- [Dali Evaluation Prompts](datasets/evaluation-prompts/) — *planned*
+
+### Benchmarks
+
+- [Reproducible evaluation workflows](benchmarks/)
+- Cross-jurisdiction benchmark suite — [`data/benchmark/`](data/benchmark/)
+- [Full evaluation run / releases](data/results/) — 524 citations · 3 models · 5 jurisdiction tracks · *available*
+
+### Models
+
+Planned baseline research models built from open evidence artifacts. [Models roadmap](models/README.md) — all *planned*:
+
+- Verification Taxonomy Classifier
+- Citation Risk Classifier
+- Authority Matching Baseline
+- Proposition Support Classifier
+
+Models support the evidence ecosystem. They do not replace it.
+
+### Evidence
+
+- [Reusable evidence artifacts](evidence/) supporting reproducibility and independent verification
+- [Methodology](methodology/) and [research roadmap](docs/RESEARCH-ROADMAP.md)
 
 ## Why does it matter?
 
