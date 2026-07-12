@@ -16,6 +16,12 @@ Dali is the open verification layer for AI: it creates, scores, and preserves ev
 
 Every Dali run produces a deterministic, policy-versioned, hash-sealed `CitationIntegrityResult` artifact. The deterministic Tier 1 evaluator runs offline; CI re-verifies replay equality on every pull request.
 
+## For legal teams and diligence readers
+
+**Dali** is MIT-licensed open evidence infrastructure maintained by [GammaLex AI Inc.](https://gammalex.com). This repository publishes the benchmark methodology, court-documented failure corpus, deterministic evaluation runners, and tamper-evident artifacts — so regulators, opposing counsel, or internal risk teams can reproduce findings without trusting a vendor narrative.
+
+**[Dali Platform](https://dali.gammalex.com)** is GammaLex’s hosted product layer: citation review on briefs and filings, sealed evidence records (policy version + three-hash lineage), MCP/API integration, and exportable audit artifacts. The open repo is the reproducibility anchor; the platform is where legal teams operationalize review at matter scale. Public datasets mirror on Hugging Face under the [YenkLabs](https://huggingface.co/yenklabs) research org. For product access or diligence packages: [hello@gammalex.com](mailto:hello@gammalex.com).
+
 ## Open evidence ecosystem
 
 Failures are seed data. Benchmarks measure trust. Dali is the engine.
