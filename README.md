@@ -1,6 +1,6 @@
 # Dali
 
-> **The open verification layer for AI.** Dali creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed.
+> **Dali is the open verification layer for AI:** it creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed.
 
 [![CI](https://github.com/yenklabs/Dali/actions/workflows/test-suite.yml/badge.svg)](https://github.com/yenklabs/Dali/actions/workflows/test-suite.yml)
 [![Replay verification](https://github.com/yenklabs/Dali/actions/workflows/replay-verification.yml/badge.svg)](https://github.com/yenklabs/Dali/actions/workflows/replay-verification.yml)
@@ -12,7 +12,7 @@
 
 ## What is Dali?
 
-Dali is the open verification layer for AI. It evaluates whether the evidence behind an AI-generated output can be independently reconstructed, verified, and re-evaluated under a fixed policy version. A citation checker asks whether a citation exists. Dali asks whether the workflow that produced it can be audited and defended.
+Dali is the open verification layer for AI: it creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed. Legal AI is the proving ground — a citation checker asks whether a citation exists; Dali asks whether the workflow that produced it can be audited and defended under a fixed policy version.
 
 Every Dali run produces a deterministic, policy-versioned, hash-sealed `CitationIntegrityResult` artifact. The deterministic Tier 1 evaluator runs offline; CI re-verifies replay equality on every pull request.
 
@@ -105,12 +105,12 @@ See [CITATION.cff](CITATION.cff), or:
 ```bibtex
 @software{dali-2026,
   author       = {Kha, Yen},
-  title        = {Dali: Open Evidence Infrastructure for Legal AI},
+  title        = {Dali: Open Verification Layer for AI},
   organization = {GammaLex AI Inc.},
   year         = {2026},
-  version      = {1.0.0},
+  version      = {0.2.1},
   url          = {https://github.com/yenklabs/Dali},
-  note         = {Open source platform for reproducible legal AI evaluation, evidence preservation, verification workflows, and open research artifacts}
+  note         = {Early-stage open verification layer for AI — creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed}
 }
 ```
 

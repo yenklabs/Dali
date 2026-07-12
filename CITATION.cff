@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use Dali in your research or evaluation work, please cite it using this metadata."
-title: "Dali: Open Evidence Infrastructure for Legal AI"
+title: "Dali: Open Verification Layer for AI"
 type: software
 authors:
   - family-names: Kha
@@ -9,13 +9,16 @@ authors:
     alias: yenk
 repository-code: "https://github.com/yenklabs/Dali"
 url: "https://github.com/yenklabs/Dali"
-version: "1.0.0"
-date-released: "2026-06-04"
+version: "0.2.1"
+date-released: "2026-05-27"
 license: MIT
 abstract: >
-  Open source platform for reproducible legal AI evaluation, evidence preservation,
-  verification workflows, and open research artifacts.
+  Dali is the open verification layer for AI: it creates, scores, and preserves
+  evidence so AI-assisted outputs can be independently verified, exchanged, and
+  replayed. Legal AI is the early proving ground.
 keywords:
+  - verification
+  - evidence infrastructure
   - legal AI
   - citation integrity
   - hallucination detection
@@ -23,18 +26,17 @@ keywords:
   - workflow attribution
   - benchmark
   - legal citation
-  - evidence infrastructure
   - AI safety
   - legal technology
 preferred-citation:
   type: software
-  title: "Dali: Open Evidence Infrastructure for Legal AI"
+  title: "Dali: Open Verification Layer for AI"
   authors:
     - family-names: Kha
       given-names: Yen
       email: yen.kha@gammalex.com
   institution: "GammaLex AI Inc."
   year: 2026
-  version: "1.0.0"
+  version: "0.2.1"
   url: "https://github.com/yenklabs/Dali"
-  notes: "Open source platform for reproducible legal AI evaluation, evidence preservation, verification workflows, and open research artifacts"
+  notes: "Early-stage open verification layer for AI — creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed"
