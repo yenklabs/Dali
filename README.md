@@ -1,6 +1,6 @@
 # Dali
 
-> **The open verification layer for AI.** Dali creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed.
+> **Dali is the open verification layer for AI:** it creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed.
 
 [![CI](https://github.com/yenklabs/Dali/actions/workflows/test-suite.yml/badge.svg)](https://github.com/yenklabs/Dali/actions/workflows/test-suite.yml)
 [![Replay verification](https://github.com/yenklabs/Dali/actions/workflows/replay-verification.yml/badge.svg)](https://github.com/yenklabs/Dali/actions/workflows/replay-verification.yml)
@@ -12,7 +12,7 @@
 
 ## What is Dali?
 
-Dali is the open verification layer for AI. It evaluates whether the evidence behind an AI-generated output can be independently reconstructed, verified, and re-evaluated under a fixed policy version. A citation checker asks whether a citation exists. Dali asks whether the workflow that produced it can be audited and defended.
+Dali is the open verification layer for AI: it creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed. Legal AI is the proving ground — a citation checker asks whether a citation exists; Dali asks whether the workflow that produced it can be audited and defended under a fixed policy version.
 
 Every Dali run produces a deterministic, policy-versioned, hash-sealed `CitationIntegrityResult` artifact. The deterministic Tier 1 evaluator runs offline; CI re-verifies replay equality on every pull request.
 
@@ -29,35 +29,37 @@ Evidence Corpus · Benchmarks · Taxonomy
 Evidence Packages · Replay Engine · APIs
 ```
 
-| Public asset | Location |
-|---|---|
-| Open evidence corpus | [open-evidence-corpus](https://huggingface.co/datasets/yenklabs/open-evidence-corpus) |
-| Citation benchmark v0.1 | [dali-citation-benchmark](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) |
-| Verification taxonomy | [dali-verification-taxonomy](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy) |
-| Evidence interchange (EPS / RFC-001) | [RFC-001](docs/specs/RFC-001-evidence-json-v1.md) · [yenklabs.com draft](https://yenklabs.com/artifacts/evidence-package-spec-v0.1) |
+| Public asset                         | Location                                                                                                                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Seed evidence corpus                 | [open-evidence-corpus](https://huggingface.co/datasets/yenklabs/open-evidence-corpus)                                                                        |
+| Seed benchmark sample (public)       | [dali-citation-benchmark](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) — 5 hand-curated cases, 14 authorities, for methodology review and contribution |
+| Full evaluation run                  | [data/results/](https://github.com/yenklabs/Dali/blob/main/data/results) and [LEADERBOARD.md](https://github.com/yenklabs/Dali/blob/main/docs/LEADERBOARD.md) — 524 citations, 3 models, 5 jurisdiction tracks |
+| Verification taxonomy                | [dali-verification-taxonomy](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy)                                                            |
+| Evidence interchange (EPS / RFC-001) | [RFC-001](https://github.com/yenklabs/Dali/blob/main/docs/specs/RFC-001-evidence-json-v1.md) · [yenklabs.com draft](https://yenklabs.com/artifacts/evidence-package-spec-v0.1) |
+| Investigations                       | [yenklabs.com/failures](https://yenklabs.com/failures)                                                                                                       |
 
 Full index: [huggingface.co/yenklabs](https://huggingface.co/yenklabs)
 
 ## Research artifacts
 
-Dali publishes reusable research assets that support reproducible legal AI evaluation.
+Dali publishes reusable research assets that support reproducible evaluation. Seed samples and the full evaluation run are named separately.
 
 ### Datasets
 
-- [Dali Open Evidence Corpus](datasets/open-evidence-corpus/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/open-evidence-corpus)
-- [Dali Citation Benchmark](datasets/citation-benchmark/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark)
-- [Dali Verification Taxonomy](datasets/verification-taxonomy/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy)
-- [Dali Evaluation Prompts](datasets/evaluation-prompts/) — forthcoming
+- [Dali Open Evidence Corpus](datasets/open-evidence-corpus/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/open-evidence-corpus) · *available*
+- [Dali Citation Benchmark (Seed Sample)](datasets/citation-benchmark/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) · *available* (5 cases / 14 authorities)
+- [Dali Verification Taxonomy](datasets/verification-taxonomy/) — [Hugging Face](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy) · *available*
+- [Dali Evaluation Prompts](datasets/evaluation-prompts/) — *planned*
 
 ### Benchmarks
 
 - [Reproducible evaluation workflows](benchmarks/)
 - Cross-jurisdiction benchmark suite — [`data/benchmark/`](data/benchmark/)
-- [Benchmark releases](data/results/)
+- [Full evaluation run / releases](data/results/) — 524 citations · 3 models · 5 jurisdiction tracks · *available*
 
 ### Models
 
-Planned baseline research models built from open evidence artifacts. [Models roadmap](models/README.md):
+Planned baseline research models built from open evidence artifacts. [Models roadmap](models/README.md) — all *planned*:
 
 - Verification Taxonomy Classifier
 - Citation Risk Classifier
@@ -74,6 +76,8 @@ Models support the evidence ecosystem. They do not replace it.
 ## Why does it matter?
 
 AI systems lack a standard way to create, exchange, verify, and preserve evidence. The legal industry has been an early proving ground — court-documented incidents since [*Mata v. Avianca*](docs/CASE-STUDIES.md#1-mata-v-avianca-inc-sdny-2023) (2023), including [*United States v. Cohen*](docs/CASE-STUDIES.md#2-united-states-v-cohen-sdny-2023) and [*Park v. Kim*](docs/CASE-STUDIES.md#3-park-v-kim-2d-cir-2024), which anchor the Tier 1 canonical corpus in [data/benchmark/tier1/corpus/citation_failure_cases.json](data/benchmark/tier1/corpus/citation_failure_cases.json). Dali consolidates missing public infrastructure into one MIT-licensed, deterministically replayable verification layer, with reproducibility defined through [cryptographic lineage](docs/cryptographic-lineage.md) and the public [methodology](docs/METHODOLOGY.md).
+
+The full evaluation harness came first. The seed corpus above is a small, hand-picked public sample of that same case work, published separately so the methodology can be reviewed and contributed to without running the full harness.
 
 ## What did we find?
 
@@ -134,12 +138,12 @@ See [CITATION.cff](CITATION.cff), or:
 ```bibtex
 @software{dali-2026,
   author       = {Kha, Yen},
-  title        = {Dali: Open Evidence Infrastructure for Legal AI},
+  title        = {Dali: Open Verification Layer for AI},
   organization = {GammaLex AI Inc.},
   year         = {2026},
-  version      = {1.0.0},
+  version      = {0.2.1},
   url          = {https://github.com/yenklabs/Dali},
-  note         = {Open source platform for reproducible legal AI evaluation, evidence preservation, verification workflows, and open research artifacts}
+  note         = {Early-stage open verification layer for AI — creates, scores, and preserves evidence so AI-assisted outputs can be independently verified, exchanged, and replayed}
 }
 ```
 
