@@ -46,6 +46,7 @@ application_default_credentials.json
 Thumbs.db
 .idea/
 .vscode/
+.cursor/
 *.swp
 *.swo
 *~

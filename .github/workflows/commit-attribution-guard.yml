@@ -2,13 +2,10 @@ name: Commit Attribution Guard
 
 # Enforces two rules:
 #   1. Every commit must have a real human author (name + email required).
-#   2. AI agent co-author trailers are rejected. Human co-authors are welcome.
+#   2. No Co-authored-by trailers — single-author commits only.
 #
-# What counts as an AI agent co-author:
-#   - Any Co-authored-by line whose name or email matches patterns for
-#     Claude, Cursor, Copilot, ChatGPT, or generic *[bot]* identities.
-#
-# Human Co-authored-by trailers (real name + personal/work email) pass freely.
+# AI agent identities in author fields are also rejected by pattern:
+#   Claude, Cursor, Copilot, ChatGPT, Gemini, *[bot]*, and known AI noreply domains.
 
 on:
   pull_request:
@@ -23,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check author identity and reject AI co-author trailers
+      - name: Check author identity and reject co-author trailers
         env:
           EVENT_NAME: ${{ github.event_name }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -63,10 +60,15 @@ jobs:
               failures=1
             fi
 
-            # Rule 2: Reject Co-authored-by trailers that match AI agent patterns.
-            # Patterns (case-insensitive): Claude, Cursor, Copilot, ChatGPT, Gemini,
-            # generic [bot] suffix, and known AI noreply domains.
-            # Human co-authors with real names and personal/work emails pass freely.
+            # Rule 2: Reject all Co-authored-by trailers (single-author commits only).
+            while IFS= read -r line; do
+              if echo "$line" | grep -Eiq '^Co-authored-by:'; then
+                echo "::error::Commit $commit_sha ($commit_subject) contains a Co-authored-by trailer: '$line'. This repository does not allow co-author trailers."
+                failures=1
+              fi
+            done <<< "$commit_body"
+
+            # Rule 3: Reject AI agent identities in the author field.
             ai_patterns=(
               '[Cc]laude'
               '[Cc]ursor'
@@ -80,21 +82,13 @@ jobs:
               '\.bot@'
             )
 
-            while IFS= read -r line; do
-              if echo "$line" | grep -Eiq '^Co-authored-by:'; then
-                matched=0
-                for pattern in "${ai_patterns[@]}"; do
-                  if echo "$line" | grep -Eiq "$pattern"; then
-                    matched=1
-                    break
-                  fi
-                done
-                if [[ "$matched" -eq 1 ]]; then
-                  echo "::error::Commit $commit_sha ($commit_subject) contains an AI agent Co-authored-by trailer: '$line'. AI agents may not be listed as co-authors. Human co-authors are welcome."
-                  failures=1
-                fi
+            for pattern in "${ai_patterns[@]}"; do
+              if echo "$author_name $author_email" | grep -Eiq "$pattern"; then
+                echo "::error::Commit $commit_sha ($commit_subject) has an AI agent author identity ($author_name <$author_email>)."
+                failures=1
+                break
               fi
-            done <<< "$commit_body"
+            done
           done
 
           if [[ "$failures" -ne 0 ]]; then

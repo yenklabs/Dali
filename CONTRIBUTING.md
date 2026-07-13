@@ -20,7 +20,7 @@ benchmark integrity.
 | **Run locally** | `git clone https://github.com/yenklabs/Dali && cd Dali && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pytest tests/` |
 | **Coding standards** | Match existing style; keep diffs focused; schema and methodology changes need a spec or issue first. See [docs/for-engineers.md](docs/for-engineers.md). |
 | **Where to ask** | Open a [GitHub Discussion](https://github.com/yenklabs/Dali/discussions) or issue with context and what you tried. |
-| **Submit a PR** | Fork → branch → `pytest tests/` green → open PR with what changed and why. Use the PR checklist below. |
+| **Submit a PR** | Fork → branch → `pytest tests/` green → open PR with what changed and why. Use the PR checklist below. Branch and commit rules: [docs/git-conventions.md](docs/git-conventions.md). |
 
 Prefer no terminal? Use the MCP contributor tools (`lint`, `score`, `replay`, `probe`, `draft`, `pack`) — see [tools/mcp/README.md](tools/mcp/README.md).
 
