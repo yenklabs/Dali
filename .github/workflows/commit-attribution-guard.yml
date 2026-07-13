@@ -1,11 +1,9 @@
 name: Commit Attribution Guard
 
-# Enforces two rules:
+# Enforces three rules:
 #   1. Every commit must have a real human author (name + email required).
 #   2. No Co-authored-by trailers — single-author commits only.
-#
-# AI agent identities in author fields are also rejected by pattern:
-#   Claude, Cursor, Copilot, ChatGPT, Gemini, *[bot]*, and known AI noreply domains.
+#   3. Reject automated agent author identities (generic bot signals only).
 
 on:
   pull_request:
@@ -68,27 +66,15 @@ jobs:
               fi
             done <<< "$commit_body"
 
-            # Rule 3: Reject AI agent identities in the author field.
-            ai_patterns=(
-              '[Cc]laude'
-              '[Cc]ursor'
-              '[Cc]opilot'
-              '[Cc]hat[Gg][Pp][Tt]'
-              '[Gg]emini'
-              '\[bot\]'
-              'noreply@anthropic\.com'
-              'noreply@cursor\.'
-              'noreply@github\.com'
-              '\.bot@'
-            )
-
-            for pattern in "${ai_patterns[@]}"; do
-              if echo "$author_name $author_email" | grep -Eiq "$pattern"; then
-                echo "::error::Commit $commit_sha ($commit_subject) has an AI agent author identity ($author_name <$author_email>)."
-                failures=1
-                break
-              fi
-            done
+            # Rule 3: Reject automated agent author identities (generic bot signals).
+            if echo "$author_name" | grep -Eiq '\[bot\]|^bot | bots$'; then
+              echo "::error::Commit $commit_sha ($commit_subject) has an automated agent author name ($author_name)."
+              failures=1
+            fi
+            if echo "$author_email" | grep -Eiq '\.bot@|\[bot\]@'; then
+              echo "::error::Commit $commit_sha ($commit_subject) has an automated agent author email ($author_email)."
+              failures=1
+            fi
           done
 
           if [[ "$failures" -ne 0 ]]; then
