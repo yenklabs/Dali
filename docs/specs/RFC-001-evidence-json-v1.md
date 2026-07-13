@@ -4,7 +4,7 @@
 **Created:** 2026-05-26
 **Author:** Yen Kha
 
-> This is the first public draft of the Evidence JSON contract. Breaking changes are still possible before the v1.0 freeze. Comments and conformance feedback are welcome via GitHub issues with label `spec-change`.
+> This RFC defines the normative v1.0 schema for citation integrity evidence. The conceptual envelope is [EPS/RFC-001](../../EPS/RFC-001.md). Breaking changes are still possible before the v1.0 freeze. Comments and conformance feedback are welcome via GitHub issues with label `spec-change`.
 
 ---
 

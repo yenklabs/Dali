@@ -41,7 +41,7 @@ Evidence Packages · Replay Engine · APIs
 | Seed benchmark sample (public)       | [dali-citation-benchmark](https://huggingface.co/datasets/yenklabs/dali-citation-benchmark) — 5 hand-curated cases, 14 authorities, for methodology review and contribution |
 | Full evaluation run                  | [data/results/](https://github.com/yenklabs/Dali/blob/main/data/results) and [LEADERBOARD.md](https://github.com/yenklabs/Dali/blob/main/docs/LEADERBOARD.md) — 524 citations, 3 models, 5 jurisdiction tracks |
 | Verification taxonomy                | [dali-verification-taxonomy](https://huggingface.co/datasets/yenklabs/dali-verification-taxonomy)                                                            |
-| Evidence interchange (EPS / RFC-001) | [RFC-001](https://github.com/yenklabs/Dali/blob/main/docs/specs/RFC-001-evidence-json-v1.md) · [yenklabs.com draft](https://yenklabs.com/artifacts/evidence-package-spec-v0.1) |
+| Evidence interchange (EPS / RFC-001) | [RFC-001](https://github.com/yenklabs/Dali/blob/main/EPS/RFC-001.md) · [Evidence JSON v1.0](https://github.com/yenklabs/Dali/blob/main/docs/specs/RFC-001-evidence-json-v1.md) · [yenklabs.com draft](https://yenklabs.com/artifacts/evidence-package-spec-v0.1) |
 | Investigations                       | [yenklabs.com/failures](https://yenklabs.com/failures)                                                                                                       |
 
 Full index: [huggingface.co/yenklabs](https://huggingface.co/yenklabs)
