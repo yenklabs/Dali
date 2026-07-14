@@ -39,6 +39,10 @@ gcp-key*.json
 *-keyfile.json
 application_default_credentials.json
 
+# ── AI Context local index (MCP server cache) ───────────────────────────────────
+.ai-context/
+tools/ai-context/node_modules/
+
 # ── OS / editor ───────────────────────────────────────────────────────────────
 .DS_Store
 .DS_Store?

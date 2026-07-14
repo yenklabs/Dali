@@ -56,7 +56,9 @@ Where to find `claude_desktop_config.json`:
 
 Restart Claude Desktop. You'll see "dali" listed in the MCP server tray.
 
-**Cursor** — Settings → MCP → Add Server, paste the same JSON.
+**Cursor** — this repo ships `.cursor/mcp.json` with both `dali` and `ai-context` servers. Clone, run `cd tools/ai-context && npm install`, and open in Cursor. See [docs/agent-context.md](../../docs/agent-context.md) for the dual-server setup.
+
+For manual config, Settings → MCP → Add Server, paste the same JSON.
 
 **VS Code (with the MCP extension)** — add `.vscode/mcp.json` at your workspace root:
 
@@ -157,6 +159,21 @@ Either the runner has a determinism regression (unlikely; CI catches this on eve
 
 **Python version**
 The MCP server needs Python 3.10+. If `python -m tools.mcp` errors, try `python3 -m tools.mcp` and update your editor's MCP config accordingly.
+
+---
+
+## Companion: AI Context (repo navigation)
+
+Dali MCP handles corpus validation and evaluation. For **codebase navigation** ("where is replay_hash computed?", "which schema defines `CitationFailureCase`?"), use the companion **ai-context** MCP server vendored at `tools/ai-context/`.
+
+| Server | Tools | Use when |
+|---|---|---|
+| `dali` (this doc) | `lint`, `score`, `replay`, `probe`, `draft`, `pack` | Corpus records, prompts, PR readiness |
+| `ai-context` | `run_pipeline`, `get_context_capsule` | Finding code, understanding module layout |
+
+Typical contributor flow: `run_pipeline` → edit → `lint` → `score` → `replay`.
+
+Full setup: [docs/agent-context.md](../../docs/agent-context.md).
 
 ---
 

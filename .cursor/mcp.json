@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "dali": {
+      "command": "python3",
+      "args": ["-m", "tools.mcp"],
+      "cwd": "${workspaceFolder}"
+    },
+    "ai-context": {
+      "command": "node",
+      "args": ["${workspaceFolder}/tools/ai-context/mcp-server.js"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

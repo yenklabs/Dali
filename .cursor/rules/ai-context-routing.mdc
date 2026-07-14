@@ -1,0 +1,41 @@
+---
+description: Route repository navigation through ai-context MCP before Dali corpus tools when appropriate.
+globs:
+alwaysApply: true
+---
+
+# AI Context + Dali MCP routing
+
+Dali exposes two complementary MCP servers (see `.cursor/mcp.json`):
+
+- **ai-context** — local repo index and token-budgeted context capsules (`run_pipeline`, `get_context_capsule`)
+- **dali** — corpus validation and evaluation (`lint`, `score`, `replay`, `probe`, `draft`, `pack`)
+
+## When to call ai-context first
+
+For repository-specific questions (where code lives, how a module works, which file to edit):
+
+1. Call `ai-context` → `run_pipeline` with the user's task as `task`.
+2. Use default `tokenBudget` of `1400` unless the user requests otherwise.
+3. Ground your answer primarily on the returned `capsule`.
+4. If `run_pipeline` fails, fall back to `get_context_capsule`.
+5. If both return low signal, continue with normal reasoning and state that MCP had low signal.
+
+## When to call Dali MCP directly
+
+For corpus and benchmark workflows, use Dali tools without ai-context:
+
+- Validate records → `lint`
+- Run Tier 1 evaluator → `score` (run `lint` first if structure is uncertain)
+- Check determinism → `replay`
+- Tier 2 prompts → `probe`, `draft`, `pack`
+
+## Combined contributor workflow
+
+When a task spans both code navigation and corpus validation:
+
+1. `run_pipeline` to locate schemas, runners, and destination files
+2. Make edits
+3. `lint` → `score` → `replay` on changed corpus records before claiming PR readiness
+
+For broad non-code questions (general legal knowledge, methodology concepts already in docs), normal reasoning is fine without ai-context.
